@@ -1,5 +1,5 @@
 import { Routes, Route, Link, Outlet } from 'react-router-dom'
-import PersonajesPage from './PersonajesPage'
+import PersonajesPage from './Characters'
 // Puedes agregar más: HistoriasPage, EscenasPage, etc.
 
 const Sidebar = () => (
