@@ -1,23 +1,26 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import LoginRegister from './pages/LoginRegister'
-import DashboardLayout from './layouts/DashboardLayout'
-import PersonajesPage from './pages/PersonajesPage'
-import PrivateRoute from './components/PrivateRoute'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import DashboardLayout from "@/layouts/DashboardLayout";
+import Characters from "@/pages/Characters";
+import LogoScreen from "@/pages/LogoScreen";
+import LoginRegister from "./pages/LoginRegister";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Sin sidebar */}
         <Route path="/" element={<LoginRegister />} />
 
-        {/* Rutas protegidas */}
-        <Route element={<PrivateRoute />}>
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route path="personajes" element={<PersonajesPage />} />
-            {/* Agrega más secciones protegidas aquí */}
-          </Route>
+        {/* Con sidebar (rutas protegidas) */}
+        <Route
+          element={
+              <DashboardLayout />
+          }
+        >
+          <Route path="/dashboard" element={<LogoScreen />} />
+          <Route path="/characters" element={<Characters />} />
         </Route>
       </Routes>
     </BrowserRouter>
-  )
+  );
 }

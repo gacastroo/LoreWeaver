@@ -26,34 +26,55 @@ export default function AuthForm() {
   const navigate = useNavigate()
 
   const handleSubmit = async () => {
+    // VALIDACIÓN BÁSICA
+    if (!email || !password) {
+      alert("❌ Todos los campos son obligatorios.");
+      return;
+    }
+  
+    if (!email.includes("@")) {
+      alert("❌ El correo electrónico no es válido.");
+      return;
+    }
+  
+    if (password.length < 6) {
+      alert("❌ La contraseña debe tener al menos 6 caracteres.");
+      return;
+    }
+  
+    if (registro && !nombre.trim()) {
+      alert("❌ El nombre es obligatorio para registrarse.");
+      return;
+    }
+  
     try {
-        const endpoint = registro ? "/usuarios/registro" : "/usuarios/login"
-        const payload = registro
+      const endpoint = registro ? "/usuarios/registro" : "/usuarios/login";
+      const payload = registro
         ? { email, password, nombre }
-        : { email, password }
-
-      const res = await API.post(endpoint, payload)
-      const { token } = res.data
-
+        : { email, password };
+  
+      const res = await API.post(endpoint, payload);
+      const { token } = res.data;
+  
       if (token) {
-        localStorage.setItem("token", token)
-
+        localStorage.setItem("token", token);
+  
         if (registro) {
-          setRegistro(false)
-          alert("✅ Cuenta creada correctamente. Ahora inicia sesión.")
+          setRegistro(false);
+          alert("✅ Cuenta creada correctamente. Ahora inicia sesión.");
         } else {
-          navigate("/dashboard/personajes")
+          navigate("/dashboard");
         }
       } else {
-        alert("❌ No se recibió un token del servidor.")
+        alert("❌ No se recibió un token del servidor.");
       }
     } catch (error) {
-      console.error("Error en la autenticación:", error)
-      const msg = error.response?.data?.message || "Error inesperado"
-      alert("🚫 " + msg)
+      console.error("Error en la autenticación:", error);
+      const msg = error.response?.data?.message || "Error inesperado";
+      alert("🚫 " + msg);
     }
-  }
-
+  };
+  
   return (
     <div className="w-full max-w-md">
       <Card className="bg-white shadow-sm border border-gray-100 rounded-lg">

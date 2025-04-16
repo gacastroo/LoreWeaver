@@ -58,6 +58,16 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Usa Tailwind con @apply si tienes PostCSS configurado */
+.nav-link {
+  @apply flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100 transition-colors text-gray-700;
+}
+
+.icon {
+  @apply w-4 h-4 text-gray-500;
+}
+
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
