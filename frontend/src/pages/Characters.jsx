@@ -31,7 +31,7 @@ export default function Characters() {
   };
 
   return (
-    <div className="flex flex-col h-full w-full overflow-auto">
+    <div className="flex flex-col h-full w-full bg-neutral-100 px-8 py-6 overflow-auto">
       <SectionHeader title="Personajes">
         <AddCharacterButton onClick={handleAddCharacter} />
       </SectionHeader>

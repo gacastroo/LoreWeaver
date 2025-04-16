@@ -77,7 +77,7 @@ export default function Sidebar() {
             </NavLink>
             <NavLink to="/idea-generator" className="nav-link">
               <Lightbulb className="icon" />
-              Generador de
+              Generador de Ideas
             </NavLink>
           </nav>
         </div>

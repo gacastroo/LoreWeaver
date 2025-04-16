@@ -9,7 +9,7 @@ export default function LogoScreen() {
         alt="LoreWeaver"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 2.5, opacity: 1 }}
-        transition={{ duration: 1, ease: "easeOut" }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
         className="w-64 h-auto drop-shadow-lg"
       />
     </div>
