@@ -4,10 +4,19 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Mail, Lock, User, ArrowRight } from "lucide-react"
 
+import API from "@/services/api"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card"
 
 export default function AuthForm() {
   const [registro, setRegistro] = useState(false)
@@ -18,10 +27,30 @@ export default function AuthForm() {
 
   const handleSubmit = async () => {
     try {
-      localStorage.setItem("token", "token-simulado")
-      navigate("/dashboard/personajes")
-    } catch {
-      alert("Error al iniciar sesión o registrarse")
+        const endpoint = registro ? "/usuarios/registro" : "/usuarios/login"
+        const payload = registro
+        ? { email, password, nombre }
+        : { email, password }
+
+      const res = await API.post(endpoint, payload)
+      const { token } = res.data
+
+      if (token) {
+        localStorage.setItem("token", token)
+
+        if (registro) {
+          setRegistro(false)
+          alert("✅ Cuenta creada correctamente. Ahora inicia sesión.")
+        } else {
+          navigate("/dashboard/personajes")
+        }
+      } else {
+        alert("❌ No se recibió un token del servidor.")
+      }
+    } catch (error) {
+      console.error("Error en la autenticación:", error)
+      const msg = error.response?.data?.message || "Error inesperado"
+      alert("🚫 " + msg)
     }
   }
 
