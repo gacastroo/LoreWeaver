@@ -5,7 +5,7 @@ export default function LogoScreen() {
   return (
     <div className="h-full w-full flex items-center justify-center bg-gray-300">
       <motion.img
-        src="/logo.png" // Cambia por tu ruta real
+        src="/logo.png" 
         alt="LoreWeaver"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 2.5, opacity: 1 }}

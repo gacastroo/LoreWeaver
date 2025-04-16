@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import API from '../services/api'
+import API from '../../services/api'
 
 export default function TagSelector({ selected, setSelected }) {
   const [tags, setTags] = useState([])

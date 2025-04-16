@@ -1,8 +1,8 @@
 // src/pages/Characters.jsx
 import { useEffect, useState } from "react";
-import SectionHeader from "@/components/SectionHeader";
-import AddCharacterButton from "@/components/AddCharacterButton";
-import CharacterGrid from "@/components/CharacterGrid";
+import SectionHeader from "@/components/character/SectionHeader";
+import AddButton from "@/components/ui/button/AddButton";
+import CharacterGrid from "@/components/character/CharacterGrid";
 
 const mockCharacters = [
   {
@@ -33,7 +33,7 @@ export default function Characters() {
   return (
     <div className="flex flex-col h-full w-full bg-neutral-100 px-8 py-6 overflow-auto">
       <SectionHeader title="Personajes">
-        <AddCharacterButton onClick={handleAddCharacter} />
+        <AddButton onClick={handleAddCharacter} label="Nuevo personaje" />
       </SectionHeader>
       <CharacterGrid characters={characters} />
     </div>

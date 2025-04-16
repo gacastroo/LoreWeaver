@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import DashboardLayout from "@/layouts/DashboardLayout";
+import Inicio from "@/layouts/Inicio";
 import Characters from "@/pages/Characters";
 import LogoScreen from "@/pages/LogoScreen";
 import LoginRegister from "./pages/LoginRegister";
+import Dashboard from "@/pages/Dashboard";
 
 export default function App() {
   return (
@@ -14,11 +15,12 @@ export default function App() {
         {/* Con sidebar (rutas protegidas) */}
         <Route
           element={
-              <DashboardLayout />
+              <Inicio />
           }
         >
-          <Route path="/dashboard" element={<LogoScreen />} />
+          <Route path="/inicio" element={<LogoScreen />} />
           <Route path="/characters" element={<Characters />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>

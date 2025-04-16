@@ -63,7 +63,7 @@ export default function AuthForm() {
           setRegistro(false);
           alert("✅ Cuenta creada correctamente. Ahora inicia sesión.");
         } else {
-          navigate("/dashboard");
+          navigate("/Inicio");
         }
       } else {
         alert("❌ No se recibió un token del servidor.");

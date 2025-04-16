@@ -36,7 +36,12 @@ export default function Sidebar() {
         </NavLink>
 
         {/* Navegación principal */}
+
         <nav className="flex flex-col gap-1 text-sm">
+        <NavLink to="/dashboard" className="nav-link">
+            <BookOpen className="icon" />
+            Dashboard
+          </NavLink>
           <NavLink to="/stories" className="nav-link">
             <BookOpen className="icon" />
             Historias
