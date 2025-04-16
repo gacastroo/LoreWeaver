@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "mysql"  
+  url      = env("DATABASE_URL") 
+}
+
+model Usuario {
+  id_usuario Int @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  nombre     String
+  createdAt  DateTime @default(now())
+}
+
+model Historia {
+  id         Int         @id @default(autoincrement())
+  titulo     String
+  personajes Personaje[]
+  capitulos  Capitulo[]
+  escenas    Escena[]
+  universos  Universo[]
+  tags       Tags[]
+}
+
+model Personaje {
+  id_Personaje         Int        @id @default(autoincrement())
+  nombre_personaje     String
+  descripcion_personaje String
+  historiaId           Int
+  historia             Historia   @relation(fields: [historiaId], references: [id])
+  tags                 Personaje_Tag[]
+}
+model Escena {
+  id           Int       @id @default(autoincrement())
+  contenido    String
+  capituloId   Int
+  capitulo     Capitulo  @relation(fields: [capituloId], references: [id_Capitulo])
+  historiaId   Int
+  historia     Historia  @relation(fields: [historiaId], references: [id])
+}
+
+
+model Capitulo {
+  id_Capitulo       Int        @id @default(autoincrement())
+  titulo_capitulo   String
+  orden_capitulo    String
+  universoId        Int
+  universo          Universo   @relation(fields: [universoId], references: [id_Universo])
+  historiaId        Int
+  historia          Historia   @relation(fields: [historiaId], references: [id])
+  escenas           Escena[]
+}
+
+model Universo {
+  id_Universo          Int        @id @default(autoincrement())
+  titulo_universo      String
+  descripcion_universo String
+  historiaId           Int
+  historia             Historia   @relation(fields: [historiaId], references: [id])
+  capitulos            Capitulo[]
+}
+
+model Tags {
+  id_Tag      Int           @id @default(autoincrement())
+  nombre_tag  String
+  historiaId  Int
+  historia    Historia      @relation(fields: [historiaId], references: [id])
+  personajes  Personaje_Tag[]
+}
+
+model Personaje_Tag {
+  id           Int        @id @default(autoincrement())
+  personajeId  Int
+  personaje    Personaje  @relation(fields: [personajeId], references: [id_Personaje])
+  tagId        Int
+  tag          Tags       @relation(fields: [tagId], references: [id_Tag])
+}

@@ -1,0 +1,66 @@
+import prisma from '../prisma.js'
+
+// Crear personaje
+export const crearPersonaje = async (req, res) => {
+  const { nombre_personaje, descripcion_personaje, historiaId } = req.body
+  try {
+    const personaje = await prisma.personaje.create({
+      data: { nombre_personaje, descripcion_personaje, historiaId }
+    })
+    res.status(201).json(personaje)
+  } catch (error) {
+    res.status(500).json({ error: 'Error al crear personaje' })
+  }
+}
+
+// Obtener todos los personajes
+export const obtenerPersonajes = async (req, res) => {
+  try {
+    const personajes = await prisma.personaje.findMany()
+    res.json(personajes)
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener personajes' })
+  }
+}
+
+// Obtener personaje por ID
+export const obtenerPersonaje = async (req, res) => {
+  const { id } = req.params
+  try {
+    const personaje = await prisma.personaje.findUnique({
+      where: { id_Personaje: parseInt(id) }
+    })
+    if (!personaje) return res.status(404).json({ error: 'Personaje no encontrado' })
+    res.json(personaje)
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener personaje' })
+  }
+}
+
+// Actualizar personaje
+export const actualizarPersonaje = async (req, res) => {
+  const { id } = req.params
+  const { nombre_personaje, descripcion_personaje } = req.body
+  try {
+    const personaje = await prisma.personaje.update({
+      where: { id_Personaje: parseInt(id) },
+      data: { nombre_personaje, descripcion_personaje }
+    })
+    res.json(personaje)
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar personaje' })
+  }
+}
+
+// Eliminar personaje
+export const eliminarPersonaje = async (req, res) => {
+  const { id } = req.params
+  try {
+    await prisma.personaje.delete({
+      where: { id_Personaje: parseInt(id) }
+    })
+    res.json({ message: 'Personaje eliminado' })
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar personaje' })
+  }
+}
