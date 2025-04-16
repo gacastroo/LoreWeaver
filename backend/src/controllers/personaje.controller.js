@@ -3,13 +3,20 @@ import prisma from '../prisma.js'
 // Crear personaje
 export const crearPersonaje = async (req, res) => {
   const { nombre_personaje, descripcion_personaje, historiaId } = req.body
+  console.log("📥 Datos recibidos para crear personaje:", req.body)
+
   try {
     const personaje = await prisma.personaje.create({
-      data: { nombre_personaje, descripcion_personaje, historiaId }
+      data: {
+        nombre_personaje,
+        descripcion_personaje,
+        historiaId: parseInt(historiaId)  // 💡 Asegura que es un número
+      }
     })
     res.status(201).json(personaje)
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear personaje' })
+    console.error("❌ Error al crear personaje:", error)
+    res.status(500).json({ error: 'Error al crear personaje', detalle: error.message })
   }
 }
 
@@ -19,6 +26,7 @@ export const obtenerPersonajes = async (req, res) => {
     const personajes = await prisma.personaje.findMany()
     res.json(personajes)
   } catch (error) {
+    console.error("❌ Error al obtener personajes:", error)
     res.status(500).json({ error: 'Error al obtener personajes' })
   }
 }
@@ -33,6 +41,7 @@ export const obtenerPersonaje = async (req, res) => {
     if (!personaje) return res.status(404).json({ error: 'Personaje no encontrado' })
     res.json(personaje)
   } catch (error) {
+    console.error("❌ Error al obtener personaje:", error)
     res.status(500).json({ error: 'Error al obtener personaje' })
   }
 }
@@ -48,6 +57,7 @@ export const actualizarPersonaje = async (req, res) => {
     })
     res.json(personaje)
   } catch (error) {
+    console.error("❌ Error al actualizar personaje:", error)
     res.status(500).json({ error: 'Error al actualizar personaje' })
   }
 }
@@ -61,6 +71,7 @@ export const eliminarPersonaje = async (req, res) => {
     })
     res.json({ message: 'Personaje eliminado' })
   } catch (error) {
+    console.error("❌ Error al eliminar personaje:", error)
     res.status(500).json({ error: 'Error al eliminar personaje' })
   }
 }
