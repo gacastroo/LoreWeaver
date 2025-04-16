@@ -1,8 +1,8 @@
-import AuthForm from '../components/AuthForm'
+import AuthForm from "../components/AuthForm"
 
 export default function LoginRegister() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 text-white">
+    <div className="w-screen h-screen flex items-center justify-center bg-[#f7f6f3]">
       <AuthForm />
     </div>
   )
