@@ -1,5 +1,5 @@
 import React from "react"
-import { cn } from "../../lib/utils"
+import { cn } from "@/lib/utils"
 
 const Button = React.forwardRef(({ className, variant, size, asChild = false, ...props }, ref) => {
   const Comp = asChild ? React.Fragment : "button"
