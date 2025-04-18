@@ -5,6 +5,8 @@ import LogoScreen from "@/pages/LogoScreen";
 import LoginRegister from "./pages/LoginRegister";
 import Dashboard from "@/pages/Dashboard";
 import Stories from "@/pages/Stories";
+import Universes from "@/pages/Universes";
+
 
 
 export default function App() {
@@ -24,6 +26,7 @@ export default function App() {
           <Route path="/characters" element={<Characters />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/stories" element={<Stories/>} />
+          <Route path="/universes" element={<Universes />} />
         </Route>
       </Routes>
     </BrowserRouter>

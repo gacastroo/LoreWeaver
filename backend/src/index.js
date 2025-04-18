@@ -6,6 +6,7 @@ import personajeRoutes from './routes/personaje.routes.js';
 import historiaRoutes from './routes/historia.routes.js';
 import tagRoutes from './routes/tag.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js'; 
+import universoRoutes from './routes/universo.routes.js';
 
 dotenv.config();
 
@@ -17,7 +18,8 @@ app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/personajes', personajeRoutes);
 app.use('/api/historias', historiaRoutes);
 app.use('/api/tags', tagRoutes);
-app.use('/api', dashboardRoutes); 
+app.use('/api', dashboardRoutes);
+app.use('/api/universos', universoRoutes); 
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
