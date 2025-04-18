@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import API from "@/services/api";
 import {
   BookOpen,
   LayoutDashboard,
@@ -13,17 +15,26 @@ import {
   Plus,
 } from "lucide-react";
 
-const userStories = [
-  "The Dark Forest",
-  "City of Dreams",
-  "Whispers of the Past",
-];
-
 export default function Sidebar() {
+  const [userStories, setUserStories] = useState([]);
+
+  useEffect(() => {
+    const fetchStories = async () => {
+      try {
+        const res = await API.get("/historias"); // asegúrate de que tu backend tenga esta ruta
+        setUserStories(res.data);
+      } catch (err) {
+        console.error("❌ Error al cargar historias en sidebar:", err);
+      }
+    };
+
+    fetchStories();
+  }, []);
+
   return (
-    <aside className="w-64 h-full bg-white border-r shadow-sm p-4 flex flex-col justify-between">
-      <div>
-        {/* Logo clicable */}
+<aside className="w-64 h-screen overflow-y-auto bg-white border-r shadow-sm p-4 flex flex-col scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-neutral-100 hover:scrollbar-thumb-neutral-400 transition-all duration-300 ease-in-out">
+  <div>
+        {/* Logo */}
         <NavLink
           to="/dashboard"
           className="flex items-center gap-2 mb-6 px-2 hover:opacity-80 transition-opacity"
@@ -36,10 +47,9 @@ export default function Sidebar() {
         </NavLink>
 
         {/* Navegación principal */}
-
         <nav className="flex flex-col gap-1 text-sm">
-        <NavLink to="/dashboard" className="nav-link">
-            <BookOpen className="icon" />
+          <NavLink to="/dashboard" className="nav-link">
+            <LayoutDashboard className="icon" />
             Dashboard
           </NavLink>
           <NavLink to="/stories" className="nav-link">
@@ -68,7 +78,7 @@ export default function Sidebar() {
           </NavLink>
         </nav>
 
-        {/* Sección de herramientas */}
+        {/* Herramientas */}
         <div className="border-t my-4 pt-4">
           <h2 className="text-xs uppercase text-gray-400 px-2 mb-2">Herramientas</h2>
           <nav className="flex flex-col gap-1 text-sm">
@@ -87,24 +97,28 @@ export default function Sidebar() {
           </nav>
         </div>
 
-        {/* Sección de historias */}
+        {/* Tus historias (dinámicas) */}
         <div className="border-t mt-4 pt-4">
           <h2 className="text-xs uppercase text-gray-400 px-2 mb-2">
             Tus historias
           </h2>
           <nav className="flex flex-col gap-1 text-sm">
-            {userStories.map((story, i) => (
-              <NavLink key={i} to={`/story/${i}`} className="nav-link">
-                <BookOpen className="icon" />
-                {story}
-              </NavLink>
-            ))}
+            {userStories.length > 0 ? (
+              userStories.map((story) => (
+                <NavLink key={story.id} to={`/historia/${story.id}`} className="nav-link">
+                  <BookOpen className="icon" />
+                  {story.titulo}
+                </NavLink>
+              ))
+            ) : (
+              <span className="text-xs text-neutral-400 px-2">No hay historias</span>
+            )}
             <NavLink
               to="/new-story"
               className="nav-link text-indigo-600 hover:text-indigo-800"
             >
               <Plus className="icon" />
-              New Story
+              Nueva historia
             </NavLink>
           </nav>
         </div>
