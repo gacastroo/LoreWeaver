@@ -4,142 +4,74 @@ import bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-  // 1. Crear historias
-  const historia1 = await prisma.historia.create({
-    data: { titulo: 'El Imperio Sombrío' }
-  });
-
-  const historia2 = await prisma.historia.create({
-    data: { titulo: 'Crónicas de Estrellas' }
-  });
-
-  // 2. Crear universos
-  const universo1 = await prisma.universo.create({
-    data: {
-      titulo_universo: 'Mundo Infernal',
-      descripcion_universo: 'Un mundo donde reinan las sombras',
-      historiaId: historia1.id,
-    },
-  });
-
-  const universo2 = await prisma.universo.create({
-    data: {
-      titulo_universo: 'Galaxia Argón',
-      descripcion_universo: 'Un universo futurista lleno de estrellas en guerra',
-      historiaId: historia2.id,
-    },
-  });
-
-  // 3. Crear capítulos
-  const capitulo1 = await prisma.capitulo.create({
-    data: {
-      titulo_capitulo: 'La Caída del Sol',
-      orden_capitulo: '1',
-      historiaId: historia1.id,
-      universoId: universo1.id_Universo,
-    },
-  });
-
-  const capitulo2 = await prisma.capitulo.create({
-    data: {
-      titulo_capitulo: 'Sueños de Fuego',
-      orden_capitulo: '1',
-      historiaId: historia2.id,
-      universoId: universo2.id_Universo,
-    },
-  });
-
-  // 4. Crear escenas
-  await prisma.escena.createMany({
-    data: [
-      {
-        contenido: 'El rey cae ante la oscuridad.',
-        historiaId: historia1.id,
-        capituloId: capitulo1.id_Capitulo,
-      },
-      {
-        contenido: 'La princesa escapa al bosque maldito.',
-        historiaId: historia1.id,
-        capituloId: capitulo1.id_Capitulo,
-      },
-      {
-        contenido: 'Explosiones en el núcleo galáctico.',
-        historiaId: historia2.id,
-        capituloId: capitulo2.id_Capitulo,
-      },
-    ],
-  });
-
-  // 5. Crear tags
-  const tag1 = await prisma.tags.create({
-    data: {
-      nombre_tag: 'Realeza',
-      historiaId: historia1.id,
-    },
-  });
-
-  const tag2 = await prisma.tags.create({
-    data: {
-      nombre_tag: 'Tecnología',
-      historiaId: historia2.id,
-    },
-  });
-
-  // 6. Crear personajes
-  const personaje1 = await prisma.personaje.create({
-    data: {
-      nombre_personaje: 'Aria Moonshade',
-      descripcion_personaje: 'Una princesa con un oscuro legado.',
-      historiaId: historia1.id,
-    },
-  });
-
-  const personaje2 = await prisma.personaje.create({
-    data: {
-      nombre_personaje: 'Darius Stormborn',
-      descripcion_personaje: 'Guerrero forjado en el exilio.',
-      historiaId: historia1.id,
-    },
-  });
-
-  const personaje3 = await prisma.personaje.create({
-    data: {
-      nombre_personaje: 'Zeron Kaal',
-      descripcion_personaje: 'Capitán de la nave fantasma del sistema Z-12.',
-      historiaId: historia2.id,
-    },
-  });
-
-  // 7. Asociar personajes a tags
-  await prisma.personaje_Tag.createMany({
-    data: [
-      {
-        personajeId: personaje1.id_Personaje,
-        tagId: tag1.id_Tag,
-      },
-      {
-        personajeId: personaje2.id_Personaje,
-        tagId: tag1.id_Tag,
-      },
-      {
-        personajeId: personaje3.id_Personaje,
-        tagId: tag2.id_Tag,
-      },
-    ],
-  });
-
-  // 8. Crear usuario
+  // === Crear usuario admin ===
   const hashedPassword = await bcrypt.hash('tichi6533', 10);
-
-  await prisma.usuario.create({
-    data: {
+  await prisma.usuario.upsert({
+    where: { email: 'guillermoandca@gmail.com' },
+    update: {},
+    create: {
       email: 'guillermoandca@gmail.com',
       password: hashedPassword,
       nombre: 'Guillermo',
     },
   });
 
-  console.log('✅ Base de datos poblada con datos de prueba.');
+  // === Historias ===
+  const carrie = await prisma.historia.create({ data: { titulo: 'Carrie' } });
+  const juegos = await prisma.historia.create({ data: { titulo: 'Los Juegos del Hambre' } });
+  const speak = await prisma.historia.create({ data: { titulo: 'Speak' } });
+
+  // === Universos ===
+  const uniCarrie = await prisma.universo.create({ data: { titulo_universo: 'Chamberlain High', historiaId: carrie.id } });
+  const uni12 = await prisma.universo.create({ data: { titulo_universo: 'Distrito 12', historiaId: juegos.id } });
+  const uniSpeak = await prisma.universo.create({ data: { titulo_universo: 'Merryweather High', historiaId: speak.id } });
+
+  // === Capítulos ===
+  const [cap1, cap2, cap3] = await Promise.all([
+    prisma.capitulo.create({ data: { titulo_capitulo: 'Baile sangriento', historiaId: carrie.id, universoId: uniCarrie.id_Universo } }),
+    prisma.capitulo.create({ data: { titulo_capitulo: 'La cosecha', historiaId: juegos.id, universoId: uni12.id_Universo } }),
+    prisma.capitulo.create({ data: { titulo_capitulo: 'Primer día', historiaId: speak.id, universoId: uniSpeak.id_Universo } }),
+  ]);
+
+  // === Escenas ===
+  await prisma.escena.createMany({
+    data: [
+      { titulo_escena: 'Carrie explota sus poderes', orden_escena: 1, historiaId: carrie.id, capituloId: cap1.id_Capitulo, universoId: uniCarrie.id_Universo },
+      { titulo_escena: 'Katniss se ofrece como tributo', orden_escena: 1, historiaId: juegos.id, capituloId: cap2.id_Capitulo, universoId: uni12.id_Universo },
+      { titulo_escena: 'Melinda llega a clase', orden_escena: 1, historiaId: speak.id, capituloId: cap3.id_Capitulo, universoId: uniSpeak.id_Universo },
+    ]
+  });
+
+  // === Tags ===
+  const [supernatural, marginada, rebeldia, liderazgo, trauma, resiliencia] = await Promise.all([
+    prisma.tags.create({ data: { nombre_tag: 'Poderes sobrenaturales', historiaId: carrie.id } }),
+    prisma.tags.create({ data: { nombre_tag: 'Marginación', historiaId: carrie.id } }),
+    prisma.tags.create({ data: { nombre_tag: 'Rebeldía', historiaId: juegos.id } }),
+    prisma.tags.create({ data: { nombre_tag: 'Liderazgo', historiaId: juegos.id } }),
+    prisma.tags.create({ data: { nombre_tag: 'Trastornos mentales', historiaId: speak.id } }),
+    prisma.tags.create({ data: { nombre_tag: 'Resiliencia', historiaId: speak.id } }),
+  ]);
+
+  // === Personajes ===
+  const [carrieWhite, katniss, melinda] = await Promise.all([
+    prisma.personaje.create({ data: { nombre_personaje: 'Carrie White', descripcion_personaje: 'Joven con poderes telequinéticos', historiaId: carrie.id } }),
+    prisma.personaje.create({ data: { nombre_personaje: 'Katniss Everdeen', descripcion_personaje: 'Tributo del Distrito 12', historiaId: juegos.id } }),
+    prisma.personaje.create({ data: { nombre_personaje: 'Melinda Sordino', descripcion_personaje: 'Chica retraída que deja de hablar', historiaId: speak.id } }),
+  ]);
+
+  // === Relaciones personaje-tag ===
+  await prisma.personaje_Tag.createMany({
+    data: [
+      { personajeId: carrieWhite.id_Personaje, tagId: supernatural.id_Tag },
+      { personajeId: carrieWhite.id_Personaje, tagId: marginada.id_Tag },
+      { personajeId: katniss.id_Personaje, tagId: rebeldia.id_Tag },
+      { personajeId: katniss.id_Personaje, tagId: liderazgo.id_Tag },
+      { personajeId: melinda.id_Personaje, tagId: trauma.id_Tag },
+      { personajeId: melinda.id_Personaje, tagId: resiliencia.id_Tag },
+    ]
+  });
+
+  console.log("✅ Base de datos inicializada.");
 }
 
 main()

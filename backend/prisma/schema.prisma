@@ -2,14 +2,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 datasource db {
-  provider = "mysql"  
-  url      = env("DATABASE_URL") 
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model Usuario {
-  id_usuario Int @id @default(autoincrement())
+  id_usuario Int      @id @default(autoincrement())
   email      String   @unique
   password   String
   nombre     String
@@ -17,10 +16,11 @@ model Usuario {
 }
 
 model Historia {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   titulo     String
-  createdAt  DateTime @default(now())        // ✅ Este campo debe estar
-  updatedAt  DateTime @updatedAt             // ✅ Este también
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
   personajes Personaje[]
   capitulos  Capitulo[]
   escenas    Escena[]
@@ -28,59 +28,63 @@ model Historia {
   tags       Tags[]
 }
 
-
-
-
 model Personaje {
-  id_Personaje         Int        @id @default(autoincrement())
-  nombre_personaje     String
+  id_Personaje          Int             @id @default(autoincrement())
+  nombre_personaje      String
   descripcion_personaje String
-  historiaId           Int
-  historia             Historia   @relation(fields: [historiaId], references: [id])
-  tags                 Personaje_Tag[]
-}
-model Escena {
-  id           Int       @id @default(autoincrement())
-  contenido    String
-  capituloId   Int
-  capitulo     Capitulo  @relation(fields: [capituloId], references: [id_Capitulo])
-  historiaId   Int
-  historia     Historia  @relation(fields: [historiaId], references: [id])
+  historiaId            Int
+  historia              Historia        @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  tags                  Personaje_Tag[]
 }
 
+model Escena {
+  id_Escena     Int       @id @default(autoincrement())
+  titulo_escena String    @default("Escena sin título")
+  orden_escena  Int       @default(0)
+  historiaId    Int
+  capituloId    Int
+  universoId    Int?
+
+  historia      Historia  @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  capitulo      Capitulo  @relation(fields: [capituloId], references: [id_Capitulo], onDelete: Cascade)
+  universo      Universo? @relation(fields: [universoId], references: [id_Universo], onDelete: SetNull)
+}
 
 model Capitulo {
-  id_Capitulo       Int        @id @default(autoincrement())
-  titulo_capitulo   String
-  orden_capitulo    String
-  universoId        Int
-  universo          Universo   @relation(fields: [universoId], references: [id_Universo])
-  historiaId        Int
-  historia          Historia   @relation(fields: [historiaId], references: [id])
-  escenas           Escena[]
+  id_Capitulo     Int        @id @default(autoincrement())
+  titulo_capitulo String
+  historiaId      Int
+  universoId      Int?
+
+  historia        Historia   @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  universo        Universo?  @relation(fields: [universoId], references: [id_Universo], onDelete: SetNull)
+  escenas         Escena[]
 }
 
 model Universo {
-  id_Universo          Int        @id @default(autoincrement())
-  titulo_universo      String
-  descripcion_universo String
-  historiaId           Int
-  historia             Historia   @relation(fields: [historiaId], references: [id])
-  capitulos            Capitulo[]
+  id_Universo     Int        @id @default(autoincrement())
+  titulo_universo String
+  historiaId      Int
+
+  historia        Historia   @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  escenas         Escena[]
+  capitulos       Capitulo[]
 }
 
 model Tags {
-  id_Tag      Int           @id @default(autoincrement())
+  id_Tag      Int             @id @default(autoincrement())
   nombre_tag  String
   historiaId  Int
-  historia    Historia      @relation(fields: [historiaId], references: [id])
+
+  historia    Historia        @relation(fields: [historiaId], references: [id], onDelete: Cascade)
   personajes  Personaje_Tag[]
 }
 
 model Personaje_Tag {
-  id           Int        @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   personajeId  Int
-  personaje    Personaje  @relation(fields: [personajeId], references: [id_Personaje])
   tagId        Int
-  tag          Tags       @relation(fields: [tagId], references: [id_Tag])
+
+  personaje    Personaje @relation(fields: [personajeId], references: [id_Personaje], onDelete: Cascade)
+  tag          Tags      @relation(fields: [tagId], references: [id_Tag], onDelete: Cascade)
 }

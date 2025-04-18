@@ -20,24 +20,29 @@ export const crearPersonaje = async (req, res) => {
   }
 }
 
-// Obtener todos los personajes con sus tags
 export const obtenerPersonajes = async (req, res) => {
   try {
     const personajes = await prisma.personaje.findMany({
       include: {
+        historia: {
+          select: {
+            titulo: true,
+          },
+        },
         tags: {
           include: {
-            tag: true  // Esto incluye el nombre del tag desde la relación intermedia
-          }
-        }
-      }
+            tag: true,
+          },
+        },
+      },
     });
     res.json(personajes);
   } catch (error) {
     console.error("❌ Error al obtener personajes:", error);
-    res.status(500).json({ error: 'Error al obtener personajes' });
+    res.status(500).json({ error: "Error al obtener personajes" });
   }
 };
+
 
 
 // Obtener personaje por ID

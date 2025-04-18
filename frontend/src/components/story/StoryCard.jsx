@@ -28,7 +28,8 @@ export default function StoryCard({ story, onDelete }) {
             <p><strong>Personajes:</strong> {story.personajes?.map(p => p.nombre_personaje).join(", ") || "Ninguno"}</p>
             <p><strong>Universos:</strong> {story.universos?.map(u => u.titulo_universo).join(", ") || "Ninguno"}</p>
             <p><strong>Capítulos:</strong> {story.capitulos?.map(c => c.titulo_capitulo).join(", ") || "Ninguno"}</p>
-            <p><strong>Tags:</strong> {story.tags?.map(t => t.nombre_tag).join(", ") || "Ninguno"}</p>
+            <p><strong>Escenas:</strong> {story.escenas?.map(c => c.titulo_escena).join(", ") || "Ninguno"}</p>
+
           </div>
         </div>
 

@@ -6,6 +6,8 @@ import LoginRegister from "./pages/LoginRegister";
 import Dashboard from "@/pages/Dashboard";
 import Stories from "@/pages/Stories";
 import Universes from "@/pages/Universes";
+import Chapters from "@/pages/Chapters";
+import Scenes from "@/pages/Scenes";
 
 
 
@@ -27,7 +29,11 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/stories" element={<Stories/>} />
           <Route path="/universes" element={<Universes />} />
-        </Route>
+          <Route path="/chapters" element={<Chapters />} />
+          <Route path="/scenes" element={<Scenes />} />
+
+
+          </Route>
       </Routes>
     </BrowserRouter>
   );

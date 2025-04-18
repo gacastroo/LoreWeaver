@@ -32,21 +32,22 @@ CREATE TABLE `Personaje` (
 
 -- CreateTable
 CREATE TABLE `Escena` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `contenido` VARCHAR(191) NOT NULL,
-    `capituloId` INTEGER NOT NULL,
+    `id_Escena` INTEGER NOT NULL AUTO_INCREMENT,
+    `titulo_escena` VARCHAR(191) NOT NULL DEFAULT 'Escena sin título',
+    `orden_escena` INTEGER NOT NULL DEFAULT 0,
     `historiaId` INTEGER NOT NULL,
+    `capituloId` INTEGER NOT NULL,
+    `universoId` INTEGER NULL,
 
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id_Escena`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Capitulo` (
     `id_Capitulo` INTEGER NOT NULL AUTO_INCREMENT,
     `titulo_capitulo` VARCHAR(191) NOT NULL,
-    `orden_capitulo` VARCHAR(191) NOT NULL,
-    `universoId` INTEGER NOT NULL,
     `historiaId` INTEGER NOT NULL,
+    `universoId` INTEGER NULL,
 
     PRIMARY KEY (`id_Capitulo`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -55,7 +56,6 @@ CREATE TABLE `Capitulo` (
 CREATE TABLE `Universo` (
     `id_Universo` INTEGER NOT NULL AUTO_INCREMENT,
     `titulo_universo` VARCHAR(191) NOT NULL,
-    `descripcion_universo` VARCHAR(191) NOT NULL,
     `historiaId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id_Universo`)
@@ -80,28 +80,31 @@ CREATE TABLE `Personaje_Tag` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `Personaje` ADD CONSTRAINT `Personaje_historiaId_fkey` FOREIGN KEY (`historiaId`) REFERENCES `Historia`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Personaje` ADD CONSTRAINT `Personaje_historiaId_fkey` FOREIGN KEY (`historiaId`) REFERENCES `Historia`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Escena` ADD CONSTRAINT `Escena_capituloId_fkey` FOREIGN KEY (`capituloId`) REFERENCES `Capitulo`(`id_Capitulo`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Escena` ADD CONSTRAINT `Escena_historiaId_fkey` FOREIGN KEY (`historiaId`) REFERENCES `Historia`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Escena` ADD CONSTRAINT `Escena_historiaId_fkey` FOREIGN KEY (`historiaId`) REFERENCES `Historia`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Escena` ADD CONSTRAINT `Escena_capituloId_fkey` FOREIGN KEY (`capituloId`) REFERENCES `Capitulo`(`id_Capitulo`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Capitulo` ADD CONSTRAINT `Capitulo_universoId_fkey` FOREIGN KEY (`universoId`) REFERENCES `Universo`(`id_Universo`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Escena` ADD CONSTRAINT `Escena_universoId_fkey` FOREIGN KEY (`universoId`) REFERENCES `Universo`(`id_Universo`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Capitulo` ADD CONSTRAINT `Capitulo_historiaId_fkey` FOREIGN KEY (`historiaId`) REFERENCES `Historia`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Capitulo` ADD CONSTRAINT `Capitulo_historiaId_fkey` FOREIGN KEY (`historiaId`) REFERENCES `Historia`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Universo` ADD CONSTRAINT `Universo_historiaId_fkey` FOREIGN KEY (`historiaId`) REFERENCES `Historia`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Capitulo` ADD CONSTRAINT `Capitulo_universoId_fkey` FOREIGN KEY (`universoId`) REFERENCES `Universo`(`id_Universo`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Tags` ADD CONSTRAINT `Tags_historiaId_fkey` FOREIGN KEY (`historiaId`) REFERENCES `Historia`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Universo` ADD CONSTRAINT `Universo_historiaId_fkey` FOREIGN KEY (`historiaId`) REFERENCES `Historia`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Personaje_Tag` ADD CONSTRAINT `Personaje_Tag_personajeId_fkey` FOREIGN KEY (`personajeId`) REFERENCES `Personaje`(`id_Personaje`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Tags` ADD CONSTRAINT `Tags_historiaId_fkey` FOREIGN KEY (`historiaId`) REFERENCES `Historia`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Personaje_Tag` ADD CONSTRAINT `Personaje_Tag_tagId_fkey` FOREIGN KEY (`tagId`) REFERENCES `Tags`(`id_Tag`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Personaje_Tag` ADD CONSTRAINT `Personaje_Tag_personajeId_fkey` FOREIGN KEY (`personajeId`) REFERENCES `Personaje`(`id_Personaje`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Personaje_Tag` ADD CONSTRAINT `Personaje_Tag_tagId_fkey` FOREIGN KEY (`tagId`) REFERENCES `Tags`(`id_Tag`) ON DELETE CASCADE ON UPDATE CASCADE;
