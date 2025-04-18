@@ -1,4 +1,4 @@
-import prisma from '../prisma.js'
+import prisma from '../lib/prisma.js'
 
 // Crear personaje
 export const crearPersonaje = async (req, res) => {

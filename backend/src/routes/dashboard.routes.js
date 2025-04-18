@@ -1,24 +1,50 @@
-import express from 'express';
+import express from "express";
+import prisma from "../lib/prisma.js";
+
 const router = express.Router();
 
-router.get('/dashboard', (req, res) => {
-  res.json({
-    stories: 3,
-    characters: 10,
-    chapters: 5,
-    universes: 2,
-    scenes: 12,
-    tags: 8,
-    words: 15000,
-    recentStories: [
-      { title: "The Dark Forest", genre: "Fantasy", updated: "2 days ago" },
-      { title: "City of Dreams", genre: "Sci-Fi", updated: "1 week ago" },
-    ],
-    activity: [
-      { text: "Created Elena Blackwood", time: "2h ago" },
-      { text: "Connected Elena ↔ Marcus", time: "3h ago" },
-    ],
-  });
+router.get("/dashboard", async (req, res) => {
+  try {
+    const stories = await prisma.historia.count();
+    const characters = await prisma.personaje.count();
+    const chapters = await prisma.capitulo.count();
+    const scenes = await prisma.escena.count();
+    const universes = await prisma.universo.count();
+    const tags = await prisma.tags.count();
+
+    const recentStories = await prisma.historia.findMany({
+      take: 3,
+      orderBy: { updatedAt: "desc" },
+      select: {
+        titulo: true,
+        updatedAt: true
+      },
+    });
+
+    res.json({
+      stories,
+      characters,
+      chapters,
+      scenes,
+      universes,
+      tags,
+      words: 0, // Solo si tienes un campo tipo wordCount puedes calcularlo
+
+      recentStories: recentStories.map((h) => ({
+        title: h.titulo,
+        genre: "Desconocido",
+        updated: new Date(h.updatedAt).toLocaleDateString("es-ES", {
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        })
+      })),
+      activity: [], // Por ahora vacío
+    });
+  } catch (err) {
+    console.error("Error al cargar dashboard:", err);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
 });
 
 export default router;

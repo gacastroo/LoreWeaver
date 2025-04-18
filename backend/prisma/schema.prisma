@@ -17,14 +17,19 @@ model Usuario {
 }
 
 model Historia {
-  id         Int         @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   titulo     String
+  createdAt  DateTime @default(now())        // ✅ Este campo debe estar
+  updatedAt  DateTime @updatedAt             // ✅ Este también
   personajes Personaje[]
   capitulos  Capitulo[]
   escenas    Escena[]
   universos  Universo[]
   tags       Tags[]
 }
+
+
+
 
 model Personaje {
   id_Personaje         Int        @id @default(autoincrement())

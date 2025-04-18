@@ -1,4 +1,4 @@
-import prisma from '../prisma.js'
+import prisma from '../lib/prisma.js'
 
 // Crear historia
 export const crearHistoria = async (req, res) => {

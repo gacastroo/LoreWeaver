@@ -16,7 +16,7 @@ export default function RecentStories({ stories }) {
             <div>
               <p className="font-medium text-neutral-800">{story.title}</p>
               <p className="text-sm text-neutral-500">
-                {story.genre} • Last edited {story.updated}
+                {story.genre} • Última edición {story.updated}
               </p>
             </div>
             <OpenButton onClick={() => navigate(`/historia/${story.id}`)} label="Abrir" />

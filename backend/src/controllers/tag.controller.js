@@ -1,4 +1,4 @@
-import prisma from '../prisma.js'
+import prisma from '../lib/prisma.js'
 
 // Crear un nuevo tag vinculado a una historia
 export const crearTag = async (req, res) => {

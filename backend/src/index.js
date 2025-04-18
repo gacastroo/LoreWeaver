@@ -17,7 +17,7 @@ app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/personajes', personajeRoutes);
 app.use('/api/historias', historiaRoutes);
 app.use('/api/tags', tagRoutes);
-app.use('/api', dashboardRoutes); // 👈 Esto ya funciona correctamente
+app.use('/api', dashboardRoutes); 
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
