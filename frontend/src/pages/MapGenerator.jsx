@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+// src/pages/MapGenerator.jsx
+import { useRef, useState, useEffect } from "react";
 import cytoscape from "cytoscape";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -24,6 +25,7 @@ export default function MapGenerator() {
   });
   const [elementosOriginales, setElementosOriginales] = useState([]);
   const [error, setError] = useState("");
+  const [mostrarExportar, setMostrarExportar] = useState(false);
 
   const fetchMapa = async () => {
     setError("");
@@ -38,16 +40,27 @@ export default function MapGenerator() {
   };
 
   const renderizarMapa = (datos) => {
+    const visibles = new Set();
     const filtrados = datos.filter((e) => {
       const tipo = e.data?.tipo;
-      return !tipo || filtros[tipo];
+      if (!tipo || filtros[tipo]) {
+        if (e.data?.id) visibles.add(e.data.id);
+        return true;
+      }
+      return false;
+    });
+
+    // Ocultar relaciones que apuntan a nodos ocultos
+    const visiblesFinal = filtrados.filter((e) => {
+      if (!e.data?.source || !e.data?.target) return true;
+      return visibles.has(e.data.source) && visibles.has(e.data.target);
     });
 
     if (cyRef.current) cyRef.current.destroy();
 
     cyRef.current = cytoscape({
       container: containerRef.current,
-      elements: filtrados,
+      elements: visiblesFinal,
       style: [
         {
           selector: "node",
@@ -89,9 +102,9 @@ export default function MapGenerator() {
   };
 
   const generarMapa = async () => {
-    const elements = await fetchMapa();
-    setElementosOriginales(elements);
-    renderizarMapa(elements);
+    const data = await fetchMapa();
+    setElementosOriginales(data);
+    renderizarMapa(data);
   };
 
   const organizarMapa = () => {
@@ -102,7 +115,6 @@ export default function MapGenerator() {
       spacingFactor: 1.5,
       padding: 40,
     }).run();
-
     cyRef.current.animate({
       fit: { eles: cyRef.current.elements(), padding: 80 },
       duration: 600,
@@ -145,28 +157,47 @@ export default function MapGenerator() {
     <div className="min-h-screen bg-gray-900 text-white p-6">
       <h1 className="text-2xl font-bold mb-6">Generador de Mapa Narrativo</h1>
 
-      <div className="flex flex-wrap items-center gap-4 mb-6">
-        <button onClick={generarMapa} className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">
+      {/* Botones */}
+      <div className="flex flex-wrap items-center gap-4 mb-6 relative">
+        <button
+          onClick={generarMapa}
+          className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600"
+        >
           Generar Mapa
         </button>
-        <button onClick={organizarMapa} className="bg-slate-600 px-4 py-2 rounded hover:bg-slate-500">
+        <button
+          onClick={organizarMapa}
+          className="bg-slate-600 px-4 py-2 rounded hover:bg-slate-500"
+        >
           Organizar Mapa
         </button>
-        <button onClick={exportarPNG} className="bg-green-600 px-4 py-2 rounded hover:bg-green-500">
-          Exportar PNG
-        </button>
-        <button onClick={exportarPDF} className="bg-rose-600 px-4 py-2 rounded hover:bg-rose-500">
-          Exportar PDF
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => setMostrarExportar((prev) => !prev)}
+            className="bg-rose-600 px-4 py-2 rounded hover:bg-rose-500"
+          >
+            Exportar
+          </button>
+          {mostrarExportar && (
+            <div className="absolute z-10 mt-2 bg-gray-800 border border-gray-700 rounded shadow text-sm">
+              <button onClick={exportarPNG} className="block w-full px-4 py-2 text-left hover:bg-gray-700">
+                Exportar PNG
+              </button>
+              <button onClick={exportarPDF} className="block w-full px-4 py-2 text-left hover:bg-gray-700">
+                Exportar PDF
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Filtros */}
       <div className="flex flex-wrap gap-4 mb-4">
-        {Object.keys(filtros).map((tipo) => (
+        {Object.entries(filtros).map(([tipo, activo]) => (
           <label key={tipo} className="flex items-center gap-2 text-sm capitalize">
             <input
               type="checkbox"
-              checked={filtros[tipo]}
+              checked={activo}
               onChange={() => cambiarFiltro(tipo)}
               className="accent-indigo-500"
             />
@@ -183,7 +214,7 @@ export default function MapGenerator() {
         className="bg-gray-800 rounded shadow"
       />
 
-      {/* Leyenda horizontal */}
+      {/* Leyenda */}
       <div className="mt-6 text-sm">
         <h3 className="font-semibold mb-2">Leyenda:</h3>
         <div className="flex flex-wrap gap-4">
