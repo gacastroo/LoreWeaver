@@ -13,6 +13,8 @@ model Usuario {
   password   String
   nombre     String
   createdAt  DateTime @default(now())
+  historias  Historia[]
+
 }
 
 model Historia {
@@ -20,7 +22,8 @@ model Historia {
   titulo     String
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-
+  usuarioId  Int
+  usuario    Usuario   @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
   personajes Personaje[]
   capitulos  Capitulo[]
   escenas    Escena[]

@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
   // === Crear usuario admin ===
   const hashedPassword = await bcrypt.hash('tichi6533', 10);
-  await prisma.usuario.upsert({
+  const usuario = await prisma.usuario.upsert({
     where: { email: 'guillermoandca@gmail.com' },
     update: {},
     create: {
@@ -17,9 +17,9 @@ async function main() {
   });
 
   // === Historias ===
-  const carrie = await prisma.historia.create({ data: { titulo: 'Carrie' } });
-  const juegos = await prisma.historia.create({ data: { titulo: 'Los Juegos del Hambre' } });
-  const speak = await prisma.historia.create({ data: { titulo: 'Speak' } });
+  const carrie = await prisma.historia.create({ data: { titulo: 'Carrie', usuarioId: usuario.id_usuario } });
+  const juegos = await prisma.historia.create({ data: { titulo: 'Los Juegos del Hambre', usuarioId: usuario.id_usuario } });
+  const speak = await prisma.historia.create({ data: { titulo: 'Speak', usuarioId: usuario.id_usuario } });
 
   // === Universos ===
   const uniCarrie = await prisma.universo.create({ data: { titulo_universo: 'Chamberlain High', historiaId: carrie.id } });
@@ -71,7 +71,7 @@ async function main() {
     ]
   });
 
-  console.log("✅ Base de datos inicializada.");
+  console.log("✅ Base de datos inicializada con historias y relaciones asociadas al usuario.");
 }
 
 main()

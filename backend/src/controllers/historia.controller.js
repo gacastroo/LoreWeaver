@@ -2,34 +2,40 @@ import prisma from '../lib/prisma.js'
 
 // Crear historia
 export const crearHistoria = async (req, res) => {
-  const { titulo } = req.body
+  const { titulo } = req.body;
+  const usuarioId = req.usuario?.id; // esto viene del token verificado
+
   try {
     const historia = await prisma.historia.create({
-      data: { titulo }
-    })
-    res.status(201).json(historia)
+      data: {
+        titulo,
+        usuario: { connect: { id_usuario: usuarioId } },
+      },
+    });
+    res.status(201).json(historia);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear historia' })
+    console.error("❌ Error al crear historia:", error);
+    res.status(500).json({ error: "Error al crear historia" });
   }
-}
+};
+
 
 // Obtener todas las historias
 export const obtenerHistorias = async (req, res) => {
+  const usuarioId = req.usuario?.id;
+
   try {
     const historias = await prisma.historia.findMany({
-      include: {
-        personajes: true,
-        capitulos: true,
-        escenas: true,
-        universos: true,
-        tags: true
-      }
-    })
-    res.json(historias)
+      where: { usuarioId },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(historias);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener historias' })
+    console.error("❌ Error al obtener historias:", error);
+    res.status(500).json({ error: "Error al obtener historias" });
   }
-}
+};
+
 
 // Obtener una historia por ID
 export const obtenerHistoria = async (req, res) => {

@@ -1,22 +1,22 @@
-import express from 'express'
+import express from "express";
 import {
-  crearPersonaje,
   obtenerPersonajes,
-  obtenerPersonaje,
+  crearPersonaje,
   actualizarPersonaje,
   eliminarPersonaje,
-  asignarTagAPersonaje
-} from '../controllers/personaje.controller.js'
-import { verificarToken } from '../middlewares/auth.js'
+  asignarTagAPersonaje,
+} from "../controllers/personaje.controller.js";
+import { verificarToken } from "../middlewares/auth.js";
 
-const router = express.Router()
+const router = express.Router();
 
-// Rutas protegidas
-router.post('/', verificarToken, crearPersonaje)
-router.get('/', verificarToken, obtenerPersonajes)
-router.get('/:id', verificarToken, obtenerPersonaje)
-router.put('/:id', verificarToken, actualizarPersonaje)
-router.delete('/:id', verificarToken, eliminarPersonaje)
-router.post('/agregar-tag', verificarToken, asignarTagAPersonaje);
+router.use(verificarToken);
 
-export default router
+router.get("/", obtenerPersonajes);
+router.post("/", crearPersonaje);
+router.put("/:id", actualizarPersonaje);
+router.get("/:id", obtenerPersonajes);
+router.delete("/:id", eliminarPersonaje);
+router.post("/asignar-tag", asignarTagAPersonaje);
+
+export default router;

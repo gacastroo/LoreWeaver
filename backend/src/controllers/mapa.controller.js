@@ -1,19 +1,16 @@
 import prisma from '../lib/prisma.js';
 
 export const obtenerDatosMapa = async (req, res) => {
+  const usuarioId = req.usuario.id;
+
   try {
     const historias = await prisma.historia.findMany({
+      where: { usuarioId },
       include: {
-        capitulos: {
-          include: {
-            escenas: true,
-          },
-        },
+        capitulos: { include: { escenas: true } },
         personajes: {
           include: {
-            tags: {
-              include: { tag: true },
-            },
+            tags: { include: { tag: true } },
           },
         },
         tags: true,
@@ -24,76 +21,40 @@ export const obtenerDatosMapa = async (req, res) => {
 
     for (const historia of historias) {
       const historiaId = `h-${historia.id}`;
-      elements.push({
-        data: {
-          id: historiaId,
-          label: historia.titulo,
-          tipo: "historia",
-        },
-      });
+      elements.push({ data: { id: historiaId, label: historia.titulo, tipo: "historia" } });
 
       for (const capitulo of historia.capitulos) {
-        const capituloId = `c-${capitulo.id_Capitulo}`;
-        elements.push({
-          data: {
-            id: capituloId,
-            label: capitulo.titulo_capitulo,
-            tipo: "capitulo",
-          },
-        });
-        elements.push({ data: { source: historiaId, target: capituloId } });
+        const capId = `c-${capitulo.id_Capitulo}`;
+        elements.push({ data: { id: capId, label: capitulo.titulo_capitulo, tipo: "capitulo" } });
+        elements.push({ data: { source: historiaId, target: capId } });
 
         for (const escena of capitulo.escenas) {
-          const escenaId = `e-${escena.id_Escena}`;
-          elements.push({
-            data: {
-              id: escenaId,
-              label: escena.titulo_escena,
-              tipo: "escena",
-            },
-          });
-          elements.push({ data: { source: capituloId, target: escenaId } });
+          const escId = `e-${escena.id_Escena}`;
+          elements.push({ data: { id: escId, label: escena.titulo_escena, tipo: "escena" } });
+          elements.push({ data: { source: capId, target: escId } });
         }
       }
 
       for (const personaje of historia.personajes) {
-        const personajeId = `p-${personaje.id_Personaje}`;
-        elements.push({
-          data: {
-            id: personajeId,
-            label: personaje.nombre_personaje,
-            tipo: "personaje",
-          },
-        });
-        elements.push({ data: { source: historiaId, target: personajeId } });
+        const perId = `p-${personaje.id_Personaje}`;
+        elements.push({ data: { id: perId, label: personaje.nombre_personaje, tipo: "personaje" } });
+        elements.push({ data: { source: historiaId, target: perId } });
 
         for (const pt of personaje.tags) {
           if (pt.tag) {
             const tagId = `t-${pt.tag.id_Tag}`;
-            if (!elements.some((e) => e.data.id === tagId)) {
-              elements.push({
-                data: {
-                  id: tagId,
-                  label: `#${pt.tag.nombre_tag}`,
-                  tipo: "tag",
-                },
-              });
+            if (!elements.find(e => e.data.id === tagId)) {
+              elements.push({ data: { id: tagId, label: `#${pt.tag.nombre_tag}`, tipo: "tag" } });
             }
-            elements.push({ data: { source: personajeId, target: tagId } });
+            elements.push({ data: { source: perId, target: tagId } });
           }
         }
       }
 
       for (const tag of historia.tags) {
         const tagId = `t-${tag.id_Tag}`;
-        if (!elements.some((e) => e.data.id === tagId)) {
-          elements.push({
-            data: {
-              id: tagId,
-              label: `#${tag.nombre_tag}`,
-              tipo: "tag",
-            },
-          });
+        if (!elements.find(e => e.data.id === tagId)) {
+          elements.push({ data: { id: tagId, label: `#${tag.nombre_tag}`, tipo: "tag" } });
         }
         elements.push({ data: { source: historiaId, target: tagId } });
       }
