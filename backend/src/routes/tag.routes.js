@@ -3,10 +3,12 @@ import {
   obtenerTags,
   eliminarTag
 } from '../controllers/tag.controller.js';
+import { verificarToken } from '../middlewares/auth.js'
+
 
 const router = express.Router();
 
-router.get('/', obtenerTags);
-router.delete('/:id', eliminarTag);
+router.get('/',verificarToken, obtenerTags);
+router.delete('/:id',verificarToken, eliminarTag);
 
 export default router;
