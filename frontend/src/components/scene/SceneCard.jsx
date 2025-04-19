@@ -11,9 +11,6 @@ export default function SceneCard({ escena, onDelete }) {
     <div className="bg-white border rounded-lg shadow-sm p-4 hover:shadow-md transition flex flex-col justify-between">
       <div>
         <h2 className="font-semibold text-indigo-700 mb-1">{escena.titulo_escena}</h2>
-        <p className="text-sm text-neutral-700 mb-2">
-          <strong>Orden:</strong> {escena.orden_escena}
-        </p>
         <p className="text-sm text-neutral-700">
           <strong>Capítulo:</strong> {escena.capitulo?.titulo_capitulo || "—"}
         </p>

@@ -89,3 +89,21 @@ export const eliminarPersonaje = async (req, res) => {
     res.status(500).json({ error: 'Error al eliminar personaje' })
   }
 }
+
+export const asignarTagAPersonaje = async (req, res) => {
+  const { personajeId, tagId } = req.body;
+
+  try {
+    const relacion = await prisma.personaje_Tag.create({
+      data: {
+        personajeId: parseInt(personajeId),
+        tagId: parseInt(tagId),
+      }
+    });
+    res.status(201).json(relacion);
+  } catch (error) {
+    console.error("❌ Error al asignar tag a personaje:", error);
+    res.status(500).json({ error: "Error al asignar tag" });
+  }
+};
+

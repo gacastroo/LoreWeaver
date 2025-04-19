@@ -8,6 +8,7 @@ import Stories from "@/pages/Stories";
 import Universes from "@/pages/Universes";
 import Chapters from "@/pages/Chapters";
 import Scenes from "@/pages/Scenes";
+import Tags from "@/pages/tags";
 
 
 
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/universes" element={<Universes />} />
           <Route path="/chapters" element={<Chapters />} />
           <Route path="/scenes" element={<Scenes />} />
+          <Route path="/tags" element={<Tags />} />
 
 
           </Route>

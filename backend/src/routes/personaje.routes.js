@@ -4,7 +4,8 @@ import {
   obtenerPersonajes,
   obtenerPersonaje,
   actualizarPersonaje,
-  eliminarPersonaje
+  eliminarPersonaje,
+  asignarTagAPersonaje
 } from '../controllers/personaje.controller.js'
 import { verificarToken } from '../middlewares/auth.js'
 
@@ -16,5 +17,6 @@ router.get('/', verificarToken, obtenerPersonajes)
 router.get('/:id', verificarToken, obtenerPersonaje)
 router.put('/:id', verificarToken, actualizarPersonaje)
 router.delete('/:id', verificarToken, eliminarPersonaje)
+router.post('/agregar-tag', verificarToken, asignarTagAPersonaje);
 
 export default router
