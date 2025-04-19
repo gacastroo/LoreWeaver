@@ -10,36 +10,33 @@ import Chapters from "@/pages/Chapters";
 import Scenes from "@/pages/Scenes";
 import Tags from "@/pages/tags";
 import MapGenerator from "@/pages/MapGenerator";
-
-
-
-
+import RutaPrivada from "@/components/auth/RutaPrivada";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Sin sidebar */}
+        {/* Público */}
         <Route path="/" element={<LoginRegister />} />
 
-        {/* Con sidebar (rutas protegidas) */}
+        {/* Protegidas con sidebar */}
         <Route
           element={
+            <RutaPrivada>
               <Inicio />
+            </RutaPrivada>
           }
         >
           <Route path="/inicio" element={<LogoScreen />} />
-          <Route path="/characters" element={<Characters />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/stories" element={<Stories/>} />
+          <Route path="/stories" element={<Stories />} />
+          <Route path="/characters" element={<Characters />} />
           <Route path="/universes" element={<Universes />} />
           <Route path="/chapters" element={<Chapters />} />
           <Route path="/scenes" element={<Scenes />} />
           <Route path="/tags" element={<Tags />} />
           <Route path="/map-generator" element={<MapGenerator />} />
-
-
-          </Route>
+        </Route>
       </Routes>
     </BrowserRouter>
   );

@@ -1,9 +1,11 @@
 import express from "express";
 import prisma from "../lib/prisma.js";
+import { verificarToken } from '../middlewares/auth.js';
+
 
 const router = express.Router();
 
-router.get("/dashboard", async (req, res) => {
+router.get("/dashboard",verificarToken,  async (req, res) => {
   try {
     const stories = await prisma.historia.count();
     const characters = await prisma.personaje.count();
