@@ -1,6 +1,8 @@
+// src/pages/Scenes.jsx
 import { useEffect, useState } from "react";
 import API from "@/services/api";
 import AddButton from "@/components/ui/button/AddButton";
+import SceneCard from "@/components/scene/SceneCard";
 
 export default function Scenes() {
   const [escenas, setEscenas] = useState([]);
@@ -33,28 +35,22 @@ export default function Scenes() {
         {escenas.length === 0 ? (
           <p className="text-neutral-500">No hay escenas registradas.</p>
         ) : (
-          escenas.map((escena) => (
-            <div
-              key={escena.id_Escena}
-              className="bg-white border rounded-lg shadow-sm p-4 hover:shadow-md transition"
-            >
-              <h2 className="font-semibold text-indigo-700 mb-1">{escena.titulo_escena}</h2>
-              <p className="text-sm text-neutral-700 mb-2">
-                <strong>Orden:</strong> {escena.orden_escena}
-              </p>
-              <p className="text-sm text-neutral-700">
-                <strong>Capítulo:</strong> {escena.capitulo?.titulo_capitulo || "—"}
-              </p>
-              <p className="text-sm text-neutral-700">
-                <strong>Historia:</strong>{" "}
-                {escena.capitulo?.historia?.titulo || escena.historia?.titulo || "—"}
-              </p>
-              <p className="text-sm text-neutral-700">
-                <strong>Universo:</strong>{" "}
-                {escena.universo?.titulo_universo || "No asignado"}
-              </p>
-            </div>
-          ))
+            escenas.map((escena) => (
+                <SceneCard
+                  key={escena.id_Escena}
+                  escena={escena}
+                  onDelete={async (id) => {
+                    try {
+                      await API.delete(`/escenas/${id}`);
+                      setEscenas((prev) => prev.filter((e) => e.id_Escena !== id));
+                      console.log("✅ Escena eliminada:", id);
+                    } catch (error) {
+                      console.error("❌ Error al eliminar escena:", error);
+                    }
+                  }}
+                />
+              ))
+              
         )}
       </div>
     </div>
