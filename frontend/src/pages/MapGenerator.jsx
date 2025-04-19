@@ -1,8 +1,6 @@
-// src/pages/MapGenerator.jsx
 import { useRef, useState, useEffect } from "react";
 import cytoscape from "cytoscape";
 import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import API from "@/services/api";
 
 const colores = {
@@ -25,7 +23,6 @@ export default function MapGenerator() {
   });
   const [elementosOriginales, setElementosOriginales] = useState([]);
   const [error, setError] = useState("");
-  const [mostrarExportar, setMostrarExportar] = useState(false);
 
   const fetchMapa = async () => {
     setError("");
@@ -41,7 +38,7 @@ export default function MapGenerator() {
 
   const renderizarMapa = (datos) => {
     const visibles = new Set();
-    const filtrados = datos.filter((e) => {
+    const nodosVisibles = datos.filter((e) => {
       const tipo = e.data?.tipo;
       if (!tipo || filtros[tipo]) {
         if (e.data?.id) visibles.add(e.data.id);
@@ -50,8 +47,7 @@ export default function MapGenerator() {
       return false;
     });
 
-    // Ocultar relaciones que apuntan a nodos ocultos
-    const visiblesFinal = filtrados.filter((e) => {
+    const relacionesVisibles = nodosVisibles.filter((e) => {
       if (!e.data?.source || !e.data?.target) return true;
       return visibles.has(e.data.source) && visibles.has(e.data.target);
     });
@@ -60,17 +56,19 @@ export default function MapGenerator() {
 
     cyRef.current = cytoscape({
       container: containerRef.current,
-      elements: visiblesFinal,
+      elements: relacionesVisibles,
       style: [
         {
           selector: "node",
           style: {
             label: "data(label)",
-            shape: "rectangle",
-            width: "label",
-            height: "label",
-            padding: "10px",
-            "font-size": "10px",
+            shape: "round-rectangle",
+            "text-wrap": "wrap",
+            "text-max-width": 160,
+            width: "mapData(label.length, 5, 30, 80, 200)", // no deprecado
+            height: 50,
+            padding: 10,
+            "font-size": 11,
             "text-valign": "center",
             "text-halign": "center",
             color: "#fff",
@@ -95,10 +93,12 @@ export default function MapGenerator() {
         directed: true,
         spacingFactor: 1.5,
         padding: 40,
+        animate: true,
+        animationDuration: 600,
       },
     });
 
-    cyRef.current.fit(null, 80);
+    cyRef.current.fit(cyRef.current.elements(), 80);
   };
 
   const generarMapa = async () => {
@@ -107,41 +107,31 @@ export default function MapGenerator() {
     renderizarMapa(data);
   };
 
-  const organizarMapa = () => {
+  const centrarMapa = () => {
     if (!cyRef.current) return;
-    cyRef.current.layout({
-      name: "breadthfirst",
-      directed: true,
-      spacingFactor: 1.5,
-      padding: 40,
-    }).run();
     cyRef.current.animate({
       fit: { eles: cyRef.current.elements(), padding: 80 },
       duration: 600,
     });
   };
-
+  
   const exportarPNG = async () => {
-    if (!containerRef.current) return;
-    const canvas = await html2canvas(containerRef.current);
+    if (!cyRef.current) return;
+  
+    const pngBlob = cyRef.current.png({
+      full: true,
+      scale: 2,
+      bg: "#0f172a", // fondo uniforme
+    });
+  
     const link = document.createElement("a");
     link.download = "mapa-loreweaver.png";
-    link.href = canvas.toDataURL();
+    link.href = pngBlob;
     link.click();
   };
-
-  const exportarPDF = async () => {
-    if (!containerRef.current) return;
-    const canvas = await html2canvas(containerRef.current);
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF({
-      orientation: "landscape",
-      unit: "pt",
-      format: [canvas.width, canvas.height],
-    });
-    pdf.addImage(imgData, "PNG", 0, 0);
-    pdf.save("mapa-loreweaver.pdf");
-  };
+  
+  
+  
 
   const cambiarFiltro = (tipo) => {
     setFiltros((prev) => ({ ...prev, [tipo]: !prev[tipo] }));
@@ -158,7 +148,7 @@ export default function MapGenerator() {
       <h1 className="text-2xl font-bold mb-6">Generador de Mapa Narrativo</h1>
 
       {/* Botones */}
-      <div className="flex flex-wrap items-center gap-4 mb-6 relative">
+      <div className="flex flex-wrap items-center gap-4 mb-6">
         <button
           onClick={generarMapa}
           className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600"
@@ -166,29 +156,17 @@ export default function MapGenerator() {
           Generar Mapa
         </button>
         <button
-          onClick={organizarMapa}
+          onClick={centrarMapa}
           className="bg-slate-600 px-4 py-2 rounded hover:bg-slate-500"
         >
-          Organizar Mapa
+          Centrar Mapa
         </button>
-        <div className="relative">
-          <button
-            onClick={() => setMostrarExportar((prev) => !prev)}
-            className="bg-rose-600 px-4 py-2 rounded hover:bg-rose-500"
-          >
-            Exportar
-          </button>
-          {mostrarExportar && (
-            <div className="absolute z-10 mt-2 bg-gray-800 border border-gray-700 rounded shadow text-sm">
-              <button onClick={exportarPNG} className="block w-full px-4 py-2 text-left hover:bg-gray-700">
-                Exportar PNG
-              </button>
-              <button onClick={exportarPDF} className="block w-full px-4 py-2 text-left hover:bg-gray-700">
-                Exportar PDF
-              </button>
-            </div>
-          )}
-        </div>
+        <button
+          onClick={exportarPNG}
+          className="bg-rose-600 px-4 py-2 rounded hover:bg-rose-500"
+        >
+          Exportar PNG
+        </button>
       </div>
 
       {/* Filtros */}
@@ -210,9 +188,15 @@ export default function MapGenerator() {
 
       <div
         ref={containerRef}
-        style={{ width: "100%", height: "600px" }}
-        className="bg-gray-800 rounded shadow"
-      />
+        style={{
+            width: "100%",
+            height: "600px",
+            backgroundColor: "#0f172a", // Forzado también aquí
+        }}
+        className="rounded shadow"
+        />
+
+
 
       {/* Leyenda */}
       <div className="mt-6 text-sm">
