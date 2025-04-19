@@ -9,6 +9,9 @@ import Universes from "@/pages/Universes";
 import Chapters from "@/pages/Chapters";
 import Scenes from "@/pages/Scenes";
 import Tags from "@/pages/tags";
+import MapGenerator from "@/pages/MapGenerator";
+
+
 
 
 
@@ -33,6 +36,7 @@ export default function App() {
           <Route path="/chapters" element={<Chapters />} />
           <Route path="/scenes" element={<Scenes />} />
           <Route path="/tags" element={<Tags />} />
+          <Route path="/map-generator" element={<MapGenerator />} />
 
 
           </Route>

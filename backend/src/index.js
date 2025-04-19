@@ -9,6 +9,8 @@ import dashboardRoutes from './routes/dashboard.routes.js';
 import universoRoutes from './routes/universo.routes.js';
 import capituloRoutes from './routes/capitulo.routes.js';
 import escenaRoutes from './routes/escena.routes.js';
+import mapaRoutes from './routes/mapa.routes.js';
+
 
 dotenv.config();
 
@@ -24,6 +26,7 @@ app.use('/api', dashboardRoutes);
 app.use('/api/universos', universoRoutes);
 app.use('/api/capitulos', capituloRoutes);
 app.use('/api/escenas', escenaRoutes);
+app.use('/api/mapa', mapaRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
