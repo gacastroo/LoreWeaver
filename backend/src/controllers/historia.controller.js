@@ -20,14 +20,19 @@ export const crearHistoria = async (req, res) => {
 };
 
 
-// Obtener todas las historias
 export const obtenerHistorias = async (req, res) => {
   const usuarioId = req.usuario?.id;
 
   try {
     const historias = await prisma.historia.findMany({
       where: { usuarioId },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
+      include: {
+        personajes: true,
+        universos: true,
+        capitulos: true,
+        escenas: true,
+      },
     });
     res.json(historias);
   } catch (error) {
@@ -35,6 +40,8 @@ export const obtenerHistorias = async (req, res) => {
     res.status(500).json({ error: "Error al obtener historias" });
   }
 };
+
+
 
 
 // Obtener una historia por ID

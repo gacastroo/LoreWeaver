@@ -36,21 +36,6 @@ export default function Tags() {
         <AddButton onClick={handleAdd} label="Nuevo tag" />
       </div>
 
-      <div className="mb-6 w-64">
-        <Select
-          label="Filtrar por tag"
-          value={filtroTag}
-          onChange={(e) => setFiltroTag(e.target.value)}
-          options={[
-            { value: "", label: "Todos los tags" },
-            ...tags.map((t) => ({
-              value: t.id_Tag.toString(),
-              label: t.nombre_tag,
-            })),
-          ]}
-        />
-      </div>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {filteredTags.map((tag) => (
           <TagCard key={tag.id_Tag} tag={tag} onDelete={fetchTags} />

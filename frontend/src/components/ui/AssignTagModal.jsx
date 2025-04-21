@@ -2,27 +2,42 @@
 
 import { useEffect, useState } from "react"
 import API from "@/services/api"
+import { toast } from "react-hot-toast";
 
-export default function AssignTagModal({ personajeId, onClose, onSuccess }) {
+
+export default function AssignTagModal({ personajeId, onClose, onSuccess, tagsAsignados = [] }) {
   const [tags, setTags] = useState([])
   const [selectedTag, setSelectedTag] = useState("")
 
   useEffect(() => {
     const fetchTags = async () => {
-      const res = await API.get("/tags")
-      setTags(res.data)
+      try {
+        const res = await API.get("/tags")
+        const tagsDisponibles = res.data.filter(
+          (tag) => !tagsAsignados.some((t) => t.id_Tag === tag.id_Tag)
+        )
+        setTags(tagsDisponibles)
+      } catch (error) {
+        console.error("❌ Error al cargar tags:", error)
+      }
     }
     fetchTags()
-  }, [])
+  }, [tagsAsignados])
 
   const handleAssign = async () => {
-    await API.post("/personajes/agregar-tag", {
-      personajeId,
-      tagId: selectedTag,
-    })
-    onSuccess()
-    onClose()
+    try {
+      await API.post("/personajes/agregar-tag", {
+        personajeId,
+        tagId: selectedTag,
+      })
+      toast.success("Etiqueta asignada correctamente ✅")
+      onSuccess()
+      onClose()
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Error al asignar la etiqueta ❌")
+    }
   }
+  
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">

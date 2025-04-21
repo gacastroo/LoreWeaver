@@ -17,6 +17,7 @@ router.post("/", crearPersonaje);
 router.put("/:id", actualizarPersonaje);
 router.get("/:id", obtenerPersonajes);
 router.delete("/:id", eliminarPersonaje);
-router.post("/asignar-tag", asignarTagAPersonaje);
+router.post("/agregar-tag", verificarToken, asignarTagAPersonaje);
+
 
 export default router;

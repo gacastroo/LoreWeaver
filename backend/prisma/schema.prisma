@@ -23,7 +23,7 @@ model Historia {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   usuarioId  Int
-  usuario    Usuario   @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
+  usuario    Usuario   @relation(fields: [usuarioId], references: [id_usuario])
   personajes Personaje[]
   capitulos  Capitulo[]
   escenas    Escena[]
@@ -36,7 +36,7 @@ model Personaje {
   nombre_personaje      String
   descripcion_personaje String
   historiaId            Int
-  historia              Historia        @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  historia              Historia        @relation(fields: [historiaId], references: [id])
   tags                  Personaje_Tag[]
 }
 
@@ -49,8 +49,8 @@ model Escena {
   universoId    Int?
 
   historia      Historia  @relation(fields: [historiaId], references: [id], onDelete: Cascade)
-  capitulo      Capitulo  @relation(fields: [capituloId], references: [id_Capitulo], onDelete: Cascade)
-  universo      Universo? @relation(fields: [universoId], references: [id_Universo], onDelete: SetNull)
+  capitulo      Capitulo  @relation(fields: [capituloId], references: [id_Capitulo])
+  universo      Universo? @relation(fields: [universoId], references: [id_Universo])
 }
 
 model Capitulo {
@@ -59,8 +59,8 @@ model Capitulo {
   historiaId      Int
   universoId      Int?
 
-  historia        Historia   @relation(fields: [historiaId], references: [id], onDelete: Cascade)
-  universo        Universo?  @relation(fields: [universoId], references: [id_Universo], onDelete: SetNull)
+  historia        Historia   @relation(fields: [historiaId], references: [id])
+  universo        Universo?  @relation(fields: [universoId], references: [id_Universo])
   escenas         Escena[]
 }
 
@@ -69,7 +69,7 @@ model Universo {
   titulo_universo String
   historiaId      Int
 
-  historia        Historia   @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  historia        Historia   @relation(fields: [historiaId], references: [id])
   escenas         Escena[]
   capitulos       Capitulo[]
 }
@@ -79,7 +79,7 @@ model Tags {
   nombre_tag  String
   historiaId  Int
 
-  historia    Historia        @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  historia    Historia        @relation(fields: [historiaId], references: [id])
   personajes  Personaje_Tag[]
 }
 

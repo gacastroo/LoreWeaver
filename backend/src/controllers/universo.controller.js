@@ -32,9 +32,24 @@ export const crearUniverso = async (req, res) => {
   }
 };
 
+export const eliminarUniverso = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await prisma.universo.delete({
+      where: { id_Universo: parseInt(id) }
+    });
+
+    res.json({ message: "Universo eliminado correctamente" });
+  } catch (error) {
+    console.error("❌ Error al eliminar universo:", error);
+    res.status(500).json({ error: "Error al eliminar universo" });
+  }
+};
+
 // 🔹 Obtener universos por usuario (según sus historias)
 export const obtenerUniversos = async (req, res) => {
-  const userId = getUserIdFromToken(req);
+  const userId = req.usuario?.id; 
 
   try {
     const universos = await prisma.universo.findMany({
@@ -56,3 +71,4 @@ export const obtenerUniversos = async (req, res) => {
     res.status(500).json({ error: "Error al obtener universos" });
   }
 };
+

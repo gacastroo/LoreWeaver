@@ -1,7 +1,6 @@
 import { useState } from "react";
 import DeleteButton from "@/components/ui/button/DeleteButton";
 import DeleteConfirmModal from "@/components/ui/deletemodal";
-import ViewButton from "@/components/ui/button/ViewButton";
 
 export default function UniverseCard({ universo, historias, onDelete }) {
   const [showModal, setShowModal] = useState(false);
@@ -30,12 +29,13 @@ export default function UniverseCard({ universo, historias, onDelete }) {
 
         {showModal && (
           <DeleteConfirmModal
-            onCancel={() => setShowModal(false)}
-            onConfirm={() => {
-              onDelete();
-              setShowModal(false);
-            }}
+          onCancel={() => setShowModal(false)}
+          onConfirm={() => {
+            onDelete(universo.id_Universo);
+            setShowModal(false);
+          }}
           />
+
         )}
       </div>
     </div>

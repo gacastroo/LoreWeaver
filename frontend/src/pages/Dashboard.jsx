@@ -5,27 +5,9 @@ import QuickStats from "@/components/dashboard/QuickStats";
 import RecentActivity from "@/components/dashboard/RecentActivity";
 import RecentStories from "@/components/dashboard/RecentStories";
 
-// Mock en caso de fallo en la API
-const mockData = {
-  stories: 3,
-  characters: 24,
-  chapters: 12,
-  universes: 2,
-  scenes: 36,
-  tags: 18,
-  words: 24568,
-  recentStories: [
-    { title: "La Sombra del Norte", genre: "Fantasía", updated: "hace 1 día" },
-    { title: "Líneas del Destino", genre: "Sci-Fi", updated: "hace 3 días" }
-  ],
-  activity: [
-    { text: "Nuevo personaje creado: Elion", time: "Hace 2 horas" },
-    { text: "Capítulo finalizado: El Despertar", time: "Hace 5 horas" }
-  ]
-};
-
 export default function Dashboard() {
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -33,14 +15,17 @@ export default function Dashboard() {
         const res = await API.get("/dashboard");
         setData(res.data);
       } catch (err) {
-        console.error("Error al cargar dashboard:", err);
-        setData(mockData); // fallback
+        console.error("❌ Error al cargar dashboard:", err);
+        setData(null); // sin fallback
+      } finally {
+        setLoading(false);
       }
     };
     fetchDashboard();
   }, []);
 
-  if (!data) return <p className="p-6">Cargando...</p>;
+  if (loading) return <p className="p-6 text-neutral-500">Cargando...</p>;
+  if (!data) return <p className="p-6 text-red-500">Error al cargar los datos del dashboard.</p>;
 
   return (
     <div className="p-8 bg-neutral-100 space-y-8">
@@ -52,7 +37,7 @@ export default function Dashboard() {
         <SummaryCard title="Universes" value={data.universes} />
       </div>
 
-      {/* Actividad y estadísticas solo si hay datos */}
+      {/* Actividad y estadísticas */}
       <div className="grid md:grid-cols-3 gap-6">
         {data.activity?.length > 0 ? (
           <RecentActivity activity={data.activity} />
@@ -72,7 +57,13 @@ export default function Dashboard() {
       </div>
 
       {/* Historias recientes */}
-      <RecentStories stories={data.recentStories} />
+      {data.recentStories?.length > 0 ? (
+        <RecentStories stories={data.recentStories} />
+      ) : (
+        <div className="p-4 bg-white rounded border text-sm text-neutral-400">
+          No hay historias recientes aún.
+        </div>
+      )}
     </div>
   );
 }

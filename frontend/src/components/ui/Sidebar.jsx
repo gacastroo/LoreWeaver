@@ -56,27 +56,7 @@ export default function Sidebar() {
               <NavLink to="/idea-generator" className="nav-link"><Lightbulb className="icon" /> Generador de Ideas</NavLink>
             </nav>
           </div>
-
-          {/* Historias dinámicas */}
-          <div className="border-t mt-4 pt-4">
-            <h2 className="text-xs uppercase text-gray-400 px-2 mb-2">Tus historias</h2>
-            <nav className="flex flex-col gap-1 text-sm">
-              {userStories.length > 0 ? (
-                userStories.map((story) => (
-                  <NavLink key={story.id} to={`/historia/${story.id}`} className="nav-link">
-                    <BookOpen className="icon" /> {story.titulo}
-                  </NavLink>
-                ))
-              ) : (
-                <span className="text-xs text-neutral-400 px-2">No hay historias</span>
-              )}
-              <NavLink to="/new-story" className="nav-link text-indigo-600 hover:text-indigo-800">
-                <Plus className="icon" /> Nueva historia
-              </NavLink>
-            </nav>
           </div>
-        </div>
-
         {/* Botón de cerrar sesión*/}
         <button
           onClick={() => setShowLogoutModal(true)}

@@ -112,7 +112,6 @@ export const eliminarPersonaje = async (req, res) => {
   }
 };
 
-// 🔹 Asignar un tag a un personaje (verifica que el personaje sea del usuario)
 export const asignarTagAPersonaje = async (req, res) => {
   const userId = getUserIdFromToken(req);
   const { personajeId, tagId } = req.body;
@@ -121,9 +120,7 @@ export const asignarTagAPersonaje = async (req, res) => {
     const personaje = await prisma.personaje.findFirst({
       where: {
         id_Personaje: parseInt(personajeId),
-        historia: {
-          usuarioId: userId,
-        },
+        historia: { usuarioId: userId },
       },
     });
 
@@ -139,6 +136,19 @@ export const asignarTagAPersonaje = async (req, res) => {
       return res.status(404).json({ error: "Tag no encontrado" });
     }
 
+    // ✅ Validar si ya existe la relación
+    const yaExiste = await prisma.personaje_Tag.findFirst({
+      where: {
+        personajeId: personaje.id_Personaje,
+        tagId: tag.id_Tag,
+      },
+    });
+
+    if (yaExiste) {
+      return res.status(400).json({ error: "Este personaje ya tiene este tag asignado" });
+    }
+
+    // Crear relación personaje-tag
     await prisma.personaje_Tag.create({
       data: {
         personajeId: personaje.id_Personaje,
@@ -146,10 +156,12 @@ export const asignarTagAPersonaje = async (req, res) => {
       },
     });
 
-    res.json({ message: "Tag asignado correctamente" });
+    res.json({ message: "✅ Tag asignado correctamente" });
   } catch (error) {
     console.error("❌ Error al asignar tag:", error);
     res.status(500).json({ error: "Error al asignar tag al personaje" });
   }
 };
+
+
 

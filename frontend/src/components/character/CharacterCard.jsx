@@ -71,6 +71,7 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
       {showAssignModal && (
         <AssignTagModal
           personajeId={character.id_Personaje}
+          tagsAsignados={character.tags.map((pt) => pt.tag)}
           onClose={() => setShowAssignModal(false)}
           onSuccess={() => window.location.reload()}
         />

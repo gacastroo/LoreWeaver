@@ -34,6 +34,17 @@ export default function Universes() {
     console.log("Abrir modal para nuevo universo");
   };
 
+  const handleDeleteUniverse = async (id) => {
+    if (!id) return console.error("❌ ID de universo no válido:", id);
+    try {
+      await API.delete(`/universos/${id}`);
+      setUniversos((prev) => prev.filter((u) => u.id_Universo !== id));
+    } catch (error) {
+      console.error("❌ Error al eliminar universo:", error);
+    }
+  };
+  
+
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
@@ -58,7 +69,13 @@ export default function Universes() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {universosFiltrados.map((uni) => (
-          <UniverseCard key={uni.id_Universo} universo={uni} historias={historias} />
+       <UniverseCard
+       key={uni.id_Universo}
+       universo={uni}
+       historias={historias}
+       onDelete={handleDeleteUniverse}
+      />
+     
         ))}
       </div>
     </div>
