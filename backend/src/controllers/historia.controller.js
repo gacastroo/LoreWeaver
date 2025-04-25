@@ -67,18 +67,25 @@ export const obtenerHistoria = async (req, res) => {
 
 // Actualizar historia
 export const actualizarHistoria = async (req, res) => {
-  const { id } = req.params
-  const { titulo } = req.body
+  const { id } = req.params;
+  const { titulo, contenido } = req.body;
+
   try {
     const historia = await prisma.historia.update({
       where: { id: parseInt(id) },
-      data: { titulo }
-    })
-    res.json(historia)
+      data: {
+        ...(titulo && { titulo }),
+        ...(contenido && { contenido }),
+      },
+    });
+
+    res.json(historia);
   } catch (error) {
-    res.status(500).json({ error: 'Error al actualizar historia' })
+    console.error("❌ Error al actualizar historia:", error);
+    res.status(500).json({ error: "Error al actualizar historia" });
   }
-}
+};
+
 
 // Eliminar historia
 export const eliminarHistoria = async (req, res) => {

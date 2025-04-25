@@ -1,43 +1,48 @@
-import { useEffect, useState } from "react";
-import StoryCard from "@/components/story/StoryCard";
-import AddButton from "@/components/ui/button/AddButton";
-import API from "@/services/api"; // Axios configurado con token
+import { useEffect, useState } from "react"
+import StoryCard from "@/components/story/StoryCard"
+import AddButton from "@/components/ui/button/AddButton"
+import API from "@/services/api"
+import CreateStoryModal from "@/components/ui/CreateStoryModal" // 👈 IMPORTA EL MODAL
 
 export default function Historias() {
-  const [historias, setHistorias] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [historias, setHistorias] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [showModal, setShowModal] = useState(false) // 👈 CONTROLAMOS EL MODAL
 
   useEffect(() => {
     const fetchHistorias = async () => {
       try {
-        const res = await API.get("/historias"); // token incluido automáticamente
-        setHistorias(res.data);
+        const res = await API.get("/historias")
+        setHistorias(res.data)
       } catch (error) {
-        console.error("❌ Error al cargar historias:", error);
-        // Puedes manejar redirección al login si error.response.status === 401
+        console.error("❌ Error al cargar historias:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchHistorias();
-  }, []);
+    fetchHistorias()
+  }, [])
 
   const handleEliminar = async (id) => {
     try {
-      await API.delete(`/historias/${id}`);
-      setHistorias(prev => prev.filter(h => h.id !== id));
+      await API.delete(`/historias/${id}`)
+      setHistorias(prev => prev.filter(h => h.id !== id))
     } catch (error) {
-      console.error("❌ Error al eliminar historia:", error);
+      console.error("❌ Error al eliminar historia:", error)
     }
-  };
+  }
 
   const handleAdd = () => {
-    console.log("📌 Abrir modal para nueva historia");
-  };
+    setShowModal(true) // 👈 ABRE EL MODAL
+  }
+
+  const handleCrearHistoria = (nuevaHistoria) => {
+    setHistorias(prev => [nuevaHistoria, ...prev]) // Añade nueva historia al principio
+  }
 
   if (loading) {
-    return <p className="p-6 text-neutral-500">Cargando historias...</p>;
+    return <p className="p-6 text-neutral-500">Cargando historias...</p>
   }
 
   return (
@@ -46,6 +51,13 @@ export default function Historias() {
         <h1 className="text-2xl font-semibold text-neutral-800">Historias</h1>
         <AddButton onClick={handleAdd} label="Nueva historia" />
       </div>
+
+      {showModal && (
+        <CreateStoryModal
+          onClose={() => setShowModal(false)}
+          onSuccess={handleCrearHistoria}
+        />
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {historias.length > 0 ? (
@@ -57,5 +69,5 @@ export default function Historias() {
         )}
       </div>
     </div>
-  );
+  )
 }
