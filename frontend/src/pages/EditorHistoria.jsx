@@ -48,8 +48,8 @@ export default function EditarHistoria() {
 
   return (
     <div className="p-8 space-y-4">
-      <h1 className="text-2xl font-bold text-neutral-800">{titulo}</h1>
-      <div className="border rounded-md p-4 bg-white shadow">
+      <h1 className="text-2xl font-bold text-black-800">{titulo}</h1>
+      <div className="border rounded-md p-4 bg-black shadow">
         <EditorContent editor={editor} />
       </div>
     </div>

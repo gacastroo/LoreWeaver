@@ -20,7 +20,7 @@ model Usuario {
 model Historia {
   id         Int       @id @default(autoincrement())
   titulo     String
-  contenido  String?   // 👈🏻 Nuevo campo opcional
+  contenido  String?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   usuarioId  Int
