@@ -8,7 +8,6 @@ export default function RecentStories({ stories }) {
     <div className="bg-white p-4 rounded-lg shadow-sm border">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg text-neutral-900 font-semibold">Recent Stories</h2>
-        <OpenButton onClick={() => navigate("/new-story")} label="Nueva historia" />
       </div>
       <div className="space-y-2">
         {stories.map((story, i) => (
