@@ -6,6 +6,10 @@ export const crearCapitulo = async (req, res) => {
   const userId = getUserIdFromToken(req);
   const { titulo_capitulo, historiaId, universoId } = req.body;
 
+  if (!titulo_capitulo || !historiaId) {
+    return res.status(400).json({ error: "El título y la historia son obligatorios." });
+  }
+
   try {
     const historia = await prisma.historia.findFirst({
       where: {

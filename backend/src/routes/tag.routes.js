@@ -4,13 +4,12 @@ import {
   eliminarTag,
   crearTag
 } from '../controllers/tag.controller.js';
-import { verificarToken } from '../middlewares/auth.js'
+import { verifyToken  } from '../middlewares/auth.js'
 
 
 const router = express.Router();
 
-router.get('/',verificarToken, obtenerTags);
-router.delete('/:id',verificarToken, eliminarTag);
-router.post('/', verificarToken, crearTag);
-
+router.get('/',verifyToken , obtenerTags);
+router.delete('/:id',verifyToken , eliminarTag);
+router.post('/', verifyToken , crearTag);
 export default router;

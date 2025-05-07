@@ -1,27 +1,36 @@
 import prisma from "../lib/prisma.js";
 import { getUserIdFromToken } from "../utils/auth.js";
 
-// 🔹 Crear universo si la historia pertenece al usuario
+// 🔹 Crear universo con historia opcional
 export const crearUniverso = async (req, res) => {
   const userId = getUserIdFromToken(req);
-  const { titulo_universo, historiaId } = req.body;
+  const { titulo_universo, descripcion_universo, historiaId } = req.body;
+
+  if (!titulo_universo) {
+    return res.status(400).json({ error: "El título del universo es obligatorio." });
+  }
 
   try {
-    const historia = await prisma.historia.findFirst({
-      where: {
-        id: parseInt(historiaId),
-        usuarioId: userId,
-      },
-    });
+    let historia = null;
 
-    if (!historia) {
-      return res.status(403).json({ error: "No tienes permiso para agregar universos a esta historia." });
+    if (historiaId) {
+      historia = await prisma.historia.findFirst({
+        where: {
+          id: parseInt(historiaId),
+          usuarioId: userId,
+        },
+      });
+
+      if (!historia) {
+        return res.status(403).json({ error: "No tienes permiso para usar esta historia." });
+      }
     }
 
     const universo = await prisma.universo.create({
       data: {
         titulo_universo,
-        historiaId: historia.id,
+        descripcion_universo: descripcion_universo || "",
+        historiaId: historia ? historia.id : null,
       },
     });
 
@@ -32,12 +41,13 @@ export const crearUniverso = async (req, res) => {
   }
 };
 
+// 🔹 Eliminar universo
 export const eliminarUniverso = async (req, res) => {
   const { id } = req.params;
 
   try {
     await prisma.universo.delete({
-      where: { id_Universo: parseInt(id) }
+      where: { id_Universo: parseInt(id) },
     });
 
     res.json({ message: "Universo eliminado correctamente" });
@@ -47,16 +57,17 @@ export const eliminarUniverso = async (req, res) => {
   }
 };
 
-// 🔹 Obtener universos por usuario (según sus historias)
+// 🔹 Obtener todos los universos del usuario (según sus historias)
 export const obtenerUniversos = async (req, res) => {
-  const userId = req.usuario?.id; 
+  const userId = req.usuario?.id;
 
   try {
     const universos = await prisma.universo.findMany({
       where: {
-        historia: {
-          usuarioId: userId,
-        },
+        OR: [
+          { historia: { usuarioId: userId } },
+          { historiaId: null },
+        ],
       },
       include: {
         historia: {
@@ -70,7 +81,9 @@ export const obtenerUniversos = async (req, res) => {
     console.error("❌ Error al obtener universos:", error);
     res.status(500).json({ error: "Error al obtener universos" });
   }
-}
+};
+
+// 🔹 Obtener un universo por ID
 export const obtenerUniversoPorId = async (req, res) => {
   const { id } = req.params;
   const usuarioId = getUserIdFromToken(req);
@@ -79,7 +92,10 @@ export const obtenerUniversoPorId = async (req, res) => {
     const universo = await prisma.universo.findFirst({
       where: {
         id_Universo: parseInt(id),
-        historia: { usuarioId },
+        OR: [
+          { historia: { usuarioId } },
+          { historiaId: null },
+        ],
       },
       include: {
         historia: true,
@@ -95,7 +111,9 @@ export const obtenerUniversoPorId = async (req, res) => {
     console.error("❌ Error al obtener universo:", error);
     res.status(500).json({ error: "Error al obtener universo" });
   }
-}
+};
+
+// 🔹 Actualizar universo
 export const actualizarUniverso = async (req, res) => {
   const usuarioId = getUserIdFromToken(req);
   const { id } = req.params;
@@ -105,7 +123,10 @@ export const actualizarUniverso = async (req, res) => {
     const universo = await prisma.universo.findFirst({
       where: {
         id_Universo: parseInt(id),
-        historia: { usuarioId },
+        OR: [
+          { historia: { usuarioId } },
+          { historiaId: null },
+        ],
       },
     });
 
@@ -127,6 +148,3 @@ export const actualizarUniverso = async (req, res) => {
     res.status(500).json({ error: "Error al actualizar universo" });
   }
 };
-
-
-

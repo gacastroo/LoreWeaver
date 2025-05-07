@@ -29,26 +29,36 @@ export const obtenerEscenas = async (req, res) => {
   }
 };
 
-// 🔹 Crear escena validando relaciones
+// 🔹 Crear escena usando solo capituloId (la historia se deduce)
 export const crearEscena = async (req, res) => {
   const userId = getUserIdFromToken(req);
-  const { titulo_escena, orden_escena, historiaId, capituloId, universoId } = req.body;
+  const { titulo_escena, capituloId, orden_escena, universoId } = req.body;
+
+  if (!titulo_escena || !capituloId) {
+    return res.status(400).json({ error: "Título y capítulo son requeridos." });
+  }
 
   try {
-    const historia = await prisma.historia.findFirst({
-      where: { id: parseInt(historiaId), usuarioId: userId },
+    // Buscar el capítulo y su historia para validar propiedad
+    const capitulo = await prisma.capitulo.findFirst({
+      where: {
+        id_Capitulo: parseInt(capituloId),
+        historia: {
+          usuarioId: userId,
+        },
+      },
     });
 
-    if (!historia) {
-      return res.status(403).json({ error: "No tienes permiso sobre esta historia." });
+    if (!capitulo) {
+      return res.status(403).json({ error: "No tienes permiso sobre este capítulo." });
     }
 
     const escena = await prisma.escena.create({
       data: {
         titulo_escena,
-        orden_escena: parseInt(orden_escena),
-        historiaId: historia.id,
-        capituloId: parseInt(capituloId),
+        orden_escena: orden_escena ? parseInt(orden_escena) : 0,
+        historiaId: capitulo.historiaId,
+        capituloId: capitulo.id_Capitulo,
         universoId: universoId ? parseInt(universoId) : null,
       },
     });
@@ -59,6 +69,7 @@ export const crearEscena = async (req, res) => {
     res.status(500).json({ error: "Error al crear escena" });
   }
 };
+
 
 // 🔹 Actualizar escena
 export const actualizarEscena = async (req, res) => {

@@ -6,14 +6,14 @@ import {
   actualizarHistoria,
   eliminarHistoria
 } from '../controllers/historia.controller.js'
-import { verificarToken } from '../middlewares/auth.js'
+import { verifyToken  } from '../middlewares/auth.js'
 
 const router = express.Router()
 
-router.post('/', verificarToken, crearHistoria)
-router.get('/', verificarToken, obtenerHistorias)
-router.get('/:id', verificarToken, obtenerHistoria)
-router.put('/:id', verificarToken, actualizarHistoria)
-router.delete('/:id', verificarToken, eliminarHistoria)
+router.post('/', verifyToken , crearHistoria)
+router.get('/', verifyToken , obtenerHistorias)
+router.get('/:id', verifyToken , obtenerHistoria)
+router.put('/:id', verifyToken , actualizarHistoria)
+router.delete('/:id', verifyToken , eliminarHistoria)
 
 export default router

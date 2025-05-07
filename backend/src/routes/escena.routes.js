@@ -5,14 +5,14 @@ import {
   actualizarEscena,
   eliminarEscena
 } from '../controllers/escena.controller.js';
-import { verificarToken } from '../middlewares/auth.js';
+import { verifyToken  } from '../middlewares/auth.js';
 
 
 const router = express.Router();
 
-router.get('/',verificarToken, obtenerEscenas);
-router.post('/',verificarToken, crearEscena);
-router.put('/:id',verificarToken, actualizarEscena);
-router.delete('/:id',verificarToken, eliminarEscena);
+router.get('/',verifyToken , obtenerEscenas);
+router.post('/',verifyToken , crearEscena);
+router.put('/:id',verifyToken , actualizarEscena);
+router.delete('/:id',verifyToken , eliminarEscena);
 
 export default router;

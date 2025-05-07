@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import SectionHeader from "@/components/character/SectionHeader";
 import AddButton from "@/components/ui/button/AddButton";
 import CharacterGrid from "@/components/character/CharacterGrid";
+import CharacterForm from "@/components/character/CharacterForm";
 import API from "@/services/api";
 import Select from "@/components/ui/input/Select";
 
 export default function Characters() {
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [mostrarModal, setMostrarModal] = useState(false);
   const [tags, setTags] = useState([]);
   const [filtroTag, setFiltroTag] = useState("");
 
@@ -30,20 +32,20 @@ export default function Characters() {
     fetchTags();
   }, []);
 
-  // 🔹 Cargar personajes (todos)
-  useEffect(() => {
-    const fetchCharacters = async () => {
-      setLoading(true);
-      try {
-        const res = await API.get("/personajes");
-        setCharacters(res.data);
-      } catch (error) {
-        console.error("❌ Error al cargar personajes:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // 🔹 Cargar personajes
+  const fetchCharacters = async () => {
+    setLoading(true);
+    try {
+      const res = await API.get("/personajes");
+      setCharacters(res.data);
+    } catch (error) {
+      console.error("❌ Error al cargar personajes:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchCharacters();
   }, []);
 
@@ -57,7 +59,17 @@ export default function Characters() {
   };
 
   const handleAddCharacter = () => {
-    console.log("🧙 Mostrar modal para crear nuevo personaje");
+    setMostrarModal(true);
+  };
+
+  const handleCerrarModal = () => {
+    setMostrarModal(false);
+  };
+
+  // ✅ Recargar personajes tras crear uno
+  const handlePersonajeCreado = async () => {
+    await fetchCharacters(); // recarga personajes actualizados desde backend
+    setMostrarModal(false);
   };
 
   return (
@@ -91,6 +103,21 @@ export default function Characters() {
         />
       ) : (
         <p className="text-sm text-neutral-500">No hay personajes para este tag.</p>
+      )}
+
+      {/* 🔹 Modal para crear personaje */}
+      {mostrarModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-6 max-w-xl w-full relative shadow-lg">
+            <button
+              onClick={handleCerrarModal}
+              className="absolute top-3 right-4 text-xl text-zinc-400 hover:text-red-500"
+            >
+              ✖
+            </button>
+            <CharacterForm onCharacterCreated={handlePersonajeCreado} />
+          </div>
+        </div>
       )}
     </div>
   );

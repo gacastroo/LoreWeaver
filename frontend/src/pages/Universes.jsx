@@ -1,94 +1,102 @@
-  import { useEffect, useState } from "react";
-  import API from "@/services/api";
-  import UniverseCard from "@/components/universe/UniverseCard";
-  import AddButton from "@/components/ui/button/AddButton";
-  import Select from "@/components/ui/input/Select";
+import { useEffect, useState } from "react";
+import API from "@/services/api";
+import UniverseForm from "@/components/universe/UniverseForm";
+import AddButton from "@/components/ui/button/AddButton";
+import UniverseCard from "@/components/universe/UniverseCard";
 
-  export default function Universes() {
-    const [universos, setUniversos] = useState([]);
-    const [historias, setHistorias] = useState([]);
-    const [filtroHistoria, setFiltroHistoria] = useState("");
+export default function Universes() {
+  const [universos, setUniversos] = useState([]);
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [historias, setHistorias] = useState([]);
 
-    const fetchData = async () => {
-      try {
-        const [uniRes, hisRes] = await Promise.all([
-          API.get("/universos"),
-          API.get("/historias")
-        ]);
-        setUniversos(uniRes.data);
-        setHistorias(hisRes.data);
-      } catch (error) {
-        console.error("❌ Error al cargar universos o historias:", error);
-      }
-    };
+  // 🔄 Cargar universos
+  const fetchUniversos = async () => {
+    setLoading(true);
+    try {
+      const res = await API.get("/universos");
+      setUniversos(res.data);
+    } catch (error) {
+      console.error("❌ Error al obtener universos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    useEffect(() => {
-      fetchData();
-    }, []);
+  // 🔄 Cargar historias (para mostrar nombre en las tarjetas)
+  const fetchHistorias = async () => {
+    try {
+      const res = await API.get("/historias");
+      setHistorias(res.data);
+    } catch (error) {
+      console.error("❌ Error al obtener historias:", error);
+    }
+  };
 
-    const universosFiltrados = filtroHistoria
-      ? universos.filter((u) => u.historiaId === parseInt(filtroHistoria))
-      : universos;
+  useEffect(() => {
+    fetchUniversos();
+    fetchHistorias();
+  }, []);
 
-    const handleAdd = () => {
-      console.log("Abrir modal para nuevo universo");
-    };
+  const handleAgregarUniverso = () => {
+    setMostrarModal(true);
+  };
 
-    const handleUpdate = (universoActualizado) => {
-      setUniversos((prev) =>
-        prev.map((u) =>
-          u.id_Universo === universoActualizado.id_Universo ? universoActualizado : u
-        )
-      );
-    };
-    
+  const handleUniversoCreado = async () => {
+    await fetchUniversos();
+    setMostrarModal(false);
+  };
 
-    const handleDeleteUniverse = async (id) => {
-      if (!id) return console.error("❌ ID de universo no válido:", id);
-      try {
-        await API.delete(`/universos/${id}`);
-        setUniversos((prev) => prev.filter((u) => u.id_Universo !== id));
-      } catch (error) {
-        console.error("❌ Error al eliminar universo:", error);
-      }
-    };
-    
+  const handleCerrarModal = () => {
+    setMostrarModal(false);
+  };
 
-    return (
-      <div className="p-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-semibold text-neutral-800">Universos</h1>
-          <AddButton onClick={handleAdd} label="Nuevo universo" />
-        </div>
+  const handleEliminarUniverso = async (id) => {
+    try {
+      await API.delete(`/universos/${id}`);
+      setUniversos((prev) => prev.filter((u) => u.id_Universo !== id));
+    } catch (error) {
+      console.error("❌ Error al eliminar universo:", error);
+    }
+  };
 
-        <div className="mb-6 w-64">
-          <Select
-            label="Filtrar por historia"
-            value={filtroHistoria}
-            onChange={(e) => setFiltroHistoria(e.target.value)}
-            options={[
-              { value: "", label: "Todas las historias" },
-              ...historias.map((h) => ({
-                value: h.id.toString(),
-                label: h.titulo,
-              })),
-            ]}
-          />
-        </div>
+  return (
+    <div className="flex flex-col h-full w-full bg-neutral-100 px-8 py-6 overflow-auto space-y-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-neutral-700">Universos</h1>
+        <AddButton onClick={handleAgregarUniverso} label="Nuevo universo" />
+      </div>
 
+      {loading ? (
+        <p className="text-sm text-neutral-500">Cargando universos...</p>
+      ) : universos.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {universosFiltrados.map((uni) => (
+          {universos.map((u) => (
             <UniverseCard
-            key={uni.id_Universo}
-            universo={uni}
-            historias={historias}
-            onDelete={handleDeleteUniverse}
-            onUpdate={handleUpdate} // 👈 AGREGA ESTA LÍNEA
-          />
-
-      
+              key={u.id_Universo}
+              universo={u}
+              historias={historias}
+              onDelete={handleEliminarUniverso}
+            />
           ))}
         </div>
-      </div>
-    );
-  }
+      ) : (
+        <p className="text-sm text-neutral-500">No hay universos creados todavía.</p>
+      )}
+
+      {mostrarModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-6 max-w-xl w-full relative shadow-lg">
+            <button
+              onClick={handleCerrarModal}
+              className="absolute top-3 right-4 text-xl text-zinc-400 hover:text-red-500"
+            >
+              ✖
+            </button>
+            <UniverseForm onUniverseCreated={handleUniversoCreado} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

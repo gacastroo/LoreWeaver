@@ -34,11 +34,12 @@ model Historia {
 model Personaje {
   id_Personaje          Int             @id @default(autoincrement())
   nombre_personaje      String
-  descripcion_personaje String
-  historiaId            Int
-  historia              Historia        @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  descripcion_personaje String?      
+  historiaId            Int?         
+  historia              Historia?       @relation(fields: [historiaId], references: [id], onDelete: Cascade)
   tags                  Personaje_Tag[]
 }
+
 
 model Escena {
   id_Escena     Int       @id @default(autoincrement())
@@ -65,16 +66,15 @@ model Capitulo {
 }
 
 model Universo {
-  id_Universo     Int        @id @default(autoincrement())
-  titulo_universo String
-  descripcion_universo String?
-
-  historiaId      Int
-
-  historia        Historia   @relation(fields: [historiaId], references: [id], onDelete: Cascade)
-  escenas         Escena[]
-  capitulos       Capitulo[]
+  id_Universo         Int        @id @default(autoincrement())
+  titulo_universo     String
+  descripcion_universo String?   
+  historiaId          Int?    
+  historia            Historia?     @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  escenas             Escena[]
+  capitulos           Capitulo[]
 }
+
 
 model Tags {
   id_Tag      Int             @id @default(autoincrement())

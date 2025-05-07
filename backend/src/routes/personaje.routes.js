@@ -5,19 +5,25 @@ import {
   actualizarPersonaje,
   eliminarPersonaje,
   asignarTagAPersonaje,
+  obtenerPersonajePorId
 } from "../controllers/personaje.controller.js";
-import { verificarToken } from "../middlewares/auth.js";
+import { verifyToken } from "../middlewares/auth.js"; // ✅ nombre corregido
 
 const router = express.Router();
 
-router.use(verificarToken);
+// 🔒 Aplica protección JWT a todas las rutas
+router.use(verifyToken);
 
+// 🔹 CRUD de personajes
 router.get("/", obtenerPersonajes);
 router.post("/", crearPersonaje);
 router.put("/:id", actualizarPersonaje);
-router.get("/:id", obtenerPersonajes);
 router.delete("/:id", eliminarPersonaje);
-router.post("/agregar-tag", verificarToken, asignarTagAPersonaje);
 
+// 🔹 Obtener personaje por ID (opcional)
+router.get("/:id", obtenerPersonajePorId); // Solo si tienes esta función
+
+// 🔹 Asignar tag a personaje
+router.post("/agregar-tag", asignarTagAPersonaje); // 🔐 Ya está protegido por router.use
 
 export default router;

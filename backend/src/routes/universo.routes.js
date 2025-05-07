@@ -1,14 +1,29 @@
 import express from "express";
-import { verificarToken } from "../middlewares/auth.js";
-import { eliminarUniverso, obtenerUniversos,obtenerUniversoPorId,actualizarUniverso } from '../controllers/universo.controller.js';
+import {
+  crearUniverso,
+  eliminarUniverso,
+  obtenerUniversos,
+  obtenerUniversoPorId,
+  actualizarUniverso,
+} from "../controllers/universo.controller.js";
 
+import { verifyToken } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-router.get("/", verificarToken, obtenerUniversos);
-router.delete('/:id', verificarToken, eliminarUniverso);
-router.get('/:id', verificarToken, obtenerUniversoPorId);
-router.put('/:id', verificarToken, actualizarUniverso);
+// ✅ Crear un universo (historia opcional)
+router.post("/", verifyToken, crearUniverso);
 
+// ✅ Obtener todos los universos del usuario
+router.get("/", verifyToken, obtenerUniversos);
+
+// ✅ Obtener un universo por ID
+router.get("/:id", verifyToken, obtenerUniversoPorId);
+
+// ✅ Actualizar universo (solo si el usuario tiene acceso)
+router.put("/:id", verifyToken, actualizarUniverso);
+
+// ✅ Eliminar universo
+router.delete("/:id", verifyToken, eliminarUniverso);
 
 export default router;

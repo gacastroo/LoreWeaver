@@ -5,14 +5,14 @@ import {
   actualizarCapitulo,
   eliminarCapitulo
 } from '../controllers/capitulo.controller.js';
-import { verificarToken } from '../middlewares/auth.js';
+import { verifyToken  } from '../middlewares/auth.js';
 
 
 const router = express.Router();
 
-router.post('/',verificarToken, crearCapitulo);
-router.get('/',verificarToken, obtenerCapitulos);
-router.put('/:id',verificarToken, actualizarCapitulo);
-router.delete('/:id',verificarToken, eliminarCapitulo);
+router.post('/',verifyToken , crearCapitulo);
+router.get('/',verifyToken , obtenerCapitulos);
+router.put('/:id',verifyToken , actualizarCapitulo);
+router.delete('/:id',verifyToken , eliminarCapitulo);
 
 export default router;

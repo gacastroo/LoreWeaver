@@ -1,10 +1,10 @@
 import express from "express";
 import prisma from "../lib/prisma.js";
-import { verificarToken } from "../middlewares/auth.js";
+import { verifyToken  } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-router.get("/dashboard", verificarToken, async (req, res) => {
+router.get("/dashboard", verifyToken , async (req, res) => {
   try {
     const userId = req.usuario.id;
 

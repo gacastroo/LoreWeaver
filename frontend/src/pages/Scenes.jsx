@@ -1,11 +1,12 @@
-// src/pages/Scenes.jsx
 import { useEffect, useState } from "react";
 import API from "@/services/api";
 import AddButton from "@/components/ui/button/AddButton";
 import SceneCard from "@/components/scene/SceneCard";
+import SceneForm from "@/components/scene/SceneForm"; // ⬅️ Importa el formulario
 
 export default function Scenes() {
   const [escenas, setEscenas] = useState([]);
+  const [mostrarModal, setMostrarModal] = useState(false); // ⬅️ Nuevo estado
 
   const fetchEscenas = async () => {
     try {
@@ -21,7 +22,16 @@ export default function Scenes() {
   }, []);
 
   const handleAdd = () => {
-    console.log("📝 Abrir modal para crear nueva escena");
+    setMostrarModal(true); // ⬅️ Mostrar modal
+  };
+
+  const handleCerrarModal = () => {
+    setMostrarModal(false);
+  };
+
+  const handleSceneCreated = async () => {
+    await fetchEscenas();
+    setMostrarModal(false);
   };
 
   return (
@@ -35,24 +45,38 @@ export default function Scenes() {
         {escenas.length === 0 ? (
           <p className="text-neutral-500">No hay escenas registradas.</p>
         ) : (
-            escenas.map((escena) => (
-                <SceneCard
-                  key={escena.id_Escena}
-                  escena={escena}
-                  onDelete={async (id) => {
-                    try {
-                      await API.delete(`/escenas/${id}`);
-                      setEscenas((prev) => prev.filter((e) => e.id_Escena !== id));
-                      console.log("✅ Escena eliminada:", id);
-                    } catch (error) {
-                      console.error("❌ Error al eliminar escena:", error);
-                    }
-                  }}
-                />
-              ))
-              
+          escenas.map((escena) => (
+            <SceneCard
+              key={escena.id_Escena}
+              escena={escena}
+              onDelete={async (id) => {
+                try {
+                  await API.delete(`/escenas/${id}`);
+                  setEscenas((prev) => prev.filter((e) => e.id_Escena !== id));
+                  console.log("✅ Escena eliminada:", id);
+                } catch (error) {
+                  console.error("❌ Error al eliminar escena:", error);
+                }
+              }}
+            />
+          ))
         )}
       </div>
+
+      {/* Modal */}
+      {mostrarModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-6 max-w-xl w-full relative shadow-lg">
+            <button
+              onClick={handleCerrarModal}
+              className="absolute top-3 right-4 text-xl text-zinc-400 hover:text-red-500"
+            >
+              ✖
+            </button>
+            <SceneForm onSceneCreated={handleSceneCreated} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

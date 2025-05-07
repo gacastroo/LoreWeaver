@@ -10,7 +10,7 @@ import universoRoutes from './routes/universo.routes.js';
 import capituloRoutes from './routes/capitulo.routes.js';
 import escenaRoutes from './routes/escena.routes.js';
 import mapaRoutes from './routes/mapa.routes.js';
-import { verificarToken } from './middlewares/auth.js';
+import { verifyToken  } from './middlewares/auth.js';
 
 
 
@@ -24,14 +24,14 @@ app.use(express.json());
 app.use('/api/usuarios', usuarioRoutes); // login y registro
 
 // Rutas protegidas
-app.use('/api/personajes', verificarToken, personajeRoutes);
-app.use('/api/historias', verificarToken, historiaRoutes);
-app.use('/api/tags', verificarToken, tagRoutes);
-app.use('/api', verificarToken, dashboardRoutes);
-app.use('/api/universos', verificarToken, universoRoutes);
-app.use('/api/capitulos', verificarToken, capituloRoutes);
-app.use('/api/escenas', verificarToken, escenaRoutes);
-app.use('/api/mapa', verificarToken, mapaRoutes);
+app.use('/api/personajes', verifyToken , personajeRoutes);
+app.use('/api/historias', verifyToken , historiaRoutes);
+app.use('/api/tags', verifyToken , tagRoutes);
+app.use('/api', verifyToken , dashboardRoutes);
+app.use('/api/universos', verifyToken , universoRoutes);
+app.use('/api/capitulos', verifyToken , capituloRoutes);
+app.use('/api/escenas', verifyToken , escenaRoutes);
+app.use('/api/mapa', verifyToken , mapaRoutes);
 
 
 

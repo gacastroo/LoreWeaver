@@ -1,32 +1,60 @@
 import prisma from "../lib/prisma.js";
 import { getUserIdFromToken } from "../utils/auth.js";
 
-// 🔹 Crear personaje (verifica que la historia sea del usuario)
+// 🔹 Crear personaje (todo opcional menos nombre)
 export const crearPersonaje = async (req, res) => {
   const userId = getUserIdFromToken(req);
-  const { nombre_personaje, descripcion_personaje, historiaId } = req.body;
+  const { nombre, descripcion, historiaId, tagId } = req.body;
+
+  if (!nombre) {
+    return res.status(400).json({ error: "El nombre es obligatorio" });
+  }
 
   try {
-    const historia = await prisma.historia.findFirst({
-      where: { id: parseInt(historiaId), usuarioId: userId },
-    });
+    let historia = null;
 
-    if (!historia) {
-      return res.status(403).json({ error: "No tienes permiso para modificar esta historia" });
+    // Validar historia si se envía
+    if (historiaId) {
+      historia = await prisma.historia.findFirst({
+        where: { id: parseInt(historiaId), usuarioId: userId },
+      });
+
+      if (!historia) {
+        return res
+          .status(403)
+          .json({ error: "No tienes permiso para asociar esta historia" });
+      }
     }
 
+    // Crear personaje
     const personaje = await prisma.personaje.create({
       data: {
-        nombre_personaje,
-        descripcion_personaje,
-        historiaId: historia.id,
+        nombre_personaje: nombre,
+        descripcion_personaje: descripcion || "",
+        historiaId: historia ? historia.id : null,
       },
     });
+
+    // Si se envió un tag, relacionarlo
+    if (tagId) {
+      const tag = await prisma.tags.findUnique({
+        where: { id_Tag: parseInt(tagId) },
+      });
+
+      if (tag) {
+        await prisma.personaje_Tag.create({
+          data: {
+            personajeId: personaje.id_Personaje,
+            tagId: tag.id_Tag,
+          },
+        });
+      }
+    }
 
     res.status(201).json(personaje);
   } catch (error) {
     console.error("❌ Error al crear personaje:", error);
-    res.status(500).json({ error: "Error al crear personaje" });
+    res.status(500).json({ error: "Error interno al crear personaje" });
   }
 };
 
@@ -36,9 +64,10 @@ export const obtenerPersonajes = async (req, res) => {
   try {
     const personajes = await prisma.personaje.findMany({
       where: {
-        historia: {
-          usuarioId: userId,
-        },
+        OR: [
+          { historia: { usuarioId: userId } },
+          { historiaId: null } // personajes sin historia también se muestran
+        ],
       },
       include: {
         historia: { select: { titulo: true } },
@@ -53,8 +82,7 @@ export const obtenerPersonajes = async (req, res) => {
   }
 };
 
-
-// 🔹 Actualizar personaje si pertenece a historia del usuario
+// 🔹 Actualizar personaje si pertenece al usuario
 export const actualizarPersonaje = async (req, res) => {
   const userId = getUserIdFromToken(req);
   const { id } = req.params;
@@ -64,12 +92,17 @@ export const actualizarPersonaje = async (req, res) => {
     const personaje = await prisma.personaje.findFirst({
       where: {
         id_Personaje: parseInt(id),
-        historia: { usuarioId: userId },
+        OR: [
+          { historia: { usuarioId: userId } },
+          { historiaId: null } // permitir editar sin historia
+        ],
       },
     });
 
     if (!personaje) {
-      return res.status(403).json({ error: "No tienes permiso para actualizar este personaje" });
+      return res
+        .status(403)
+        .json({ error: "No tienes permiso para actualizar este personaje" });
     }
 
     const personajeActualizado = await prisma.personaje.update({
@@ -84,7 +117,7 @@ export const actualizarPersonaje = async (req, res) => {
   }
 };
 
-// 🔹 Eliminar personaje si pertenece a historia del usuario
+// 🔹 Eliminar personaje si pertenece al usuario
 export const eliminarPersonaje = async (req, res) => {
   const userId = getUserIdFromToken(req);
   const { id } = req.params;
@@ -93,12 +126,17 @@ export const eliminarPersonaje = async (req, res) => {
     const personaje = await prisma.personaje.findFirst({
       where: {
         id_Personaje: parseInt(id),
-        historia: { usuarioId: userId },
+        OR: [
+          { historia: { usuarioId: userId } },
+          { historiaId: null }
+        ],
       },
     });
 
     if (!personaje) {
-      return res.status(403).json({ error: "No tienes permiso para eliminar este personaje" });
+      return res
+        .status(403)
+        .json({ error: "No tienes permiso para eliminar este personaje" });
     }
 
     await prisma.personaje.delete({
@@ -112,6 +150,7 @@ export const eliminarPersonaje = async (req, res) => {
   }
 };
 
+// 🔹 Asignar tag a personaje
 export const asignarTagAPersonaje = async (req, res) => {
   const userId = getUserIdFromToken(req);
   const { personajeId, tagId } = req.body;
@@ -120,7 +159,10 @@ export const asignarTagAPersonaje = async (req, res) => {
     const personaje = await prisma.personaje.findFirst({
       where: {
         id_Personaje: parseInt(personajeId),
-        historia: { usuarioId: userId },
+        OR: [
+          { historia: { usuarioId: userId } },
+          { historiaId: null }
+        ],
       },
     });
 
@@ -136,7 +178,6 @@ export const asignarTagAPersonaje = async (req, res) => {
       return res.status(404).json({ error: "Tag no encontrado" });
     }
 
-    // ✅ Validar si ya existe la relación
     const yaExiste = await prisma.personaje_Tag.findFirst({
       where: {
         personajeId: personaje.id_Personaje,
@@ -148,7 +189,6 @@ export const asignarTagAPersonaje = async (req, res) => {
       return res.status(400).json({ error: "Este personaje ya tiene este tag asignado" });
     }
 
-    // Crear relación personaje-tag
     await prisma.personaje_Tag.create({
       data: {
         personajeId: personaje.id_Personaje,
@@ -161,7 +201,35 @@ export const asignarTagAPersonaje = async (req, res) => {
     console.error("❌ Error al asignar tag:", error);
     res.status(500).json({ error: "Error al asignar tag al personaje" });
   }
+}
+// 🔹 Obtener personaje por ID (si pertenece al usuario)
+export const obtenerPersonajePorId = async (req, res) => {
+  const userId = getUserIdFromToken(req);
+  const { id } = req.params;
+
+  try {
+    const personaje = await prisma.personaje.findFirst({
+      where: {
+        id_Personaje: parseInt(id),
+        OR: [
+          { historia: { usuarioId: userId } },
+          { historiaId: null }
+        ],
+      },
+      include: {
+        historia: { select: { titulo: true } },
+        tags: { include: { tag: true } },
+      },
+    });
+
+    if (!personaje) {
+      return res.status(404).json({ error: "Personaje no encontrado o sin permiso" });
+    }
+
+    res.json(personaje);
+  } catch (error) {
+    console.error("❌ Error al obtener personaje:", error);
+    res.status(500).json({ error: "Error al obtener personaje" });
+  }
 };
-
-
 
