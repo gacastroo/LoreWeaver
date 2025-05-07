@@ -1,5 +1,4 @@
 import { useState } from "react";
-import ViewButton from "@/components/ui/button/ViewButton";
 import DeleteButton from "@/components/ui/button/DeleteButton";
 import DeleteConfirmModal from "@/components/ui/deletemodal";
 import API from "@/services/api";
@@ -35,7 +34,6 @@ export default function TagCard({ tag, onDelete }) {
       </div>
 
       <div className="mt-4 flex flex-col gap-2">
-        <ViewButton label="Ver más" />
         <DeleteButton onClick={() => setShowModal(true)} label="Eliminar" />
       </div>
 

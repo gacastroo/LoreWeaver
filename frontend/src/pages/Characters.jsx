@@ -4,11 +4,19 @@ import AddButton from "@/components/ui/button/AddButton";
 import CharacterGrid from "@/components/character/CharacterGrid";
 import API from "@/services/api";
 
+// IMPORTANTE: Asegúrate de tener este componente
+import Select from "@/components/ui/input/Select"; // Ajusta la ruta si es diferente
+
 export default function Characters() {
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [historias, setHistorias] = useState([]);
-  const [historiaSeleccionada, setHistoriaSeleccionada] = useState("");
+  const [filtroHistoria, setFiltroHistoria] = useState("");
+
+  const personajesFiltrados = filtroHistoria
+  ? characters.filter((p) => p.historiaId === parseInt(filtroHistoria))
+  : characters;
+
 
   // Cargar historias
   useEffect(() => {
@@ -23,13 +31,13 @@ export default function Characters() {
     fetchHistorias();
   }, []);
 
-  // Cargar personajes (con o sin filtro)
+  // Cargar personajes
   useEffect(() => {
     const fetchCharacters = async () => {
       setLoading(true);
       try {
-        const url = historiaSeleccionada
-          ? `/personajes?historiaId=${historiaSeleccionada}`
+        const url = filtroHistoria
+          ? `/personajes?historiaId=${filtroHistoria}`
           : "/personajes";
         const res = await API.get(url);
         setCharacters(res.data);
@@ -41,17 +49,16 @@ export default function Characters() {
     };
 
     fetchCharacters();
-  }, [historiaSeleccionada]);
+  }, [filtroHistoria]);
 
   const handleDeleteCharacter = async (id) => {
     try {
       await API.delete(`/personajes/${id}`);
-      setCharacters(prev => prev.filter(c => c.id_Personaje !== id));
+      setCharacters((prev) => prev.filter((c) => c.id_Personaje !== id));
     } catch (error) {
       console.error("❌ Error al eliminar personaje:", error);
     }
   };
-  
 
   const handleAddCharacter = () => {
     console.log("🧙 Mostrar modal para crear nuevo personaje");
@@ -64,29 +71,25 @@ export default function Characters() {
       </SectionHeader>
 
       {/* Select para filtrar por historia */}
-      <div className="flex items-center gap-2">
-        <label className="text-sm text-neutral-700">Filtrar por historia:</label>
-        <select
-          value={historiaSeleccionada}
-          onChange={(e) => setHistoriaSeleccionada(e.target.value)}
-          className="border rounded px-3 py-1 text-sm"
-        >
-          <option value="">Todas</option>
-          {historias.map((h) => (
-            <option key={h.id} value={h.id}>
-              {h.titulo}
-            </option>
-          ))}
-        </select>
+      <div className="mb-6 w-64">
+        <Select
+          label="Filtrar por historia"
+          value={filtroHistoria}
+          onChange={(e) => setFiltroHistoria(e.target.value)}
+          options={[
+            { value: "", label: "Todas las historias" },
+            ...historias.map((h) => ({
+              value: h.id.toString(),
+              label: h.titulo,
+            })),
+          ]}
+        />
       </div>
 
       {loading ? (
         <p className="text-sm text-neutral-500">Cargando personajes...</p>
       ) : characters.length > 0 ? (
-        <CharacterGrid 
-        characters={characters}
-        onDelete={handleDeleteCharacter}
-         />
+      <CharacterGrid characters={personajesFiltrados} onDelete={handleDeleteCharacter} />
       ) : (
         <p className="text-sm text-neutral-500">No hay personajes para esta historia.</p>
       )}

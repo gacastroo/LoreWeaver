@@ -36,10 +36,9 @@ export default function StoryCard({ story, onDelete }) {
 
         {/* Botones */}
         <div className="flex flex-col gap-2 mt-4">
-          <ViewButton 
-            label="Ver historia" 
-            onClick={() => navigate(`/historia/${story.id}`)}
-          />
+
+          <ViewButton onClick={() => navigate(`/historia/${story.id}`)} label="Ver más"/>
+            
           <DeleteButton onClick={() => setShowModal(true)} label="Eliminar" />
         </div>
 

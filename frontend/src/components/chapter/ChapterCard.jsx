@@ -1,5 +1,4 @@
 import { useState } from "react";
-import ViewButton from "@/components/ui/button/ViewButton";
 import DeleteButton from "@/components/ui/button/DeleteButton";
 import DeleteConfirmModal from "@/components/ui/deletemodal";
 
@@ -14,7 +13,6 @@ export default function ChapterCard({ chapter, historia, onDelete }) {
       </p>
 
       <div className="flex flex-col gap-2">
-        <ViewButton label="Ver capítulo" />
         <DeleteButton onClick={() => setShowModal(true)} label="Eliminar" />
       </div>
 

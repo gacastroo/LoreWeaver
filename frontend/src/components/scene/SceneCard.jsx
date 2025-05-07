@@ -1,6 +1,5 @@
 // src/components/scene/SceneCard.jsx
 import { useState } from "react";
-import ViewButton from "@/components/ui/button/ViewButton";
 import DeleteButton from "@/components/ui/button/DeleteButton";
 import DeleteConfirmModal from "@/components/ui/deletemodal";
 
@@ -21,7 +20,6 @@ export default function SceneCard({ escena, onDelete }) {
       </div>
 
       <div className="mt-4 flex flex-col gap-2">
-        <ViewButton label="Ver más" />
         <DeleteButton onClick={() => setShowModal(true)} label="Eliminar" />
       </div>
 
