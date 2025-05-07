@@ -3,43 +3,39 @@ import SectionHeader from "@/components/character/SectionHeader";
 import AddButton from "@/components/ui/button/AddButton";
 import CharacterGrid from "@/components/character/CharacterGrid";
 import API from "@/services/api";
-
-// IMPORTANTE: Asegúrate de tener este componente
-import Select from "@/components/ui/input/Select"; // Ajusta la ruta si es diferente
+import Select from "@/components/ui/input/Select";
 
 export default function Characters() {
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [historias, setHistorias] = useState([]);
-  const [filtroHistoria, setFiltroHistoria] = useState("");
+  const [tags, setTags] = useState([]);
+  const [filtroTag, setFiltroTag] = useState("");
 
-  const personajesFiltrados = filtroHistoria
-  ? characters.filter((p) => p.historiaId === parseInt(filtroHistoria))
-  : characters;
+  const personajesFiltrados = filtroTag
+    ? characters.filter((p) =>
+        p.tags.some((t) => t.tagId === parseInt(filtroTag))
+      )
+    : characters;
 
-
-  // Cargar historias
+  // 🔹 Cargar tags
   useEffect(() => {
-    const fetchHistorias = async () => {
+    const fetchTags = async () => {
       try {
-        const res = await API.get("/historias");
-        setHistorias(res.data);
+        const res = await API.get("/tags");
+        setTags(res.data);
       } catch (error) {
-        console.error("❌ Error al cargar historias:", error);
+        console.error("❌ Error al cargar tags:", error);
       }
     };
-    fetchHistorias();
+    fetchTags();
   }, []);
 
-  // Cargar personajes
+  // 🔹 Cargar personajes (todos)
   useEffect(() => {
     const fetchCharacters = async () => {
       setLoading(true);
       try {
-        const url = filtroHistoria
-          ? `/personajes?historiaId=${filtroHistoria}`
-          : "/personajes";
-        const res = await API.get(url);
+        const res = await API.get("/personajes");
         setCharacters(res.data);
       } catch (error) {
         console.error("❌ Error al cargar personajes:", error);
@@ -49,7 +45,7 @@ export default function Characters() {
     };
 
     fetchCharacters();
-  }, [filtroHistoria]);
+  }, []);
 
   const handleDeleteCharacter = async (id) => {
     try {
@@ -70,17 +66,17 @@ export default function Characters() {
         <AddButton onClick={handleAddCharacter} label="Nuevo personaje" />
       </SectionHeader>
 
-      {/* Select para filtrar por historia */}
+      {/* 🔽 Select para filtrar por tag */}
       <div className="mb-6 w-64">
         <Select
-          label="Filtrar por historia"
-          value={filtroHistoria}
-          onChange={(e) => setFiltroHistoria(e.target.value)}
+          label="Filtrar por tag"
+          value={filtroTag}
+          onChange={(e) => setFiltroTag(e.target.value)}
           options={[
-            { value: "", label: "Todas las historias" },
-            ...historias.map((h) => ({
-              value: h.id.toString(),
-              label: h.titulo,
+            { value: "", label: "Todos los tags" },
+            ...tags.map((t) => ({
+              value: t.id_Tag.toString(),
+              label: `#${t.nombre_tag}`,
             })),
           ]}
         />
@@ -88,10 +84,13 @@ export default function Characters() {
 
       {loading ? (
         <p className="text-sm text-neutral-500">Cargando personajes...</p>
-      ) : characters.length > 0 ? (
-      <CharacterGrid characters={personajesFiltrados} onDelete={handleDeleteCharacter} />
+      ) : personajesFiltrados.length > 0 ? (
+        <CharacterGrid
+          characters={personajesFiltrados}
+          onDelete={handleDeleteCharacter}
+        />
       ) : (
-        <p className="text-sm text-neutral-500">No hay personajes para esta historia.</p>
+        <p className="text-sm text-neutral-500">No hay personajes para este tag.</p>
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ViewButton from "@/components/ui/button/ViewButton";
 import DeleteButton from "@/components/ui/button/DeleteButton";
 import DeleteConfirmModal from "@/components/ui/deletemodal";
@@ -7,6 +8,13 @@ import AssignTagModal from "@/components/ui/AssignTagModal";
 export default function CharacterCard({ character, onDelete, onTagClick }) {
   const [showModal, setShowModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
+  const navigate = useNavigate();
+
+  // 🔹 Acorta la descripción si es muy larga
+  const descripcionCorta =
+    character.descripcion_personaje?.length > 100
+      ? character.descripcion_personaje.slice(0, 100) + "..."
+      : character.descripcion_personaje || "Sin descripción";
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-neutral-200 hover:shadow-md transition flex flex-col justify-between h-full">
@@ -16,7 +24,7 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
           {character.nombre_personaje}
         </h2>
         <p className="text-sm text-neutral-600 mt-1 flex-grow">
-          {character.descripcion_personaje || "Sin descripción"}
+          {descripcionCorta}
         </p>
 
         {/* Historia */}
@@ -45,7 +53,10 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
 
         {/* Botones */}
         <div className="mt-4 flex flex-col gap-2">
-          <ViewButton label="Ver más" />
+          <ViewButton
+            onClick={() => navigate(`/personaje/${character.id_Personaje}`)}
+            label="Ver más"
+          />
           <DeleteButton onClick={() => setShowModal(true)} label="Eliminar" />
           <button
             onClick={() => setShowAssignModal(true)}

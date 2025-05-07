@@ -11,7 +11,10 @@ import Scenes from "@/pages/Scenes";
 import Tags from "@/pages/tags";
 import MapGenerator from "@/pages/MapGenerator";
 import RutaPrivada from "@/components/auth/RutaPrivada";
-import EditorHistoria from "@/pages/EditorHistoria"; // 👈 AGREGA ESTO
+import EditorHistoria from "@/pages/EditorHistoria";
+import EditorPersonaje from "@/pages/EditorPersonaje";
+import EditorUniverso from "@/pages/EditorUniverso";
+
 
 
 
@@ -40,6 +43,10 @@ export default function App() {
           <Route path="/tags" element={<Tags />} />
           <Route path="/map-generator" element={<MapGenerator />} />
           <Route path="/historia/:id" element={<EditorHistoria />} />
+          <Route path="/personaje/:id" element={<EditorPersonaje />} />
+          <Route path="/universo/:id" element={<EditorUniverso />} />
+
+
           </Route>
       </Routes>
     </BrowserRouter>

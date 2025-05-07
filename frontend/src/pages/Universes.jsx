@@ -34,6 +34,15 @@
       console.log("Abrir modal para nuevo universo");
     };
 
+    const handleUpdate = (universoActualizado) => {
+      setUniversos((prev) =>
+        prev.map((u) =>
+          u.id_Universo === universoActualizado.id_Universo ? universoActualizado : u
+        )
+      );
+    };
+    
+
     const handleDeleteUniverse = async (id) => {
       if (!id) return console.error("❌ ID de universo no válido:", id);
       try {
@@ -69,12 +78,14 @@
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {universosFiltrados.map((uni) => (
-        <UniverseCard
-        key={uni.id_Universo}
-        universo={uni}
-        historias={historias}
-        onDelete={handleDeleteUniverse}
-        />
+            <UniverseCard
+            key={uni.id_Universo}
+            universo={uni}
+            historias={historias}
+            onDelete={handleDeleteUniverse}
+            onUpdate={handleUpdate} // 👈 AGREGA ESTA LÍNEA
+          />
+
       
           ))}
         </div>

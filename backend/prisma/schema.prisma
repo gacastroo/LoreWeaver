@@ -67,6 +67,8 @@ model Capitulo {
 model Universo {
   id_Universo     Int        @id @default(autoincrement())
   titulo_universo String
+  descripcion_universo String?
+
   historiaId      Int
 
   historia        Historia   @relation(fields: [historiaId], references: [id], onDelete: Cascade)

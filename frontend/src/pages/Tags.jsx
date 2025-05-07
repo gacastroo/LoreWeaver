@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import API from "@/services/api";
 import AddButton from "@/components/ui/button/AddButton";
 import TagCard from "@/components/tag/TagCard";
-import Select from "@/components/ui/input/Select";
+import CreateTagModal from "@/components/ui/CreateTagModal";
 
 export default function Tags() {
   const [tags, setTags] = useState([]);
-  const [filtroTag, setFiltroTag] = useState("");
+  const [filtroTag] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [historiaId] = useState(1); // Asumimos que la historiaId es 1, puedes cambiarlo dinámicamente según el contexto.
 
   const fetchTags = async () => {
     try {
@@ -22,7 +24,11 @@ export default function Tags() {
   }, []);
 
   const handleAdd = () => {
-    console.log("➕ Abrir modal para nuevo tag");
+    setModalOpen(true);
+  };
+
+  const handleSuccess = (newTag) => {
+    setTags((prevTags) => [...prevTags, newTag]);
   };
 
   const filteredTags = filtroTag
@@ -38,9 +44,20 @@ export default function Tags() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {filteredTags.map((tag) => (
-          <TagCard key={tag.id_Tag} tag={tag} onDelete={fetchTags} />
+          <TagCard key={tag.id_Tag} tag={tag} />
         ))}
       </div>
+
+      {modalOpen && (
+        <CreateTagModal
+          onClose={() => setModalOpen(false)}
+          onSuccess={handleSuccess}
+          endpoint="/tags"
+          label="Tag"
+          historiaId={historiaId}
+        />
+      )}
+
     </div>
   );
 }
