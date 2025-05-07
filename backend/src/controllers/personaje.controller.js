@@ -143,12 +143,13 @@ export const eliminarPersonaje = async (req, res) => {
       where: { id_Personaje: parseInt(id) },
     });
 
-    res.json({ message: "Personaje eliminado correctamente" });
+    return res.status(200).json({ message: "Personaje eliminado correctamente" });
   } catch (error) {
     console.error("❌ Error al eliminar personaje:", error);
-    res.status(500).json({ error: "Error al eliminar personaje" });
+    return res.status(500).json({ error: "Error al eliminar personaje" });
   }
 };
+
 
 // 🔹 Asignar tag a personaje
 export const asignarTagAPersonaje = async (req, res) => {
