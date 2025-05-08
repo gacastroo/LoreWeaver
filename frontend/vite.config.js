@@ -13,4 +13,13 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000', // ⚠️ Asegúrate de que sea el puerto del backend
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 })

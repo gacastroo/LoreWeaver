@@ -14,6 +14,8 @@ import RutaPrivada from "@/components/auth/RutaPrivada";
 import EditorHistoria from "@/pages/EditorHistoria";
 import EditorPersonaje from "@/pages/EditorPersonaje";
 import EditorUniverso from "@/pages/EditorUniverso";
+import NameGenerator from "@/pages/NameGenerator";
+
 
 
 
@@ -45,9 +47,9 @@ export default function App() {
           <Route path="/historia/:id" element={<EditorHistoria />} />
           <Route path="/personaje/:id" element={<EditorPersonaje />} />
           <Route path="/universo/:id" element={<EditorUniverso />} />
-
-
+          <Route path="/name-generator" element={<NameGenerator />} />
           </Route>
+          
       </Routes>
     </BrowserRouter>
   );
