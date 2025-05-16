@@ -9,7 +9,11 @@ export default function TagCard({ tag, onDelete }) {
   const handleDelete = async () => {
     try {
       await API.delete(`/tags/${tag.id_Tag}`);
-      onDelete(); // recargar lista desde el padre
+      if (typeof onDelete === "function") {
+        onDelete(); // recargar lista desde el padre
+      } else {
+        console.warn("⚠️ onDelete no es una función o no fue pasada como prop.");
+      }
     } catch (err) {
       console.error("❌ Error al eliminar tag:", err);
     }

@@ -42,11 +42,12 @@ export default function Tags() {
         <AddButton onClick={handleAdd} label="Nuevo tag" />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {filteredTags.map((tag) => (
-          <TagCard key={tag.id_Tag} tag={tag} />
-        ))}
-      </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+  {filteredTags.map((tag) => (
+    <TagCard key={tag.id_Tag} tag={tag} onDelete={fetchTags} />
+  ))}
+    </div>
+
 
       {modalOpen && (
         <CreateTagModal

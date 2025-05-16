@@ -9,10 +9,6 @@ export default function QuickStats({ stats }) {
           <Tag className="inline w-4 h-4 mr-2 text-pink-500" />
           Tags: {stats.tags}
         </li>
-        <li>
-          <FileText className="inline w-4 h-4 mr-2 text-indigo-500" />
-          Palabras: {stats.palabras}
-        </li>
       </ul>
     </div>
   );
