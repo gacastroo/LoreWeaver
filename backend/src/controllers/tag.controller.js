@@ -1,7 +1,6 @@
 import prisma from '../lib/prisma.js';
 import { getUserIdFromToken } from '../utils/auth.js';
 
-
 // 🔹 Obtener todos los tags del usuario
 export const obtenerTags = async (req, res) => {
   const usuarioId = getUserIdFromToken(req);
@@ -34,7 +33,7 @@ export const obtenerTags = async (req, res) => {
   }
 };
 
-// 🔹 Eliminar un tag si pertenece a historia del usuario
+// 🔹 Eliminar un tag si pertenece a una historia del usuario
 export const eliminarTag = async (req, res) => {
   const usuarioId = getUserIdFromToken(req);
   const { id } = req.params;
@@ -62,27 +61,35 @@ export const eliminarTag = async (req, res) => {
     console.error("❌ Error al eliminar tag:", error);
     res.status(500).json({ error: "Error al eliminar tag" });
   }
-}
+};
+
+// 🔹 Crear un nuevo tag
 export const crearTag = async (req, res) => {
-  const { nombre_tag, historiaId } = req.body;
-  const usuarioId = req.usuarioId; // Este es el ID del usuario desde el middleware
+  const { nombre_tag, historiaId } = req.body; // historiaId puede ser opcional
+  const usuarioId = getUserIdFromToken(req);
 
   try {
-    // Verificar que la historia pertenezca al usuario
-    const historia = await prisma.historia.findUnique({
-      where: { id: historiaId },
-    });
+    let tagData = {
+      nombre_tag,
+    };
 
-    if (!historia || historia.usuarioId !== usuarioId) {
-      return res.status(403).json({ error: "No tienes permiso para crear un tag en esta historia" });
+    // Si historiaId se proporciona, verificar que la historia pertenezca al usuario
+    if (historiaId) {
+      const historia = await prisma.historia.findUnique({
+        where: { id: historiaId },
+        select: { usuarioId: true },
+      });
+
+      if (!historia || historia.usuarioId !== usuarioId) {
+        return res.status(403).json({ error: "No tienes permiso para crear un tag en esta historia" });
+      }
+
+      tagData.historiaId = historiaId; // Asocia el tag con la historia
     }
 
     // Crear el tag
     const tag = await prisma.tags.create({
-      data: {
-        nombre_tag,
-        historiaId,
-      },
+      data: tagData,
     });
 
     res.status(201).json(tag);

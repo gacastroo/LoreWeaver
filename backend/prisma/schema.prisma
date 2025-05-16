@@ -22,14 +22,15 @@ model Historia {
   contenido  String?
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  usuarioId  Int
-  usuario    Usuario    @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
+  usuarioId  Int        // Mantén solo esta línea
+  usuario    Usuario    @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade) // Relación con Usuario
   personajes Personaje[]
   capitulos  Capitulo[]
   escenas    Escena[]
   universos  Universo[]
   tags       Tags[]
 }
+
 
 model Personaje {
   id_Personaje          Int             @id @default(autoincrement())

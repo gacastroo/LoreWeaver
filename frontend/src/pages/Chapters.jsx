@@ -51,7 +51,7 @@ export default function Chapters() {
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-neutral-800 dark:text-white">Capítulos</h1>
+        <h1 className="text-2xl font-semibold text-neutral-800">Capítulos</h1>
         <AddButton onClick={handleAdd} label="Nuevo capítulo" />
       </div>
 
