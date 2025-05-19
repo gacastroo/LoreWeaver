@@ -26,8 +26,8 @@ CREATE TABLE `Historia` (
 CREATE TABLE `Personaje` (
     `id_Personaje` INTEGER NOT NULL AUTO_INCREMENT,
     `nombre_personaje` VARCHAR(191) NOT NULL,
-    `descripcion_personaje` VARCHAR(191) NOT NULL,
-    `historiaId` INTEGER NOT NULL,
+    `descripcion_personaje` VARCHAR(191) NULL,
+    `historiaId` INTEGER NULL,
 
     PRIMARY KEY (`id_Personaje`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -58,7 +58,8 @@ CREATE TABLE `Capitulo` (
 CREATE TABLE `Universo` (
     `id_Universo` INTEGER NOT NULL AUTO_INCREMENT,
     `titulo_universo` VARCHAR(191) NOT NULL,
-    `historiaId` INTEGER NOT NULL,
+    `descripcion_universo` VARCHAR(191) NULL,
+    `historiaId` INTEGER NULL,
 
     PRIMARY KEY (`id_Universo`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

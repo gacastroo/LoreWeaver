@@ -17,8 +17,13 @@ async function main() {
   });
 
   // === Historias ===
-  console.log("Insertando historia con contenido:", 'Contenido inicial de Carrie')
-  const carrie = await prisma.historia.create({ data: { titulo: 'Carrie', usuarioId: usuario.id_usuario } });
+  console.log("Insertando historia: Carrie");
+  const carrie = await prisma.historia.create({ 
+    data: { 
+      titulo: 'Carrie',
+      usuarioId: usuario.id_usuario 
+    } 
+  });
   const juegos = await prisma.historia.create({ data: { titulo: 'Los Juegos del Hambre', usuarioId: usuario.id_usuario } });
   const speak = await prisma.historia.create({ data: { titulo: 'Speak',  usuarioId: usuario.id_usuario } });
 

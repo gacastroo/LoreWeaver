@@ -4,22 +4,40 @@ import ViewButton from "@/components/ui/button/ViewButton";
 import DeleteButton from "@/components/ui/button/DeleteButton";
 import DeleteConfirmModal from "@/components/ui/deletemodal";
 import AssignTagModal from "@/components/ui/AssignTagModal";
+import QuitarTagModal from "@/components/ui/QuitarTagModal";
+
+import API from "@/services/api";
 
 export default function CharacterCard({ character, onDelete, onTagClick }) {
   const [showModal, setShowModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
+  const [loadingRemoveHistoria, setLoadingRemoveHistoria] = useState(false);
+  const [showRemoveTagModal, setShowRemoveTagModal] = useState(false);
   const navigate = useNavigate();
 
-  // 🔹 Acorta la descripción si es muy larga
   const descripcionCorta =
     character.descripcion_personaje?.length > 100
       ? character.descripcion_personaje.slice(0, 100) + "..."
       : character.descripcion_personaje || "Sin descripción";
 
+  // Función para quitar la historia
+  const quitarHistoria = async () => {
+    if (!character.historia) return;
+    setLoadingRemoveHistoria(true);
+    try {
+      await API.patch(`/personajes/${character.id_Personaje}/desasociar-historia`, {
+        historiaId: null, // desasociar
+      });
+      window.location.reload(); // o actualizar estado para refrescar UI sin recargar toda la página
+    } catch (error) {
+      console.error("Error quitando historia:", error);
+      setLoadingRemoveHistoria(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-neutral-200 hover:shadow-md transition flex flex-col justify-between h-full">
       <div className="p-4 flex flex-col h-full">
-        {/* Nombre y descripción */}
         <h2 className="text-lg font-semibold text-neutral-800">
           {character.nombre_personaje}
         </h2>
@@ -27,14 +45,23 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
           {descripcionCorta}
         </p>
 
-        {/* Historia */}
-        {character.historia && (
-          <p className="text-xs text-neutral-500 mt-2">
-            Historia: {character.historia.titulo}
-          </p>
+        {character.historia ? (
+          <>
+            <p className="text-xs text-neutral-500 mt-2">
+              Historia: {character.historia.titulo}
+            </p>
+            <button
+              onClick={quitarHistoria}
+              disabled={loadingRemoveHistoria}
+              className="w-40 text-xs px-3 py-1 mt-1 bg-red-500 text-white text-align-center rounded hover:bg-red-700 transition"
+            >
+              {loadingRemoveHistoria ? "Quitando..." : "Quitar historia"}
+            </button>
+          </>
+        ) : (
+          <p className="text-xs text-neutral-400 italic mt-2">Sin historia asignada</p>
         )}
 
-        {/* Tags */}
         <div className="mt-2 min-h-[2.5rem] flex flex-wrap gap-2 items-start">
           {character.tags?.length > 0 ? (
             character.tags.map((pt, index) => (
@@ -51,7 +78,6 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
           )}
         </div>
 
-        {/* Botones */}
         <div className="mt-4 flex flex-col gap-2">
           <ViewButton
             onClick={() => navigate(`/personaje/${character.id_Personaje}`)}
@@ -64,10 +90,16 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
           >
             + Agregar tag
           </button>
+
+          <button
+            onClick={() => setShowRemoveTagModal(true)}
+            className="text-sm px-4 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded transition"
+          >
+            - Quitar tag
+          </button>
         </div>
       </div>
 
-      {/* Modal de confirmación */}
       {showModal && (
         <DeleteConfirmModal
           onCancel={() => setShowModal(false)}
@@ -78,7 +110,6 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
         />
       )}
 
-      {/* Modal de asignar tag */}
       {showAssignModal && (
         <AssignTagModal
           personajeId={character.id_Personaje}
@@ -86,6 +117,22 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
           onClose={() => setShowAssignModal(false)}
           onSuccess={() => window.location.reload()}
         />
+      )}
+
+      {showRemoveTagModal && (
+        <QuitarTagModal
+          personajeId={character.id_Personaje}
+          tagsAsignados={character.tags.map((pt) => pt.tag)}
+          onClose={() => setShowRemoveTagModal(false)}
+          onSuccess={() => window.location.reload()}
+        >
+          <button
+            onClick={() => setShowRemoveTagModal(false)}
+            className="absolute top-3 right-3 px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-sm"
+          >
+            Cerrar
+          </button>
+        </QuitarTagModal>
       )}
     </div>
   );

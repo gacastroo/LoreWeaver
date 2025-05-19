@@ -19,11 +19,11 @@ model Usuario {
 model Historia {
   id         Int        @id @default(autoincrement())
   titulo     String
-  contenido  String?
+  contenido  String?    @db.LongText
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  usuarioId  Int        // Mantén solo esta línea
-  usuario    Usuario    @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade) // Relación con Usuario
+  usuarioId  Int        
+  usuario    Usuario    @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
   personajes Personaje[]
   capitulos  Capitulo[]
   escenas    Escena[]
@@ -31,16 +31,14 @@ model Historia {
   tags       Tags[]
 }
 
-
 model Personaje {
   id_Personaje          Int             @id @default(autoincrement())
   nombre_personaje      String
-  descripcion_personaje String?      
+  descripcion_personaje String?         @db.LongText
   historiaId            Int?         
   historia              Historia?       @relation(fields: [historiaId], references: [id], onDelete: Cascade)
   tags                  Personaje_Tag[]
 }
-
 
 model Escena {
   id_Escena     Int       @id @default(autoincrement())
@@ -67,15 +65,14 @@ model Capitulo {
 }
 
 model Universo {
-  id_Universo         Int        @id @default(autoincrement())
-  titulo_universo     String
-  descripcion_universo String?   
-  historiaId          Int?    
-  historia            Historia?     @relation(fields: [historiaId], references: [id], onDelete: Cascade)
-  escenas             Escena[]
-  capitulos           Capitulo[]
+  id_Universo          Int        @id @default(autoincrement())
+  titulo_universo      String
+  descripcion_universo String?    @db.LongText
+  historiaId           Int?    
+  historia             Historia?  @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  escenas              Escena[]
+  capitulos            Capitulo[]
 }
-
 
 model Tags {
   id_Tag      Int             @id @default(autoincrement())
@@ -94,3 +91,13 @@ model Personaje_Tag {
   personaje    Personaje @relation(fields: [personajeId], references: [id_Personaje], onDelete: Cascade)
   tag          Tags      @relation(fields: [tagId], references: [id_Tag], onDelete: Cascade)
 }
+
+model ResetToken {
+  id         Int      @id @default(autoincrement())
+  token      String   @unique
+  usuarioId  Int
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+}
+

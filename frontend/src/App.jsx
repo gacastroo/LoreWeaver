@@ -15,6 +15,8 @@ import EditorHistoria from "@/pages/EditorHistoria";
 import EditorPersonaje from "@/pages/EditorPersonaje";
 import EditorUniverso from "@/pages/EditorUniverso";
 import NameGenerator from "@/pages/NameGenerator";
+import ResetPassword from "@/components/ResetPassword";
+
 
 
 
@@ -48,6 +50,8 @@ export default function App() {
           <Route path="/personaje/:id" element={<EditorPersonaje />} />
           <Route path="/universo/:id" element={<EditorUniverso />} />
           <Route path="/name-generator" element={<NameGenerator />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+
           </Route>
           
       </Routes>

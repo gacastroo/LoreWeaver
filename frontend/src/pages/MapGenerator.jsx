@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect } from "react";
 import cytoscape from "cytoscape";
-import html2canvas from "html2canvas";
 import API from "@/services/api";
 
 const colores = {
@@ -9,6 +8,7 @@ const colores = {
   escena: "#a78bfa",
   personaje: "#4ade80",
   tag: "#f87171",
+  universo: "#fbbf24",
 };
 
 export default function MapGenerator() {
@@ -20,9 +20,11 @@ export default function MapGenerator() {
     escena: true,
     personaje: true,
     tag: true,
+    universo: true,
   });
   const [elementosOriginales, setElementosOriginales] = useState([]);
   const [error, setError] = useState("");
+  const [layoutType, setLayoutType] = useState("breadthfirst");
 
   const fetchMapa = async () => {
     setError("");
@@ -37,7 +39,11 @@ export default function MapGenerator() {
   };
 
   const renderizarMapa = (datos) => {
+    if (!datos.length) return;
+
     const visibles = new Set();
+
+    // Filtrar nodos que están habilitados por filtros
     const nodosVisibles = datos.filter((e) => {
       const tipo = e.data?.tipo;
       if (!tipo || filtros[tipo]) {
@@ -47,12 +53,44 @@ export default function MapGenerator() {
       return false;
     });
 
+    // Filtrar aristas que conectan nodos visibles (relaciones válidas)
     const relacionesVisibles = nodosVisibles.filter((e) => {
       if (!e.data?.source || !e.data?.target) return true;
       return visibles.has(e.data.source) && visibles.has(e.data.target);
     });
 
     if (cyRef.current) cyRef.current.destroy();
+
+    let layoutConfig = {};
+    if (layoutType === "breadthfirst") {
+      layoutConfig = {
+        name: "breadthfirst",
+        directed: true,
+        spacingFactor: 2,  // Aumentado para menos solapamiento
+        padding: 50,
+        animate: true,
+        animationDuration: 600,
+        direction: "TB",
+      };
+    } else if (layoutType === "grid") {
+      layoutConfig = {
+        name: "grid",
+        spacingFactor: 1, 
+        padding: 50,
+        animate: true,
+        animationDuration: 600,
+      };
+    } else if (layoutType === "cose") {
+      layoutConfig = {
+        name: "cose",
+        padding: 50,
+        animate: true,
+          spacingFactor: 3, 
+        animationDuration: 600,
+        idealEdgeLength: 100,
+        nodeOverlap: 50,  // Aumentar para menos solapamiento
+      };
+    }
 
     cyRef.current = cytoscape({
       container: containerRef.current,
@@ -65,7 +103,7 @@ export default function MapGenerator() {
             shape: "round-rectangle",
             "text-wrap": "wrap",
             "text-max-width": 160,
-            width: "mapData(label.length, 5, 30, 80, 200)", // no deprecado
+            width: "mapData(label.length, 5, 30, 80, 200)",
             height: 50,
             padding: 10,
             "font-size": 11,
@@ -88,17 +126,10 @@ export default function MapGenerator() {
           },
         },
       ],
-      layout: {
-        name: "breadthfirst",
-        directed: true,
-        spacingFactor: 1.5,
-        padding: 40,
-        animate: true,
-        animationDuration: 600,
-      },
+      layout: layoutConfig,
     });
 
-    cyRef.current.fit(cyRef.current.elements(), 80);
+    cyRef.current.fit(cyRef.current.elements(), 120);
   };
 
   const generarMapa = async () => {
@@ -107,41 +138,45 @@ export default function MapGenerator() {
     renderizarMapa(data);
   };
 
+  useEffect(() => {
+    if (elementosOriginales.length > 0) {
+      renderizarMapa(elementosOriginales);
+    }
+  }, [filtros, layoutType]);
+
   const centrarMapa = () => {
     if (!cyRef.current) return;
     cyRef.current.animate({
-      fit: { eles: cyRef.current.elements(), padding: 80 },
+      fit: { eles: cyRef.current.elements(), padding: 120 },
       duration: 600,
     });
   };
-  
+
   const exportarPNG = async () => {
     if (!cyRef.current) return;
-  
+
     const pngBlob = cyRef.current.png({
       full: true,
       scale: 2,
-      bg: "#0f172a", // fondo uniforme
+      bg: "#0f172a",
     });
-  
+
     const link = document.createElement("a");
     link.download = "mapa-loreweaver.png";
     link.href = pngBlob;
     link.click();
   };
-  
-  
-  
 
   const cambiarFiltro = (tipo) => {
-    setFiltros((prev) => ({ ...prev, [tipo]: !prev[tipo] }));
+    setFiltros((prev) => ({
+      ...prev,
+      [tipo]: !prev[tipo],
+    }));
   };
 
-  useEffect(() => {
-    if (elementosOriginales.length > 0) {
-      renderizarMapa(elementosOriginales);
-    }
-  }, [filtros]);
+  const cambiarLayout = (e) => {
+    setLayoutType(e.target.value);
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
@@ -169,10 +204,27 @@ export default function MapGenerator() {
         </button>
       </div>
 
+      {/* Selector de layout */}
+      <div className="mb-6">
+        <label className="mr-4">Layout:</label>
+        <select
+          value={layoutType}
+          onChange={cambiarLayout}
+          className="rounded px-3 py-1 bg-gray-800 text-white"
+        >
+          <option value="breadthfirst">Breadthfirst (Árbol vertical)</option>
+          <option value="grid">Grid (Rejilla)</option>
+          <option value="cose">Cose (Forzado)</option>
+        </select>
+      </div>
+
       {/* Filtros */}
       <div className="flex flex-wrap gap-4 mb-4">
         {Object.entries(filtros).map(([tipo, activo]) => (
-          <label key={tipo} className="flex items-center gap-2 text-sm capitalize">
+          <label
+            key={tipo}
+            className="flex items-center gap-2 text-sm capitalize cursor-pointer"
+          >
             <input
               type="checkbox"
               checked={activo}
@@ -189,16 +241,14 @@ export default function MapGenerator() {
       <div
         ref={containerRef}
         style={{
-            width: "100%",
-            height: "600px",
-            backgroundColor: "#0f172a", // Forzado también aquí
+          width: "100%",
+          height: "600px",
+          backgroundColor: "#0f172a",
         }}
         className="rounded shadow"
-        />
+      />
 
-
-
-      {/* Leyenda */}
+                    {/* Leyenda */}
       <div className="mt-6 text-sm">
         <h3 className="font-semibold mb-2">Leyenda:</h3>
         <div className="flex flex-wrap gap-4">
@@ -209,6 +259,10 @@ export default function MapGenerator() {
           <span className="text-red-400">Tag</span>
         </div>
       </div>
+
     </div>
+    
   );
+
+  
 }
