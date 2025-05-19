@@ -5,9 +5,12 @@ import {
   actualizarPersonaje,
   eliminarPersonaje,
   asignarTagAPersonaje,
-  obtenerPersonajePorId
+  obtenerPersonajePorId,
+  asociarPersonajeAHistoria 
 } from "../controllers/personaje.controller.js";
 import { verifyToken } from "../middlewares/auth.js"; // ✅ nombre corregido
+
+
 
 const router = express.Router();
 
@@ -19,6 +22,7 @@ router.get("/", obtenerPersonajes);
 router.post("/", crearPersonaje);
 router.put("/:id", actualizarPersonaje);
 router.delete("/:id", eliminarPersonaje);
+router.patch("/:id/asociar", verifyToken, asociarPersonajeAHistoria);
 
 // 🔹 Obtener personaje por ID (opcional)
 router.get("/:id", obtenerPersonajePorId); // Solo si tienes esta función

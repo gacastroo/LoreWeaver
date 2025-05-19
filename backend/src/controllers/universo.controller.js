@@ -148,3 +148,41 @@ export const actualizarUniverso = async (req, res) => {
     res.status(500).json({ error: "Error al actualizar universo" });
   }
 };
+
+export const asociarUniversoAHistoria = async (req, res) => {
+  const userId = getUserIdFromToken(req);
+  const { id } = req.params;
+  const { historiaId } = req.body;
+
+  try {
+    const historia = await prisma.historia.findFirst({
+      where: {
+        id: parseInt(historiaId),
+        usuarioId: userId,
+      },
+    });
+
+    if (!historia) {
+      return res.status(403).json({ error: "No tienes permiso sobre esta historia." });
+    }
+
+    const universo = await prisma.universo.findUnique({
+      where: { id_Universo: parseInt(id) },
+    });
+
+    if (!universo) {
+      return res.status(404).json({ error: "Universo no encontrado." });
+    }
+
+    const actualizado = await prisma.universo.update({
+      where: { id_Universo: parseInt(id) },
+      data: { historiaId: historia.id },
+    });
+
+    res.json(actualizado);
+  } catch (error) {
+    console.error("❌ Error al asociar universo:", error);
+    res.status(500).json({ error: "Error al asociar universo" });
+  }
+};
+
