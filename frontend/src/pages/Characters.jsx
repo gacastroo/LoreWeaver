@@ -102,7 +102,7 @@ export default function Characters() {
           onDelete={handleDeleteCharacter}
         />
       ) : (
-        <p className="text-sm text-neutral-500">No hay personajes para este tag.</p>
+        <p className="text-sm text-neutral-500">No hay personajes.</p>
       )}
 
       {/* 🔹 Modal para crear personaje */}

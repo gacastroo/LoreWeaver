@@ -55,19 +55,23 @@ export default function Chapters() {
         <AddButton onClick={handleAdd} label="Nuevo capítulo" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {capitulos.map((cap) => {
-          const historia = historias.find((h) => h.id === cap.historiaId);
-          return (
-            <ChapterCard
-              key={cap.id_Capitulo}
-              chapter={cap}
-              historia={historia}
-              onDelete={handleDelete}
-            />
-          );
-        })}
-      </div>
+      {capitulos.length === 0 ? (
+        <p className="text-sm text-neutral-500">No hay capítulos creados todavía.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {capitulos.map((cap) => {
+            const historia = historias.find((h) => h.id === cap.historiaId);
+            return (
+              <ChapterCard
+                key={cap.id_Capitulo}
+                chapter={cap}
+                historia={historia}
+                onDelete={handleDelete}
+              />
+            );
+          })}
+        </div>
+      )}
 
       {mostrarModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
