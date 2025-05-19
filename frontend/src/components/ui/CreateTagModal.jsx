@@ -4,22 +4,21 @@ import API from "@/services/api";
 export default function CreateTagModal({ onClose, onSuccess, endpoint, historiaId }) {
   const [titulo, setTitulo] = useState("");
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");  // Para mostrar errores
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async () => {
     if (!titulo.trim()) return;
-    
-    // Si historiaId no está definido, lo eliminamos del objeto data
+
     const data = {
       nombre_tag: titulo,
     };
 
     if (historiaId) {
-      data.historiaId = parseInt(historiaId);  // Solo añadimos historiaId si está definido
+      data.historiaId = parseInt(historiaId);
     }
 
     setLoading(true);
-    setErrorMessage("");  // Limpiar errores previos
+    setErrorMessage("");
 
     try {
       const res = await API.post(endpoint, data);
