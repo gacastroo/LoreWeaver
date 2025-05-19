@@ -8,7 +8,7 @@ export default function Tags() {
   const [tags, setTags] = useState([]);
   const [filtroTag] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [historiaId] = useState(1); // Asumimos que la historiaId es 1, puedes cambiarlo dinámicamente según el contexto.
+  const [historiaId, setHistoriaId] = useState(null);
 
   const fetchTags = async () => {
     try {
@@ -19,8 +19,20 @@ export default function Tags() {
     }
   };
 
+  const fetchHistorias = async () => {
+    try {
+      const res = await API.get("/historias");
+      if (res.data.length > 0) {
+        setHistoriaId(res.data[0].id); // Usa la primera historia del usuario
+      }
+    } catch (error) {
+      console.error("❌ Error al cargar historias:", error);
+    }
+  };
+
   useEffect(() => {
     fetchTags();
+    fetchHistorias();
   }, []);
 
   const handleAdd = () => {
@@ -42,14 +54,13 @@ export default function Tags() {
         <AddButton onClick={handleAdd} label="Nuevo tag" />
       </div>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-  {filteredTags.map((tag) => (
-    <TagCard key={tag.id_Tag} tag={tag} onDelete={fetchTags} />
-  ))}
-    </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {filteredTags.map((tag) => (
+          <TagCard key={tag.id_Tag} tag={tag} onDelete={fetchTags} />
+        ))}
+      </div>
 
-
-      {modalOpen && (
+      {modalOpen && historiaId && (
         <CreateTagModal
           onClose={() => setModalOpen(false)}
           onSuccess={handleSuccess}
@@ -58,7 +69,6 @@ export default function Tags() {
           historiaId={historiaId}
         />
       )}
-
     </div>
   );
 }

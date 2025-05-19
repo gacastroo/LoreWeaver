@@ -65,8 +65,10 @@ export const eliminarTag = async (req, res) => {
 
 // 🔹 Crear un nuevo tag
 export const crearTag = async (req, res) => {
+  console.log("🧠 REQ.USUARIO:", req.usuario);
   const { nombre_tag, historiaId } = req.body; // historiaId puede ser opcional
   const usuarioId = getUserIdFromToken(req);
+  console.log("🔑 usuarioId extraído:", usuarioId);
 
   try {
     let tagData = {

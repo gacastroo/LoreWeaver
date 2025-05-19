@@ -1,15 +1,17 @@
 import prisma from '../lib/prisma.js'
+import { getUserIdFromToken } from '../utils/auth.js'
 
-// Crear historia
+// 🔹 Crear historia (solo para el usuario autenticado)
 export const crearHistoria = async (req, res) => {
-  const { titulo } = req.body;
-  const usuarioId = req.usuario?.id; // esto viene del token verificado
+  const { titulo, contenido } = req.body;
+  const usuarioId = req.usuario?.id;
 
   try {
     const historia = await prisma.historia.create({
       data: {
         titulo,
-        usuario: { connect: { id_usuario: usuarioId } },
+        contenido,
+        usuarioId, // conexión directa
       },
     });
     res.status(201).json(historia);
@@ -19,7 +21,7 @@ export const crearHistoria = async (req, res) => {
   }
 };
 
-
+// 🔹 Obtener todas las historias del usuario
 export const obtenerHistorias = async (req, res) => {
   const usuarioId = req.usuario?.id;
 
@@ -32,6 +34,7 @@ export const obtenerHistorias = async (req, res) => {
         universos: true,
         capitulos: true,
         escenas: true,
+        tags: true
       },
     });
     res.json(historias);
@@ -41,15 +44,17 @@ export const obtenerHistorias = async (req, res) => {
   }
 };
 
-
-
-
-// Obtener una historia por ID
+// 🔹 Obtener una historia concreta del usuario
 export const obtenerHistoria = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
+  const usuarioId = req.usuario?.id;
+
   try {
-    const historia = await prisma.historia.findUnique({
-      where: { id: parseInt(id) },
+    const historia = await prisma.historia.findFirst({
+      where: {
+        id: parseInt(id),
+        usuarioId
+      },
       include: {
         personajes: true,
         capitulos: true,
@@ -57,45 +62,64 @@ export const obtenerHistoria = async (req, res) => {
         universos: true,
         tags: true
       }
-    })
-    if (!historia) return res.status(404).json({ error: 'Historia no encontrada' })
-    res.json(historia)
-  } catch (error) {
-    res.status(500).json({ error: 'Error al obtener historia' })
-  }
-}
+    });
 
-// Actualizar historia
+    if (!historia) return res.status(404).json({ error: 'Historia no encontrada o no autorizada' });
+    res.json(historia);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener historia' });
+  }
+};
+
+// 🔹 Actualizar una historia del usuario
 export const actualizarHistoria = async (req, res) => {
   const { id } = req.params;
   const { titulo, contenido } = req.body;
+  const usuarioId = req.usuario?.id;
 
   try {
-    const historia = await prisma.historia.update({
-      where: { id: parseInt(id) },
+    const historia = await prisma.historia.findFirst({
+      where: { id: parseInt(id), usuarioId }
+    });
+
+    if (!historia) return res.status(403).json({ error: "No autorizado" });
+
+    const historiaActualizada = await prisma.historia.update({
+      where: { id: historia.id },
       data: {
         ...(titulo && { titulo }),
         ...(contenido && { contenido }),
       },
     });
 
-    res.json(historia);
+    res.json(historiaActualizada);
   } catch (error) {
     console.error("❌ Error al actualizar historia:", error);
     res.status(500).json({ error: "Error al actualizar historia" });
   }
 };
 
-
-// Eliminar historia
+// 🔹 Eliminar una historia del usuario
 export const eliminarHistoria = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
+  const usuarioId = req.usuario?.id;
+
   try {
+    const historia = await prisma.historia.findFirst({
+      where: {
+        id: parseInt(id),
+        usuarioId
+      },
+    });
+
+    if (!historia) return res.status(403).json({ error: "No autorizado para eliminar esta historia" });
+
     await prisma.historia.delete({
-      where: { id: parseInt(id) }
-    })
-    res.json({ message: 'Historia eliminada' })
+      where: { id: historia.id }
+    });
+
+    res.json({ message: 'Historia eliminada correctamente' });
   } catch (error) {
-    res.status(500).json({ error: 'Error al eliminar historia' })
+    res.status(500).json({ error: 'Error al eliminar historia' });
   }
-}
+};
