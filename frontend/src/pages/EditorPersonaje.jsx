@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import API from "@/services/api"
 
@@ -9,15 +9,16 @@ export default function EditorPersonaje({ onUpdate }) {
   const [nombre, setNombre] = useState("")
   const [descripcion, setDescripcion] = useState("")
   const [loading, setLoading] = useState(true)
+  const textareaRef = useRef(null)
 
   useEffect(() => {
     const fetchPersonaje = async () => {
-      console.log("Valor de id:", id);
       try {
         const res = await API.get(`/personajes/${id}`)
         setPersonaje(res.data)
         setNombre(res.data.nombre_personaje || "")
         setDescripcion(res.data.descripcion_personaje || "")
+        ajustarAlturaTextarea(res.data.descripcion_personaje || "")
       } catch (error) {
         console.error("❌ Error al cargar personaje:", error)
       } finally {
@@ -28,11 +29,25 @@ export default function EditorPersonaje({ onUpdate }) {
     fetchPersonaje()
   }, [id])
 
+  // Función para ajustar altura del textarea automáticamente
+  const ajustarAlturaTextarea = (value) => {
+    const ta = textareaRef.current
+    if (ta) {
+      ta.style.height = "auto"
+      ta.style.height = ta.scrollHeight + "px"
+    }
+  }
+
+  const handleDescripcionChange = (e) => {
+    setDescripcion(e.target.value)
+    ajustarAlturaTextarea(e.target.value)
+  }
+
   const handleGuardar = async () => {
     try {
       const res = await API.put(`/personajes/${id}`, {
         nombre_personaje: nombre,
-        descripcion_personaje: descripcion
+        descripcion_personaje: descripcion,
       })
 
       alert("✅ Personaje actualizado correctamente")
@@ -46,7 +61,7 @@ export default function EditorPersonaje({ onUpdate }) {
   if (loading) return <p className="p-6">Cargando personaje...</p>
 
   return (
-    <div className="p-8 max-w-2xl mx-auto">
+    <div className="p-8 max-w-4xl mx-auto"> {/* Aumentado max-w-4xl para mayor ancho */}
       <h1 className="text-2xl font-bold mb-4 text-neutral-700">
         ✍️ Editar Personaje
       </h1>
@@ -66,11 +81,14 @@ export default function EditorPersonaje({ onUpdate }) {
         Descripción
       </label>
       <textarea
-        className="w-full p-4 border border-neutral-400 text-neutral-800 rounded-md min-h-[150px] bg-white"
+        ref={textareaRef}
+        className="w-full p-4 border border-neutral-400 text-neutral-800 rounded-md bg-white resize-none"
         value={descripcion}
-        onChange={(e) => setDescripcion(e.target.value)}
+        onChange={handleDescripcionChange}
         placeholder="Escribe la descripción del personaje..."
+        style={{ minHeight: "150px", overflow: "hidden" }}
       />
+
       <div className="flex justify-end mt-4">
         <button
           onClick={handleGuardar}

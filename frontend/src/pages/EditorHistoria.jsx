@@ -1,22 +1,26 @@
-import RichTextEditor from "@/components/ui/RichTextEditor"
-import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useEffect, useState, useRef } from "react"
+import { useParams, useNavigate } from "react-router-dom"
 import API from "@/services/api"
 
-export default function EditorHistoria() {
+export default function EditorHistoria({ onUpdate }) {
   const { id } = useParams()
+  const navigate = useNavigate()
+  const [historia, setHistoria] = useState(null)
   const [titulo, setTitulo] = useState("")
   const [contenido, setContenido] = useState("")
   const [loading, setLoading] = useState(true)
+  const textareaRef = useRef(null)
 
   useEffect(() => {
     const fetchHistoria = async () => {
       try {
         const res = await API.get(`/historias/${id}`)
-        setTitulo(res.data.titulo)
-        setContenido(res.data.contenido || "<p>Vacío</p>")
-      } catch (err) {
-        console.error("❌ Error al obtener la historia", err)
+        setHistoria(res.data)
+        setTitulo(res.data.titulo || "")
+        setContenido(res.data.contenido || "")
+        ajustarAlturaTextarea(res.data.contenido || "")
+      } catch (error) {
+        console.error("❌ Error al cargar historia:", error)
       } finally {
         setLoading(false)
       }
@@ -25,27 +29,74 @@ export default function EditorHistoria() {
     fetchHistoria()
   }, [id])
 
+  // Ajusta la altura del textarea según el contenido
+  const ajustarAlturaTextarea = (value) => {
+    const ta = textareaRef.current
+    if (ta) {
+      ta.style.height = "auto"
+      ta.style.height = ta.scrollHeight + "px"
+    }
+  }
+
+  const handleContenidoChange = (e) => {
+    setContenido(e.target.value)
+    ajustarAlturaTextarea(e.target.value)
+  }
+
   const handleGuardar = async () => {
     try {
-      await API.put(`/historias/${id}`, { contenido })
+      const res = await API.put(`/historias/${id}`, {
+        titulo,
+        contenido,
+      })
+
       alert("✅ Historia actualizada correctamente")
-    } catch (err) {
-      console.error("❌ Error al guardar historia", err)
+      onUpdate && onUpdate(res.data)
+      navigate("/stories")
+    } catch (error) {
+      console.error("❌ Error al actualizar historia:", error)
     }
   }
 
   if (loading) return <p className="p-6">Cargando historia...</p>
 
   return (
-    <div className="p-8 max-w-4xl mx-auto text">
-      <h1 className="text-2xl font-bold mb-4 text-neutral-800">✍️ Editar: {titulo}</h1>
-      <RichTextEditor initialContent={contenido} onChange={setContenido} />
-      <button
-        onClick={handleGuardar}
-        className="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
-      >
-        Guardar cambios
-      </button>
+    <div className="p-8 max-w-4xl mx-auto"> {/* Contenedor más ancho */}
+      <h1 className="text-2xl font-bold mb-4 text-neutral-700">
+        ✍️ Editar Historia
+      </h1>
+
+      <label className="block mb-2 text-sm font-medium text-neutral-700">
+        Título
+      </label>
+      <input
+        type="text"
+        className="w-full p-3 border border-neutral-400 text-lg font-semibold rounded-md mb-4"
+        value={titulo}
+        onChange={(e) => setTitulo(e.target.value)}
+        placeholder="Título de la historia"
+      />
+
+      <label className="block mb-2 text-sm font-medium text-neutral-700">
+        Contenido
+      </label>
+      <textarea
+        ref={textareaRef}
+        className="w-full p-4 border border-neutral-400 text-neutral-800 rounded-md bg-white resize-none"
+        value={contenido}
+        onChange={handleContenidoChange}
+        placeholder="Escribe el contenido de la historia..."
+        style={{ minHeight: "150px", overflow: "hidden" }}
+      />
+
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={handleGuardar}
+          className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700"
+        >
+          Guardar cambios
+        </button>
+      </div>
     </div>
   )
 }

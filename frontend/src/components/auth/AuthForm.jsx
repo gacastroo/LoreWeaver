@@ -23,60 +23,79 @@ export default function AuthForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [nombre, setNombre] = useState("")
+
+  const [showResetModal, setShowResetModal] = useState(false)
+  const [resetEmail, setResetEmail] = useState("")
+  const [resetMsg, setResetMsg] = useState("")
+  const [resetError, setResetError] = useState("")
+
   const navigate = useNavigate()
 
   const handleSubmit = async () => {
-    // VALIDACIÓN BÁSICA
     if (!email || !password) {
-      alert("❌ Todos los campos son obligatorios.");
-      return;
+      alert("❌ Todos los campos son obligatorios.")
+      return
     }
-  
     if (!email.includes("@")) {
-      alert("❌ El correo electrónico no es válido.");
-      return;
+      alert("❌ El correo electrónico no es válido.")
+      return
     }
-  
     if (password.length < 6) {
-      alert("❌ La contraseña debe tener al menos 6 caracteres.");
-      return;
+      alert("❌ La contraseña debe tener al menos 6 caracteres.")
+      return
     }
-  
     if (registro && !nombre.trim()) {
-      alert("❌ El nombre es obligatorio para registrarse.");
-      return;
+      alert("❌ El nombre es obligatorio para registrarse.")
+      return
     }
-  
+
     try {
-      const endpoint = registro ? "/usuarios/registro" : "/usuarios/login";
+      const endpoint = registro ? "/usuarios/registro" : "/usuarios/login"
       const payload = registro
         ? { email, password, nombre }
-        : { email, password };
-  
-      const res = await API.post(endpoint, payload);
-      const { token } = res.data;
-  
+        : { email, password }
+
+      const res = await API.post(endpoint, payload)
+      const { token } = res.data
+
       if (token) {
-        localStorage.setItem("token", token);
-  
+        localStorage.setItem("token", token)
+
         if (registro) {
-          setRegistro(false);
-          alert("✅ Cuenta creada correctamente. Ahora inicia sesión.");
+          setRegistro(false)
+          alert("✅ Cuenta creada correctamente. Ahora inicia sesión.")
         } else {
-          navigate("/Inicio");
+          navigate("/Inicio")
         }
       } else {
-        alert("❌ No se recibió un token del servidor.");
+        alert("❌ No se recibió un token del servidor.")
       }
     } catch (error) {
-      console.error("Error en la autenticación:", error);
-      const msg = error.response?.data?.message || "Error inesperado";
-      alert("🚫 " + msg);
+      console.error("Error en la autenticación:", error)
+      const msg = error.response?.data?.message || "Error inesperado"
+      alert("🚫 " + msg)
     }
-  };
-  
+  }
+
+  const handleResetPassword = async () => {
+    setResetMsg("")
+    setResetError("")
+
+    if (!resetEmail || !resetEmail.includes("@")) {
+      setResetError("Ingresa un correo válido")
+      return
+    }
+
+    try {
+      await API.post("/usuarios/reset-password", { email: resetEmail })
+      setResetMsg("✅ Se ha enviado un email con instrucciones para restablecer tu contraseña.")
+    } catch (err) {
+      setResetError("❌ Error al enviar el email. Intenta más tarde.")
+    }
+  }
+
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full max-w-md relative mx-auto">
       <Card className="bg-white shadow-sm border border-gray-100 rounded-lg">
         <CardHeader className="text-center space-y-2 pb-4">
           <div className="flex justify-center">
@@ -127,16 +146,9 @@ export default function AuthForm() {
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-sm text-gray-700">
-                Contraseña
-              </Label>
-              {!registro && (
-                <a href="#" className="text-xs text-gray-500 hover:text-gray-700 transition-colors">
-                  ¿Olvidaste tu contraseña?
-                </a>
-              )}
-            </div>
+            <Label htmlFor="password" className="text-sm text-gray-700">
+              Contraseña
+            </Label>
             <div className="relative">
               <Lock className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
               <Input
@@ -160,6 +172,16 @@ export default function AuthForm() {
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
 
+          {!registro && (
+            <button
+              onClick={() => setShowResetModal(true)}
+              className="text-sm text-white-500 transition-colors"
+              type="button"
+            >
+              ¿Olvidaste tu contraseña?
+            </button>
+          )}
+
           <button
             className="text-sm text-gray-100 transition-colors"
             onClick={() => setRegistro(!registro)}
@@ -168,6 +190,47 @@ export default function AuthForm() {
           </button>
         </CardFooter>
       </Card>
+
+      {showResetModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-md w-96 max-w-full relative">
+            <button
+              onClick={() => setShowResetModal(false)}
+              className="absolute top-2 right-2 text-gray-600 hover:text-red-900"
+              aria-label="Cerrar"
+            >
+              ✕
+            </button>
+            <h2 className="text-lg font-semibold mb-4">Recuperar contraseña</h2>
+            <p className="mb-4 text-sm text-gray-700">
+              Introduce tu correo electrónico para recibir un enlace de restablecimiento.
+            </p>
+            <input
+              type="email"
+              className="w-full p-2 border border-gray-300 rounded mb-4"
+              placeholder="tu@ejemplo.com"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+            />
+            {resetMsg && <p className="text-green-600 mb-2">{resetMsg}</p>}
+            {resetError && <p className="text-red-600 mb-2">{resetError}</p>}
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowResetModal(false)}
+                className="px-4 py-2 bg-gray-500 rounded hover:bg-gray-700"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleResetPassword}
+                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+              >
+                Enviar enlace
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <p className="text-center text-xs text-gray-400 mt-6">
         © {new Date().getFullYear()} Lore Weaver. Todos los derechos reservados.

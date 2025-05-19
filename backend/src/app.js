@@ -16,6 +16,7 @@ import nameRoutes from './routes/name.routes.js';
 
 
 
+
 import { verifyToken } from './middlewares/auth.js';
 
 dotenv.config();
@@ -23,13 +24,17 @@ dotenv.config();
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
+
 
 // ✅ Rutas públicas
 app.use('/api/usuarios', usuarioRoutes);     // login y registro
 app.use('/api/names', nameRoutes);           // generador de nombres (sin autenticación)
+app.use('/api/reset-password', nameRoutes); // restablecimiento de contraseña (sin autenticación)
 
 // 🔒 Rutas protegidas con verifyToken
+app.use('/api/personajes', verifyToken, personajeRoutes);
 app.use('/api/personajes', verifyToken, personajeRoutes);
 app.use('/api/historias', verifyToken, historiaRoutes);
 app.use('/api/tags', verifyToken, tagRoutes);

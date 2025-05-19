@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // <--- importamos useNavigate
 import axios from "axios";
 import API from "@/services/api";
 
@@ -10,6 +11,7 @@ export default function NameGenerator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const navigate = useNavigate(); // <--- inicializamos useNavigate
 
   // 🔄 Cargar historias
   useEffect(() => {
@@ -53,6 +55,9 @@ export default function NameGenerator() {
         historiaId: parseInt(historiaId),
       });
       setSuccess(`✅ Personaje "${res.data.nombre_personaje}" creado correctamente`);
+      
+      // Redirigir a la pestaña personajes
+      navigate("/characters");
     } catch (err) {
       console.error("❌ Error al crear personaje:", err);
       setError("Error al crear personaje. Verifica tu sesión.");
