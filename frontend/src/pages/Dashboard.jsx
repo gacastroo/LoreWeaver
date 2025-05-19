@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import API from "@/services/api";
 import SummaryCard from "@/components/dashboard/SummaryCard";
 import QuickStats from "@/components/dashboard/QuickStats";
-import RecentActivity from "@/components/dashboard/RecentActivity";
 import RecentStories from "@/components/dashboard/RecentStories";
 
 export default function Dashboard() {
@@ -21,8 +20,10 @@ export default function Dashboard() {
         setLoading(false);
       }
     };
+    
     fetchDashboard();
-  }, []);
+  }, []); 
+
 
   if (loading) return <p className="p-6 text-neutral-500">Cargando...</p>;
   if (!data) return <p className="p-6 text-red-500">Error al cargar los datos del dashboard.</p>;
@@ -39,14 +40,6 @@ export default function Dashboard() {
 
       {/* Actividad y estadísticas */}
       <div className="grid md:grid-cols-3 gap-6">
-        {data.activity?.length > 0 ? (
-          <RecentActivity activity={data.activity} />
-        ) : (
-          <div className="p-4 bg-white rounded border text-sm text-neutral-400">
-            Sin actividad reciente.
-          </div>
-        )}
-
         {(data.scenes > 0 || data.tags > 0 || data.words > 0) ? (
           <QuickStats stats={data} />
         ) : (
