@@ -234,3 +234,45 @@ export const obtenerPersonajePorId = async (req, res) => {
   }
 };
 
+// 🔹 Asociar personaje a una historia
+export const asociarPersonajeAHistoria = async (req, res) => {
+  const userId = getUserIdFromToken(req);
+  const { id } = req.params;
+  const { historiaId } = req.body;
+
+  try {
+    // Verifica que la historia pertenezca al usuario
+    const historia = await prisma.historia.findFirst({
+      where: {
+        id: parseInt(historiaId),
+        usuarioId: userId,
+      },
+    });
+
+    if (!historia) {
+      return res.status(403).json({ error: "No puedes asociar a esta historia." });
+    }
+
+    // Verifica que el personaje exista
+    const personaje = await prisma.personaje.findUnique({
+      where: { id_Personaje: parseInt(id) },
+    });
+
+    if (!personaje) {
+      return res.status(404).json({ error: "Personaje no encontrado." });
+    }
+
+    // Asocia el personaje a la historia
+    const actualizado = await prisma.personaje.update({
+      where: { id_Personaje: parseInt(id) },
+      data: { historiaId: historia.id },
+    });
+
+    res.json(actualizado);
+  } catch (error) {
+    console.error("❌ Error al asociar personaje:", error);
+    res.status(500).json({ error: "Error interno al asociar personaje." });
+  }
+};
+
+

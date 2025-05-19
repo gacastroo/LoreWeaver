@@ -5,9 +5,12 @@ import {
   obtenerUniversos,
   obtenerUniversoPorId,
   actualizarUniverso,
+  asociarUniversoAHistoria
 } from "../controllers/universo.controller.js";
-
 import { verifyToken } from "../middlewares/auth.js";
+
+
+
 
 const router = express.Router();
 
@@ -26,4 +29,6 @@ router.put("/:id", verifyToken, actualizarUniverso);
 // ✅ Eliminar universo
 router.delete("/:id", verifyToken, eliminarUniverso);
 
+// ✅ Asociar universo
+router.patch("/:id/asociar", verifyToken, asociarUniversoAHistoria);
 export default router;
