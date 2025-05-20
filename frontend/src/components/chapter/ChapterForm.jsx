@@ -18,7 +18,7 @@ export default function CapituloForm({ onChapterCreated }) {
 
   const showMessage = (type, text) => {
     setMessage({ type, text });
-    setTimeout(() => setMessage(null), 6000);
+    setTimeout(() => setMessage(null), 10000);
   };
 
   const handleSubmit = async (e) => {
