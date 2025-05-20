@@ -1,8 +1,6 @@
 import prisma from "../lib/prisma.js";
 import { getUserIdFromToken } from "../utils/auth.js";
 
-
-// 🔹 Crear personaje (todo opcional menos nombre)
 export const crearPersonaje = async (req, res) => {
   const userId = getUserIdFromToken(req);
   const { nombre, descripcion, historiaId, tagId } = req.body;
@@ -27,16 +25,17 @@ export const crearPersonaje = async (req, res) => {
       }
     }
 
-    // Crear personaje
+    // ✅ Crear personaje vinculado al usuario
     const personaje = await prisma.personaje.create({
       data: {
         nombre_personaje: nombre,
         descripcion_personaje: descripcion || "",
         historiaId: historia ? historia.id : null,
+        usuarioId: userId, // ← ESTE CAMPO ES CLAVE
       },
     });
 
-    // Si se envió un tag, relacionarlo
+    // Asociar tag si se envía
     if (tagId) {
       const tag = await prisma.tags.findUnique({
         where: { id_Tag: parseInt(tagId) },
@@ -59,17 +58,21 @@ export const crearPersonaje = async (req, res) => {
   }
 };
 
+
 // 🔹 Obtener personajes del usuario
 export const obtenerPersonajes = async (req, res) => {
   const userId = getUserIdFromToken(req);
   try {
     const personajes = await prisma.personaje.findMany({
-      where: {
-        OR: [
-          { historia: { usuarioId: userId } },
-          { historiaId: null } // personajes sin historia también se muestran
-        ],
-      },
+    where: {
+      OR: [
+        { historia: { usuarioId: userId } },
+        {
+          historiaId: null,
+          usuarioId: userId, // ← solo sin historia pero del usuario actual
+        },
+      ],
+    },
       include: {
         historia: { select: { titulo: true } },
         tags: { include: { tag: true } },
