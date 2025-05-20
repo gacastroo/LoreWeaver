@@ -1,19 +1,21 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
 app = Flask(__name__)
-
-# 🛡️ Permitir CORS desde Vercel
-CORS(app, origins=["https://lore-weaver-1zpq.vercel.app"], methods=["POST"])
+CORS(app)  # Habilita CORS globalmente
 
 print("🔄 Cargando modelo GPT-2...")
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 model = GPT2LMHeadModel.from_pretrained("gpt2")
 print("✅ Modelo cargado.")
 
-@app.route('/generate', methods=['POST'])
+@app.route('/generate', methods=['POST', 'OPTIONS'])  # <-- IMPORTANTE
+@cross_origin(origin='*')  # Para pruebas, luego se restringe a tu dominio
 def generate():
+    if request.method == 'OPTIONS':
+        return jsonify({'message': 'Preflight OK'}), 200
+
     data = request.get_json()
     prompt = data.get('prompt', '')
 
@@ -33,4 +35,4 @@ def generate():
     return jsonify({'idea': text})
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host='0.0.0.0', port=5000)
