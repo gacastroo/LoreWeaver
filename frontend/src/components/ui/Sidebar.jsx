@@ -1,28 +1,9 @@
-import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import API from "@/services/api";
-import {
-  BookOpen, LayoutDashboard, Users, Globe, Layers,
-  Film, Bookmark, Map, User, Lightbulb, LogOut, Menu, X
-} from "lucide-react";
+import { BookOpen, LayoutDashboard, Users, Globe, Layers, Film, Bookmark, Map, User, Lightbulb, LogOut, Menu, X } from "lucide-react";
 
-export default function Sidebar() {
-  const [userStories, setUserStories] = useState([]);
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchStories = async () => {
-      try {
-        const res = await API.get("/historias");
-        setUserStories(res.data);
-      } catch (err) {
-        console.error("❌ Error al cargar historias en sidebar:", err);
-      }
-    };
-    fetchStories();
-  }, []);
+  const [showLogoutModal, setShowLogoutModal] = React.useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -32,20 +13,23 @@ export default function Sidebar() {
   return (
     <>
       {/* Botón menú hamburguesa visible solo en móviles */}
-      <button
-        className="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-md shadow-md border"
-        onClick={() => setSidebarOpen(true)}
-      >
-        <Menu className="w-6 h-6 text-gray-700" />
-      </button>
+      {!sidebarOpen && (
+        <button
+          className="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-md shadow-md border"
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Abrir menú"
+        >
+          <Menu className="w-6 h-6 text-gray-700" />
+        </button>
+      )}
 
-      {/* Sidebar RESPONSIVE */}
+      {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 right-0 z-40 h-full w-60 bg-white border-l shadow-lg p-4 flex flex-col justify-between 
+          fixed top-0 left-0 z-40 h-full w-64 bg-white border-r shadow-lg p-4 flex flex-col justify-between
           transition-transform transform
-          ${sidebarOpen ? "translate-x-0" : "translate-x-full"} 
-          md:translate-x-0 md:relative md:flex md:right-auto md:border-r md:shadow-sm
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0 md:relative
         `}
       >
         <div>
@@ -58,6 +42,7 @@ export default function Sidebar() {
               <button
                 className="md:hidden text-gray-500 hover:text-red-500"
                 onClick={() => setSidebarOpen(false)}
+                aria-label="Cerrar menú"
               >
                 <X className="w-5 h-5" />
               </button>
