@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.nav-link {
+  @apply flex items-center gap-2 px-2 py-2 rounded hover:bg-gray-100 text-gray-700 dark:text-white dark:hover:bg-zinc-700 transition;
+}
+.icon {
+  @apply w-4 h-4;
+}
