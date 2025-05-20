@@ -6,13 +6,16 @@ export default function ChapterCard({ chapter, historia, onDelete }) {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-4 hover:shadow-md transition">
-      <h2 className="text-lg font-semibold text-indigo-700">{chapter.titulo_capitulo}</h2>
-      <p className="text-xs text-neutral-500 italic mb-2">
+    <div className="bg-white dark:bg-zinc-800 rounded-xl shadow-sm border border-neutral-200 dark:border-zinc-700 p-4 hover:shadow-md transition w-full">
+      <h2 className="text-base sm:text-lg font-semibold text-indigo-700 dark:text-indigo-400 break-words">
+        {chapter.titulo_capitulo}
+      </h2>
+
+      <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 italic mb-3 break-words">
         Historia: {historia?.titulo || "Desconocida"}
       </p>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <DeleteButton onClick={() => setShowModal(true)} label="Eliminar" />
       </div>
 
