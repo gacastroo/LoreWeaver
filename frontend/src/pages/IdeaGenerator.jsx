@@ -14,15 +14,16 @@ export default function IdeaGenerator() {
     setLoading(true);
 
     try {
-      const res = await axios.post(
-        "https://idea-generator.up.railway.app/generate"
+        const res = await axios.post(
+        "https://idea-generator.up.railway.app/generate", // <-- aquí falta la coma
         { prompt: input },
         {
-          headers: {
+            headers: {
             "Content-Type": "application/json",
-          },
+            },
         }
-      );
+        );
+
 
       setMessages((prev) => [
         ...prev,
