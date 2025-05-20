@@ -1,7 +1,7 @@
 import prisma from "../lib/prisma.js";
 import { getUserIdFromToken } from "../utils/auth.js";
 
-// 🔹 Crear universo (requiere historia opcional)
+// 🔹 Crear universo
 export const crearUniverso = async (req, res) => {
   const userId = getUserIdFromToken(req);
   const { titulo_universo, descripcion_universo, historiaId } = req.body;
@@ -28,7 +28,7 @@ export const crearUniverso = async (req, res) => {
         titulo_universo,
         descripcion_universo: descripcion_universo || "",
         historiaId: historia ? historia.id : null,
-        usuarioId: userId,
+        usuarioId: userId, // ✅ Asociar universo al usuario
       },
     });
 
@@ -45,9 +45,7 @@ export const obtenerUniversos = async (req, res) => {
 
   try {
     const universos = await prisma.universo.findMany({
-      where: {
-          usuarioId ,
-      },
+      where: { usuarioId: userId },
       include: {
         historia: { select: { titulo: true } },
       },
@@ -69,9 +67,11 @@ export const obtenerUniversoPorId = async (req, res) => {
     const universo = await prisma.universo.findFirst({
       where: {
         id_Universo: parseInt(id),
-         usuarioId,
+        usuarioId: userId,
       },
-      include: { historia: true },
+      include: {
+        historia: true,
+      },
     });
 
     if (!universo) {
@@ -95,7 +95,7 @@ export const actualizarUniverso = async (req, res) => {
     const universo = await prisma.universo.findFirst({
       where: {
         id_Universo: parseInt(id),
-        usuarioId,
+        usuarioId: userId,
       },
     });
 
@@ -127,7 +127,7 @@ export const eliminarUniverso = async (req, res) => {
     const universo = await prisma.universo.findFirst({
       where: {
         id_Universo: parseInt(id),
-        usuarioId,
+        usuarioId: userId,
       },
     });
 
@@ -146,7 +146,7 @@ export const eliminarUniverso = async (req, res) => {
   }
 };
 
-// 🔹 Asociar universo a historia
+// 🔹 Asociar universo a una historia
 export const asociarUniversoAHistoria = async (req, res) => {
   const userId = getUserIdFromToken(req);
   const { id } = req.params;
@@ -162,7 +162,10 @@ export const asociarUniversoAHistoria = async (req, res) => {
     }
 
     const universo = await prisma.universo.findFirst({
-      where: { id_Universo: parseInt(id), historia: { usuarioId: userId } },
+      where: {
+        id_Universo: parseInt(id),
+        usuarioId: userId,
+      },
     });
 
     if (!universo) {
