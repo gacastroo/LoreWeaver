@@ -33,6 +33,7 @@ export const crearPersonaje = async (req, res) => {
         nombre_personaje: nombre,
         descripcion_personaje: descripcion || "",
         historiaId: historia ? historia.id : null,
+        usuarioId: userId,
       },
     });
 
