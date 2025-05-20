@@ -8,7 +8,7 @@ import Stories from "@/pages/Stories";
 import Universes from "@/pages/Universes";
 import Chapters from "@/pages/Chapters";
 import Scenes from "@/pages/Scenes";
-import Tags from "@/pages/tags";
+import Tags from "@/pages/Tags";
 import MapGenerator from "@/pages/MapGenerator";
 import RutaPrivada from "@/components/auth/RutaPrivada";
 import EditorHistoria from "@/pages/EditorHistoria";
