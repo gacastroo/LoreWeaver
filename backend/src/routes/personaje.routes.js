@@ -35,7 +35,7 @@ router.post("/agregar-tag", asignarTagAPersonaje); // 🔐 Ya está protegido po
 
 router.patch('/:id/desasociar-historia', desasociarHistoriaPersonaje);
 
-router.patch('/:id/quitar-tag', quitarTagPersonaje);
+router.delete('/:id/quitar-tag', quitarTagPersonaje);
 
 
 export default router;

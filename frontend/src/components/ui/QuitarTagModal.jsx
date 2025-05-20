@@ -15,7 +15,7 @@ export default function QuitarTagModal({ personajeId, tagsAsignados = [], onClos
     setError("");
 
     try {
-      await API.patch(`/personajes/${personajeId}/quitar-tag`, {
+      await API.delete(`/personajes/${personajeId}/quitar-tag`, {
         tagId: parseInt(tagSeleccionado),
       });
       onSuccess();
