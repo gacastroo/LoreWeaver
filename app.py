@@ -1,20 +1,25 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
 app = Flask(__name__)
-CORS(app)  # Habilita CORS globalmente
+
+# Permite SOLO el origen de tu frontend (ajusta el dominio según corresponda)
+CORS(app, resources={r"/generate": {"origins": [
+    "http://localhost:5173",          # Para desarrollo local
+    "https://tu-frontend.com"         # Para producción
+]}})
 
 print("🔄 Cargando modelo GPT-2...")
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 model = GPT2LMHeadModel.from_pretrained("gpt2")
 print("✅ Modelo cargado.")
 
-@app.route('/generate', methods=['POST', 'OPTIONS'])  # <-- IMPORTANTE
-@cross_origin(origin='*')  # Para pruebas, luego se restringe a tu dominio
+@app.route('/generate', methods=['POST', 'OPTIONS'])
 def generate():
     if request.method == 'OPTIONS':
-        return jsonify({'message': 'Preflight OK'}), 200
+        # Responde correctamente a la preflight request
+        return '', 200
 
     data = request.get_json()
     prompt = data.get('prompt', '')
