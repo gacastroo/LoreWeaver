@@ -15,10 +15,9 @@ model Usuario {
   createdAt   DateTime     @default(now())
   historias   Historia[]
   resetTokens ResetToken[]
-  personajes  Personaje[]  // ✅ ← RELACIÓN INVERSA
-  universos Universo[] 
+  personajes  Personaje[] // ✅ ← RELACIÓN INVERSA
+  universos   Universo[]
 }
-
 
 model Historia {
   id         Int         @id @default(autoincrement())
@@ -45,7 +44,6 @@ model Personaje {
   usuario               Usuario         @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
   tags                  Personaje_Tag[]
 }
-
 
 model Escena {
   id_Escena     Int    @id @default(autoincrement())
@@ -78,11 +76,10 @@ model Universo {
   historiaId           Int?
   historia             Historia?  @relation(fields: [historiaId], references: [id], onDelete: Cascade)
   usuarioId            Int
-  usuario              Usuario     @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
+  usuario              Usuario    @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
   escenas              Escena[]
   capitulos            Capitulo[]
 }
-
 
 model Tags {
   id_Tag     Int    @id @default(autoincrement())

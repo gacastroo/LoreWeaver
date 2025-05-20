@@ -14,7 +14,7 @@ CREATE TABLE `Usuario` (
 CREATE TABLE `Historia` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `titulo` VARCHAR(191) NOT NULL,
-    `contenido` VARCHAR(191) NULL,
+    `contenido` LONGTEXT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `usuarioId` INTEGER NOT NULL,
@@ -26,8 +26,9 @@ CREATE TABLE `Historia` (
 CREATE TABLE `Personaje` (
     `id_Personaje` INTEGER NOT NULL AUTO_INCREMENT,
     `nombre_personaje` VARCHAR(191) NOT NULL,
-    `descripcion_personaje` VARCHAR(191) NULL,
+    `descripcion_personaje` LONGTEXT NULL,
     `historiaId` INTEGER NULL,
+    `usuarioId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id_Personaje`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -58,8 +59,9 @@ CREATE TABLE `Capitulo` (
 CREATE TABLE `Universo` (
     `id_Universo` INTEGER NOT NULL AUTO_INCREMENT,
     `titulo_universo` VARCHAR(191) NOT NULL,
-    `descripcion_universo` VARCHAR(191) NULL,
+    `descripcion_universo` LONGTEXT NULL,
     `historiaId` INTEGER NULL,
+    `usuarioId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id_Universo`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -82,11 +84,26 @@ CREATE TABLE `Personaje_Tag` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `ResetToken` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `token` VARCHAR(191) NOT NULL,
+    `usuarioId` INTEGER NOT NULL,
+    `expiresAt` DATETIME(3) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    UNIQUE INDEX `ResetToken_token_key`(`token`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `Historia` ADD CONSTRAINT `Historia_usuarioId_fkey` FOREIGN KEY (`usuarioId`) REFERENCES `Usuario`(`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Personaje` ADD CONSTRAINT `Personaje_historiaId_fkey` FOREIGN KEY (`historiaId`) REFERENCES `Historia`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Personaje` ADD CONSTRAINT `Personaje_usuarioId_fkey` FOREIGN KEY (`usuarioId`) REFERENCES `Usuario`(`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Escena` ADD CONSTRAINT `Escena_historiaId_fkey` FOREIGN KEY (`historiaId`) REFERENCES `Historia`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -107,6 +124,9 @@ ALTER TABLE `Capitulo` ADD CONSTRAINT `Capitulo_universoId_fkey` FOREIGN KEY (`u
 ALTER TABLE `Universo` ADD CONSTRAINT `Universo_historiaId_fkey` FOREIGN KEY (`historiaId`) REFERENCES `Historia`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `Universo` ADD CONSTRAINT `Universo_usuarioId_fkey` FOREIGN KEY (`usuarioId`) REFERENCES `Usuario`(`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `Tags` ADD CONSTRAINT `Tags_historiaId_fkey` FOREIGN KEY (`historiaId`) REFERENCES `Historia`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -114,3 +134,6 @@ ALTER TABLE `Personaje_Tag` ADD CONSTRAINT `Personaje_Tag_personajeId_fkey` FORE
 
 -- AddForeignKey
 ALTER TABLE `Personaje_Tag` ADD CONSTRAINT `Personaje_Tag_tagId_fkey` FOREIGN KEY (`tagId`) REFERENCES `Tags`(`id_Tag`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ResetToken` ADD CONSTRAINT `ResetToken_usuarioId_fkey` FOREIGN KEY (`usuarioId`) REFERENCES `Usuario`(`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
