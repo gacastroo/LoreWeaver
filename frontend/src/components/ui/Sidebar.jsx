@@ -48,17 +48,18 @@ export default function Sidebar() {
       `}>
         <div>
           {/* Logo */}
+          {/* Cerrar en móvil */}
+          <button
+            className="md:hidden text-gray-500 hover:text-red-500 text-xs p-1"
+            onClick={() => setSidebarOpen(false)}
+          >
+            ✖
+          </button>
+
           <div className="flex items-center justify-between mb-6 px-2">
             <NavLink to="/dashboard" onClick={() => setSidebarOpen(false)} className="flex items-center gap-2">
               <img src="/logo.png" alt="LoreWeaver Logo" className="w-36 object-contain" />
             </NavLink>
-            {/* Cerrar en móvil */}
-            <button
-              className="md:hidden text-gray-500 hover:text-red-500"
-              onClick={() => setSidebarOpen(false)}
-            >
-              ✖
-            </button>
           </div>
 
           {/* Navegación */}
@@ -109,7 +110,7 @@ export default function Sidebar() {
             setSidebarOpen(false);
             setShowLogoutModal(true);
           }}
-          className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-red-600 transition rounded px-3 py-2 mt-6 border hover:border-red-600"
+          className="flex items-center gap-2 text-sm font-medium text-white-700 hover:text-red-600 transition rounded px-3 py-2 mt-6 border hover:border-red-600"
         >
           <LogOut className="icon" />
           Cerrar sesión
