@@ -29,31 +29,36 @@ export default function AuthForm() {
   const [resetMsg, setResetMsg] = useState("")
   const [resetError, setResetError] = useState("")
 
+  const [message, setMessage] = useState(null)
   const navigate = useNavigate()
+
+  const showMessage = (type, text) => {
+    setMessage({ type, text })
+    const timeout = type === "success" ? 15000 : 10000
+    setTimeout(() => setMessage(null), timeout)
+  }
 
   const handleSubmit = async () => {
     if (!email || !password) {
-      alert("❌ Todos los campos son obligatorios.")
+      showMessage("error", "❌ Todos los campos son obligatorios.")
       return
     }
     if (!email.includes("@")) {
-      alert("❌ El correo electrónico no es válido.")
+      showMessage("error", "❌ El correo electrónico no es válido.")
       return
     }
     if (password.length < 6) {
-      alert("❌ La contraseña debe tener al menos 6 caracteres.")
+      showMessage("error", "❌ La contraseña debe tener al menos 6 caracteres.")
       return
     }
     if (registro && !nombre.trim()) {
-      alert("❌ El nombre es obligatorio para registrarse.")
+      showMessage("error", "❌ El nombre es obligatorio para registrarse.")
       return
     }
 
     try {
       const endpoint = registro ? "/usuarios/registro" : "/usuarios/login"
-      const payload = registro
-        ? { email, password, nombre }
-        : { email, password }
+      const payload = registro ? { email, password, nombre } : { email, password }
 
       const res = await API.post(endpoint, payload)
       const { token } = res.data
@@ -63,17 +68,17 @@ export default function AuthForm() {
 
         if (registro) {
           setRegistro(false)
-          alert("✅ Cuenta creada correctamente. Ahora inicia sesión.")
+          showMessage("success", "✅ Cuenta creada correctamente. Ahora inicia sesión.")
         } else {
           navigate("/Inicio")
         }
       } else {
-        alert("❌ No se recibió un token del servidor.")
+        showMessage("error", "❌ No se recibió un token del servidor.")
       }
     } catch (error) {
       console.error("Error en la autenticación:", error)
       const msg = error.response?.data?.message || "Error inesperado"
-      alert("🚫 " + msg)
+      showMessage("error", "🚫 " + msg)
     }
   }
 
@@ -96,6 +101,20 @@ export default function AuthForm() {
 
   return (
     <div className="w-full max-w-md relative mx-auto">
+      {/* Toast message */}
+      {message && (
+        <div
+          className={`
+            fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded shadow-md text-sm
+            ${message.type === "success"
+              ? "bg-green-100 text-green-800 border border-green-300"
+              : "bg-red-100 text-red-800 border border-red-300"}
+          `}
+        >
+          {message.text}
+        </div>
+      )}
+
       <Card className="bg-white shadow-sm border border-gray-100 rounded-lg">
         <CardHeader className="text-center space-y-2 pb-4">
           <div className="flex justify-center">

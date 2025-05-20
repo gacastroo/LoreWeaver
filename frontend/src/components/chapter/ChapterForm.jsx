@@ -35,7 +35,12 @@ export default function CapituloForm({ onChapterCreated }) {
         historiaId,
       });
 
-      showMessage("success", "✅ Capítulo creado correctamente");
+      const showMessage = (type, text) => {
+        setMessage({ type, text });
+        const timeout = type === "success" ? 15000 : 10000; // 15s para éxito, 10s para error
+        setTimeout(() => setMessage(null), timeout);
+      };
+
       setTitulo("");
       setHistoriaId("");
       onChapterCreated?.();
