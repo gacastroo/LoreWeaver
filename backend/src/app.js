@@ -42,6 +42,5 @@ app.use('/api/universos', verifyToken, universoRoutes)
 app.use('/api/capitulos', verifyToken, capituloRoutes)
 app.use('/api/escenas', verifyToken, escenaRoutes)
 app.use('/api/mapa', verifyToken, mapaRoutes)
-app.use('/api/names', verifyToken, nameRoutes) // ¿repetido?
 
 export default app
