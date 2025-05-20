@@ -35,7 +35,7 @@ export default function Sidebar() {
       <button
         className={`md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-md shadow-md border
           transition-opacity duration-300
-          ${sidebarOpen ? "opacity-50" : "opacity-100"}
+          ${sidebarOpen ? "opacity-100" : "opacity-30"}
         `}
         onClick={() => setSidebarOpen(!sidebarOpen)}
         aria-label={sidebarOpen ? "Cerrar menú" : "Abrir menú"}
