@@ -128,15 +128,6 @@ export default function CharacterForm({ onCharacterCreated }) {
       >
         Crear personaje
       </button>
-
-      {personajeCreado && (
-        <div className="mt-6 p-4 bg-green-100 text-green-800 rounded-xl">
-          <h3 className="text-lg font-bold mb-2">✅ Personaje creado:</h3>
-          <p><strong>Nombre:</strong> {personajeCreado.nombre}</p>
-          <p><strong>Descripción:</strong> {personajeCreado.descripcion || "(sin descripción)"}</p>
-          <p><strong>Historia:</strong> {personajeCreado.historia || "(sin historia)"}</p>
-        </div>
-      )}
     </form>
   );
 }
