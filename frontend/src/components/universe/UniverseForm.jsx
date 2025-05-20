@@ -100,15 +100,6 @@ export default function UniverseForm({ onUniverseCreated }) {
       >
         Crear universo
       </button>
-
-      {universoCreado && (
-        <div className="mt-6 p-4 bg-green-100 text-green-800 rounded-xl">
-          <h3 className="text-lg font-bold mb-2">✅ Universo creado:</h3>
-          <p><strong>Nombre:</strong> {universoCreado.titulo}</p>
-          <p><strong>Descripción:</strong> {universoCreado.descripcion || "(sin descripción)"}</p>
-          <p><strong>Historia:</strong> {universoCreado.historia}</p>
-        </div>
-      )}
     </form>
   );
 }
