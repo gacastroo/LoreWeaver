@@ -13,8 +13,7 @@ export default defineConfig(({ command }) => ({
       '@': resolve(__dirname, 'src'),
     },
   },
-  base: '/', 
-
+  base: '/',
   server: command === 'serve' ? {
     proxy: {
       '/api': {
