@@ -18,14 +18,14 @@ async function main() {
 
   // === Historias ===
   console.log("Insertando historia: Carrie");
-  const carrie = await prisma.historia.create({ 
-    data: { 
+  const carrie = await prisma.historia.create({
+    data: {
       titulo: 'Carrie',
-      usuarioId: usuario.id_usuario 
-    } 
+      usuarioId: usuario.id_usuario
+    }
   });
   const juegos = await prisma.historia.create({ data: { titulo: 'Los Juegos del Hambre', usuarioId: usuario.id_usuario } });
-  const speak = await prisma.historia.create({ data: { titulo: 'Speak',  usuarioId: usuario.id_usuario } });
+  const speak = await prisma.historia.create({ data: { titulo: 'Speak', usuarioId: usuario.id_usuario } });
 
   // === Universos ===
   const uniCarrie = await prisma.universo.create({ data: { titulo_universo: 'Chamberlain High', historiaId: carrie.id } });
@@ -58,11 +58,32 @@ async function main() {
     prisma.tags.create({ data: { nombre_tag: 'Resiliencia', historiaId: speak.id } }),
   ]);
 
-  // === Personajes ===
+  // === Personajes === (✔ Incluyen usuarioId)
   const [carrieWhite, katniss, melinda] = await Promise.all([
-    prisma.personaje.create({ data: { nombre_personaje: 'Carrie White', descripcion_personaje: 'Joven con poderes telequinéticos', historiaId: carrie.id } }),
-    prisma.personaje.create({ data: { nombre_personaje: 'Katniss Everdeen', descripcion_personaje: 'Tributo del Distrito 12', historiaId: juegos.id } }),
-    prisma.personaje.create({ data: { nombre_personaje: 'Melinda Sordino', descripcion_personaje: 'Chica retraída que deja de hablar', historiaId: speak.id } }),
+    prisma.personaje.create({
+      data: {
+        nombre_personaje: 'Carrie White',
+        descripcion_personaje: 'Joven con poderes telequinéticos',
+        historiaId: carrie.id,
+        usuarioId: usuario.id_usuario, // ✅ asociar al usuario
+      }
+    }),
+    prisma.personaje.create({
+      data: {
+        nombre_personaje: 'Katniss Everdeen',
+        descripcion_personaje: 'Tributo del Distrito 12',
+        historiaId: juegos.id,
+        usuarioId: usuario.id_usuario,
+      }
+    }),
+    prisma.personaje.create({
+      data: {
+        nombre_personaje: 'Melinda Sordino',
+        descripcion_personaje: 'Chica retraída que deja de hablar',
+        historiaId: speak.id,
+        usuarioId: usuario.id_usuario,
+      }
+    }),
   ]);
 
   // === Relaciones personaje-tag ===
@@ -77,7 +98,7 @@ async function main() {
     ]
   });
 
-  console.log("✅ Base de datos inicializada con historias y relaciones asociadas al usuario.");
+  console.log("✅ Base de datos inicializada con personajes asociados al usuario.");
 }
 
 main()

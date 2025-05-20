@@ -14,8 +14,10 @@ model Usuario {
   nombre      String
   createdAt   DateTime     @default(now())
   historias   Historia[]
-  resetTokens ResetToken[] // ✅ relación inversa añadida
+  resetTokens ResetToken[]
+  personajes  Personaje[]  // ✅ ← RELACIÓN INVERSA
 }
+
 
 model Historia {
   id         Int         @id @default(autoincrement())
@@ -38,8 +40,11 @@ model Personaje {
   descripcion_personaje String?         @db.LongText
   historiaId            Int?
   historia              Historia?       @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  usuarioId             Int
+  usuario               Usuario         @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
   tags                  Personaje_Tag[]
 }
+
 
 model Escena {
   id_Escena     Int    @id @default(autoincrement())
