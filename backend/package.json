@@ -2,8 +2,9 @@
   "name": "backend",
   "version": "1.0.0",
   "type": "module",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
+    "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "test": "set NODE_OPTIONS=--experimental-vm-modules && jest",
     "seed": "node prisma/seed.js"
@@ -12,7 +13,6 @@
     "@prisma/client": "^6.6.0",
     "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
-    "bcryptjs": "^3.0.2",
     "cheerio": "^1.0.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
@@ -21,7 +21,6 @@
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^7.0.3",
     "openai": "^4.97.0",
-    "prisma": "^6.6.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
