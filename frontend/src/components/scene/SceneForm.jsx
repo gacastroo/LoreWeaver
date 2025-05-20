@@ -25,7 +25,6 @@ export default function SceneForm({ onSceneCreated }) {
         capituloId,
       });
 
-      alert("✅ Escena creada");
       setTitulo("");
       setCapituloId("");
       onSceneCreated?.();
