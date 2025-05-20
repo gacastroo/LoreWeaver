@@ -13,7 +13,7 @@ export default defineConfig(({ command }) => ({
       '@': resolve(__dirname, 'src'),
     },
   },
-  base: '/',
+  base: '/', // Necesario para Vercel
   server: command === 'serve' ? {
     proxy: {
       '/api': {
