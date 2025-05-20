@@ -16,6 +16,7 @@ model Usuario {
   historias   Historia[]
   resetTokens ResetToken[]
   personajes  Personaje[]  // ✅ ← RELACIÓN INVERSA
+  universos Universo[] 
 }
 
 
@@ -76,9 +77,12 @@ model Universo {
   descripcion_universo String?    @db.LongText
   historiaId           Int?
   historia             Historia?  @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  usuarioId            Int
+  usuario              Usuario     @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
   escenas              Escena[]
   capitulos            Capitulo[]
 }
+
 
 model Tags {
   id_Tag     Int    @id @default(autoincrement())

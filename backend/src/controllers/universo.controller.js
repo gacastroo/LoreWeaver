@@ -1,7 +1,7 @@
 import prisma from "../lib/prisma.js";
 import { getUserIdFromToken } from "../utils/auth.js";
 
-// 🔹 Crear universo con historia opcional
+// 🔹 Crear universo (requiere historia opcional)
 export const crearUniverso = async (req, res) => {
   const userId = getUserIdFromToken(req);
   const { titulo_universo, descripcion_universo, historiaId } = req.body;
@@ -15,10 +15,7 @@ export const crearUniverso = async (req, res) => {
 
     if (historiaId) {
       historia = await prisma.historia.findFirst({
-        where: {
-          id: parseInt(historiaId),
-          usuarioId: userId,
-        },
+        where: { id: parseInt(historiaId), usuarioId: userId },
       });
 
       if (!historia) {
@@ -31,6 +28,7 @@ export const crearUniverso = async (req, res) => {
         titulo_universo,
         descripcion_universo: descripcion_universo || "",
         historiaId: historia ? historia.id : null,
+        usuarioId: userId,
       },
     });
 
@@ -41,38 +39,17 @@ export const crearUniverso = async (req, res) => {
   }
 };
 
-// 🔹 Eliminar universo
-export const eliminarUniverso = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    await prisma.universo.delete({
-      where: { id_Universo: parseInt(id) },
-    });
-
-    res.json({ message: "Universo eliminado correctamente" });
-  } catch (error) {
-    console.error("❌ Error al eliminar universo:", error);
-    res.status(500).json({ error: "Error al eliminar universo" });
-  }
-};
-
-// 🔹 Obtener todos los universos del usuario (según sus historias)
+// 🔹 Obtener todos los universos del usuario
 export const obtenerUniversos = async (req, res) => {
-  const userId = req.usuario?.id;
+  const userId = getUserIdFromToken(req);
 
   try {
     const universos = await prisma.universo.findMany({
       where: {
-        OR: [
-          { historia: { usuarioId: userId } },
-          { historiaId: null },
-        ],
+          usuarioId ,
       },
       include: {
-        historia: {
-          select: { titulo: true },
-        },
+        historia: { select: { titulo: true } },
       },
     });
 
@@ -85,25 +62,20 @@ export const obtenerUniversos = async (req, res) => {
 
 // 🔹 Obtener un universo por ID
 export const obtenerUniversoPorId = async (req, res) => {
+  const userId = getUserIdFromToken(req);
   const { id } = req.params;
-  const usuarioId = getUserIdFromToken(req);
 
   try {
     const universo = await prisma.universo.findFirst({
       where: {
         id_Universo: parseInt(id),
-        OR: [
-          { historia: { usuarioId } },
-          { historiaId: null },
-        ],
+         usuarioId,
       },
-      include: {
-        historia: true,
-      },
+      include: { historia: true },
     });
 
     if (!universo) {
-      return res.status(404).json({ error: "Universo no encontrado" });
+      return res.status(404).json({ error: "Universo no encontrado o sin permiso" });
     }
 
     res.json(universo);
@@ -115,7 +87,7 @@ export const obtenerUniversoPorId = async (req, res) => {
 
 // 🔹 Actualizar universo
 export const actualizarUniverso = async (req, res) => {
-  const usuarioId = getUserIdFromToken(req);
+  const userId = getUserIdFromToken(req);
   const { id } = req.params;
   const { titulo_universo, descripcion_universo } = req.body;
 
@@ -123,10 +95,7 @@ export const actualizarUniverso = async (req, res) => {
     const universo = await prisma.universo.findFirst({
       where: {
         id_Universo: parseInt(id),
-        OR: [
-          { historia: { usuarioId } },
-          { historiaId: null },
-        ],
+        usuarioId,
       },
     });
 
@@ -149,6 +118,35 @@ export const actualizarUniverso = async (req, res) => {
   }
 };
 
+// 🔹 Eliminar universo
+export const eliminarUniverso = async (req, res) => {
+  const userId = getUserIdFromToken(req);
+  const { id } = req.params;
+
+  try {
+    const universo = await prisma.universo.findFirst({
+      where: {
+        id_Universo: parseInt(id),
+        usuarioId,
+      },
+    });
+
+    if (!universo) {
+      return res.status(403).json({ error: "No tienes permiso para eliminar este universo" });
+    }
+
+    await prisma.universo.delete({
+      where: { id_Universo: parseInt(id) },
+    });
+
+    res.json({ message: "Universo eliminado correctamente" });
+  } catch (error) {
+    console.error("❌ Error al eliminar universo:", error);
+    res.status(500).json({ error: "Error al eliminar universo" });
+  }
+};
+
+// 🔹 Asociar universo a historia
 export const asociarUniversoAHistoria = async (req, res) => {
   const userId = getUserIdFromToken(req);
   const { id } = req.params;
@@ -156,22 +154,19 @@ export const asociarUniversoAHistoria = async (req, res) => {
 
   try {
     const historia = await prisma.historia.findFirst({
-      where: {
-        id: parseInt(historiaId),
-        usuarioId: userId,
-      },
+      where: { id: parseInt(historiaId), usuarioId: userId },
     });
 
     if (!historia) {
       return res.status(403).json({ error: "No tienes permiso sobre esta historia." });
     }
 
-    const universo = await prisma.universo.findUnique({
-      where: { id_Universo: parseInt(id) },
+    const universo = await prisma.universo.findFirst({
+      where: { id_Universo: parseInt(id), historia: { usuarioId: userId } },
     });
 
     if (!universo) {
-      return res.status(404).json({ error: "Universo no encontrado." });
+      return res.status(404).json({ error: "Universo no encontrado o sin permiso." });
     }
 
     const actualizado = await prisma.universo.update({
@@ -185,4 +180,3 @@ export const asociarUniversoAHistoria = async (req, res) => {
     res.status(500).json({ error: "Error al asociar universo" });
   }
 };
-
