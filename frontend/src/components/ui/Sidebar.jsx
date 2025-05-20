@@ -31,10 +31,14 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Botón para abrir sidebar en móviles */}
+      {/* Botón para abrir/cerrar sidebar en móviles */}
       <button
-        className="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-md shadow-md border"
-        onClick={() => setSidebarOpen(true)}
+        className={`md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-md shadow-md border
+          transition-opacity duration-300
+          ${sidebarOpen ? "opacity-50" : "opacity-100"}
+        `}
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        aria-label={sidebarOpen ? "Cerrar menú" : "Abrir menú"}
       >
         <Menu className="w-6 h-6 text-gray-700" />
       </button>
@@ -48,14 +52,6 @@ export default function Sidebar() {
       `}>
         <div>
           {/* Logo */}
-          {/* Cerrar en móvil */}
-          <button
-            className="md:hidden text-gray-500 hover:text-red-500 text-xs p-1"
-            onClick={() => setSidebarOpen(false)}
-          >
-            ✖
-          </button>
-
           <div className="flex items-center justify-between mb-6 px-2">
             <NavLink to="/dashboard" onClick={() => setSidebarOpen(false)} className="flex items-center gap-2">
               <img src="/logo.png" alt="LoreWeaver Logo" className="w-36 object-contain" />
