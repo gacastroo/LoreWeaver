@@ -3,17 +3,23 @@ from flask_cors import CORS
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
 app = Flask(__name__)
-CORS(app)  # ← ESTA LÍNEA ES CLAVE
 
-print("Cargando modelo GPT-2...")
+# 🛡️ Permitir CORS desde Vercel
+CORS(app, origins=["https://lore-weaver-1zpq.vercel.app"], methods=["POST"])
+
+print("🔄 Cargando modelo GPT-2...")
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 model = GPT2LMHeadModel.from_pretrained("gpt2")
-print("Modelo cargado.")
+print("✅ Modelo cargado.")
 
 @app.route('/generate', methods=['POST'])
 def generate():
-    data = request.json
+    data = request.get_json()
     prompt = data.get('prompt', '')
+
+    if not prompt:
+        return jsonify({'error': 'El campo prompt está vacío'}), 400
+
     inputs = tokenizer(prompt, return_tensors='pt')
     outputs = model.generate(
         inputs['input_ids'],
@@ -27,4 +33,4 @@ def generate():
     return jsonify({'idea': text})
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(host="0.0.0.0", port=5000)

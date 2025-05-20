@@ -14,19 +14,26 @@ export default function IdeaGenerator() {
     setLoading(true);
 
     try {
-      const res = await axios.post("https://idea-generator.up.railway.app/generate", {
-        prompt: input,
-      });
+      const res = await axios.post(
+        "https://idea-generator.up.railway.app/generate"
+        { prompt: input },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       setMessages((prev) => [
         ...prev,
         { sender: "ia", text: res.data.idea.trim() },
       ]);
     } catch (error) {
+      console.error("❌ Error en la solicitud:", error);
       setMessages((prev) => [
         ...prev,
         { sender: "ia", text: "❌ Error generando respuesta." },
       ]);
-      console.error(error);
     } finally {
       setInput("");
       setLoading(false);
@@ -36,6 +43,7 @@ export default function IdeaGenerator() {
   return (
     <div className="p-6 max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">💡 Chat de Generación de Ideas</h1>
+
       <div className="border p-4 rounded-md h-96 overflow-y-auto bg-gray-50 shadow-inner mb-4">
         {messages.map((msg, i) => (
           <div
