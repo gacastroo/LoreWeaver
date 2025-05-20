@@ -307,6 +307,9 @@ export const desasociarHistoriaPersonaje = async (req, res) => {
 };
 
 export const quitarTagPersonaje = async (req, res) => {
+  console.log('PATCH /personajes/:id/quitar-tag recibido');
+  console.log('ID personaje:', req.params.id);
+  console.log('Body recibido:', req.body);
   const userId = getUserIdFromToken(req);
   const { id } = req.params; // id del personaje
   const { tagId } = req.body;
