@@ -13,10 +13,6 @@ import escenaRoutes from './routes/escena.routes.js';
 import mapaRoutes from './routes/mapa.routes.js';
 import nameRoutes from './routes/name.routes.js';
 
-
-
-
-
 import { verifyToken } from './middlewares/auth.js';
 
 dotenv.config();
@@ -26,6 +22,11 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
+
+app.use(cors({
+  origin: 'lore-weaver-1zpq.vercel.app',
+  credentials: true
+}))
 
 
 // ✅ Rutas públicas
