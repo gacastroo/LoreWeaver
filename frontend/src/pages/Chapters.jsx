@@ -49,18 +49,14 @@ export default function Chapters() {
   };
 
   return (
-    <div className="p-4 sm:p-6 md:p-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold text-neutral-800 dark:text-white">
-          Capítulos
-        </h1>
+    <div className="p-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-semibold text-neutral-800">Capítulos</h1>
         <AddButton onClick={handleAdd} label="Nuevo capítulo" />
       </div>
 
       {capitulos.length === 0 ? (
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          No hay capítulos creados todavía.
-        </p>
+        <p className="text-sm text-neutral-500">No hay capítulos creados todavía.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {capitulos.map((cap) => {
@@ -79,10 +75,10 @@ export default function Chapters() {
 
       {mostrarModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-4 sm:p-6 max-w-xl w-full mx-4 relative shadow-lg">
+          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-6 max-w-xl w-full relative shadow-lg">
             <button
               onClick={handleCerrarModal}
-              className="absolute top-2 right-2 p-2 text-xl text-zinc-400 hover:text-red-500"
+              className="absolute top-3 right-4 text-xl text-zinc-400 hover:text-red-500"
             >
               ✖
             </button>
