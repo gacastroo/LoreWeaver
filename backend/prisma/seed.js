@@ -27,10 +27,29 @@ async function main() {
   const juegos = await prisma.historia.create({ data: { titulo: 'Los Juegos del Hambre', usuarioId: usuario.id_usuario } });
   const speak = await prisma.historia.create({ data: { titulo: 'Speak', usuarioId: usuario.id_usuario } });
 
-  // === Universos ===
-  const uniCarrie = await prisma.universo.create({ data: { titulo_universo: 'Chamberlain High', historiaId: carrie.id } });
-  const uni12 = await prisma.universo.create({ data: { titulo_universo: 'Distrito 12', historiaId: juegos.id } });
-  const uniSpeak = await prisma.universo.create({ data: { titulo_universo: 'Merryweather High', historiaId: speak.id } });
+// === Universos ===
+const uniCarrie = await prisma.universo.create({
+  data: {
+    titulo_universo: 'Chamberlain High',
+    historiaId: carrie.id,
+    usuarioId: usuario.id_usuario, // ✅
+  },
+});
+const uni12 = await prisma.universo.create({
+  data: {
+    titulo_universo: 'Distrito 12',
+    historiaId: juegos.id,
+    usuarioId: usuario.id_usuario, // ✅
+  },
+});
+const uniSpeak = await prisma.universo.create({
+  data: {
+    titulo_universo: 'Merryweather High',
+    historiaId: speak.id,
+    usuarioId: usuario.id_usuario, // ✅
+  },
+});
+
 
   // === Capítulos ===
   const [cap1, cap2, cap3] = await Promise.all([
