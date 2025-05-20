@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // <--- importamos useNavigate
-import axios from "axios";
-import API from "@/services/api";
+import { useNavigate } from "react-router-dom";
+import API from "@/services/api"; // ✅ Instancia personalizada de Axios
 
 export default function NameGenerator() {
   const [type, setType] = useState("fantasy");
@@ -11,9 +10,8 @@ export default function NameGenerator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const navigate = useNavigate(); // <--- inicializamos useNavigate
+  const navigate = useNavigate();
 
-  // 🔄 Cargar historias
   useEffect(() => {
     const fetchHistorias = async () => {
       try {
@@ -34,7 +32,7 @@ export default function NameGenerator() {
     setError("");
     setSuccess("");
     try {
-      const res = await axios.post("/api/names/ia", { type });
+      const res = await API.post("/names/ia", { type }); // ✅ CORREGIDO
       setName(res.data.name);
     } catch (err) {
       console.error("❌ Error al generar nombre:", err);
@@ -55,8 +53,6 @@ export default function NameGenerator() {
         historiaId: parseInt(historiaId),
       });
       setSuccess(`✅ Personaje "${res.data.nombre_personaje}" creado correctamente`);
-      
-      // Redirigir a la pestaña personajes
       navigate("/characters");
     } catch (err) {
       console.error("❌ Error al crear personaje:", err);
@@ -69,7 +65,6 @@ export default function NameGenerator() {
       <div className="w-full max-w-md text-center">
         <h1 className="text-2xl font-bold mb-6">🎲 Generador de Nombres Narrativos</h1>
 
-        {/* Tipo de personaje */}
         <div className="mb-4 text-left">
           <label htmlFor="type" className="block text-sm mb-2 text-gray-300">
             Tipo de personaje
@@ -86,7 +81,6 @@ export default function NameGenerator() {
           </select>
         </div>
 
-        {/* Botón de generar */}
         <button
           onClick={handleGenerate}
           disabled={loading}
@@ -95,18 +89,13 @@ export default function NameGenerator() {
           {loading ? "Generando..." : "Generar Nombre"}
         </button>
 
-        {/* Mensajes */}
         {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
         {success && <p className="text-green-400 text-sm mb-4">{success}</p>}
 
-        {/* Resultado */}
         {name && (
           <div className="mt-6 space-y-4">
-            <div className="text-2xl font-bold text-green-400">
-              ✨ {name}
-            </div>
+            <div className="text-2xl font-bold text-green-400">✨ {name}</div>
 
-            {/* Selector de historia */}
             <div className="text-left">
               <label className="block text-sm mb-2 text-gray-300">Asociar a historia:</label>
               <select
@@ -115,12 +104,13 @@ export default function NameGenerator() {
                 className="w-full p-2 rounded border border-gray-700 bg-gray-800 text-white focus:outline-none"
               >
                 {historias.map((h) => (
-                  <option key={h.id} value={h.id}>{h.titulo}</option>
+                  <option key={h.id} value={h.id}>
+                    {h.titulo}
+                  </option>
                 ))}
               </select>
             </div>
 
-            {/* Botón de crear personaje */}
             <button
               onClick={crearPersonaje}
               className="bg-green-600 hover:bg-green-700 transition-colors px-6 py-2 rounded text-white font-medium w-full"
