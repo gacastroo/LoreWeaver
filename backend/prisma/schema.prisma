@@ -8,22 +8,23 @@ datasource db {
 }
 
 model Usuario {
-  id_usuario Int       @id @default(autoincrement())
-  email      String    @unique
-  password   String
-  nombre     String
-  createdAt  DateTime  @default(now())
-  historias  Historia[]
+  id_usuario  Int          @id @default(autoincrement())
+  email       String       @unique
+  password    String
+  nombre      String
+  createdAt   DateTime     @default(now())
+  historias   Historia[]
+  resetTokens ResetToken[] // ✅ relación inversa añadida
 }
 
 model Historia {
-  id         Int        @id @default(autoincrement())
+  id         Int         @id @default(autoincrement())
   titulo     String
-  contenido  String?    @db.LongText
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  usuarioId  Int        
-  usuario    Usuario    @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
+  contenido  String?     @db.LongText
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  usuarioId  Int
+  usuario    Usuario     @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
   personajes Personaje[]
   capitulos  Capitulo[]
   escenas    Escena[]
@@ -35,69 +36,68 @@ model Personaje {
   id_Personaje          Int             @id @default(autoincrement())
   nombre_personaje      String
   descripcion_personaje String?         @db.LongText
-  historiaId            Int?         
+  historiaId            Int?
   historia              Historia?       @relation(fields: [historiaId], references: [id], onDelete: Cascade)
   tags                  Personaje_Tag[]
 }
 
 model Escena {
-  id_Escena     Int       @id @default(autoincrement())
-  titulo_escena String    @default("Escena sin título")
-  orden_escena  Int       @default(0)
+  id_Escena     Int    @id @default(autoincrement())
+  titulo_escena String @default("Escena sin título")
+  orden_escena  Int    @default(0)
   historiaId    Int
   capituloId    Int
   universoId    Int?
 
-  historia      Historia  @relation(fields: [historiaId], references: [id], onDelete: Cascade)
-  capitulo      Capitulo  @relation(fields: [capituloId], references: [id_Capitulo], onDelete: Cascade)
-  universo      Universo? @relation(fields: [universoId], references: [id_Universo], onDelete: SetNull)
+  historia Historia  @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  capitulo Capitulo  @relation(fields: [capituloId], references: [id_Capitulo], onDelete: Cascade)
+  universo Universo? @relation(fields: [universoId], references: [id_Universo], onDelete: SetNull)
 }
 
 model Capitulo {
-  id_Capitulo     Int        @id @default(autoincrement())
+  id_Capitulo     Int    @id @default(autoincrement())
   titulo_capitulo String
   historiaId      Int
   universoId      Int?
 
-  historia        Historia   @relation(fields: [historiaId], references: [id], onDelete: Cascade)
-  universo        Universo?  @relation(fields: [universoId], references: [id_Universo], onDelete: SetNull)
-  escenas         Escena[]
+  historia Historia  @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  universo Universo? @relation(fields: [universoId], references: [id_Universo], onDelete: SetNull)
+  escenas  Escena[]
 }
 
 model Universo {
   id_Universo          Int        @id @default(autoincrement())
   titulo_universo      String
   descripcion_universo String?    @db.LongText
-  historiaId           Int?    
+  historiaId           Int?
   historia             Historia?  @relation(fields: [historiaId], references: [id], onDelete: Cascade)
   escenas              Escena[]
   capitulos            Capitulo[]
 }
 
 model Tags {
-  id_Tag      Int             @id @default(autoincrement())
-  nombre_tag  String
-  historiaId  Int
+  id_Tag     Int    @id @default(autoincrement())
+  nombre_tag String
+  historiaId Int
 
-  historia    Historia        @relation(fields: [historiaId], references: [id], onDelete: Cascade)
-  personajes  Personaje_Tag[]
+  historia   Historia        @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  personajes Personaje_Tag[]
 }
 
 model Personaje_Tag {
-  id           Int       @id @default(autoincrement())
-  personajeId  Int
-  tagId        Int
+  id          Int @id @default(autoincrement())
+  personajeId Int
+  tagId       Int
 
-  personaje    Personaje @relation(fields: [personajeId], references: [id_Personaje], onDelete: Cascade)
-  tag          Tags      @relation(fields: [tagId], references: [id_Tag], onDelete: Cascade)
+  personaje Personaje @relation(fields: [personajeId], references: [id_Personaje], onDelete: Cascade)
+  tag       Tags      @relation(fields: [tagId], references: [id_Tag], onDelete: Cascade)
 }
 
 model ResetToken {
-  id         Int      @id @default(autoincrement())
-  token      String   @unique
-  usuarioId  Int
-  usuario    Usuario  @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  usuarioId Int
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
-
