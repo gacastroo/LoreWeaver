@@ -6,20 +6,22 @@ import react from '@vitejs/plugin-react'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react()],
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
     },
   },
-  server: {
+  base: '/', 
+
+  server: command === 'serve' ? {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000', // ⚠️ Asegúrate de que sea el puerto del backend
+        target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
       },
     },
-  },
-})
+  } : undefined,
+}))
