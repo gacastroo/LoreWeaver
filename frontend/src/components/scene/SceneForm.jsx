@@ -20,7 +20,7 @@ export default function SceneForm({ onSceneCreated }) {
     }
 
     try {
-      await API.post("/api/escenas", {
+      await API.post("/escenas", {
         titulo_escena: titulo,
         capituloId,
       });

@@ -25,7 +25,7 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
     if (!character.historia) return;
     setLoadingRemoveHistoria(true);
     try {
-      await API.patch(`/api/personajes/${character.id_Personaje}/desasociar-historia`, {
+      await API.patch(`/personajes/${character.id_Personaje}/desasociar-historia`, {
         historiaId: null, // desasociar
       });
       window.location.reload(); // o actualizar estado para refrescar UI sin recargar toda la página

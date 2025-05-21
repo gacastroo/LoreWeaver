@@ -14,7 +14,7 @@ export default function Universes() {
   const fetchUniversos = async () => {
     setLoading(true);
     try {
-      const res = await API.get("/api/universos");
+      const res = await API.get("/universos");
       setUniversos(res.data);
     } catch (error) {
       console.error("❌ Error al obtener universos:", error);
@@ -26,7 +26,7 @@ export default function Universes() {
   // 🔄 Cargar historias (para mostrar nombre en las tarjetas)
   const fetchHistorias = async () => {
     try {
-      const res = await API.get("/api/historias");
+      const res = await API.get("/historias");
       setHistorias(res.data);
     } catch (error) {
       console.error("❌ Error al obtener historias:", error);

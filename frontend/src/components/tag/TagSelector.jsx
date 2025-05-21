@@ -5,7 +5,7 @@ export default function TagSelector({ selected, setSelected }) {
   const [tags, setTags] = useState([])
 
   useEffect(() => {
-    API.get('/api/tags')
+    API.get('/tags')
       .then(res => setTags(res.data))
       .catch(err => console.error(err))
   }, [])

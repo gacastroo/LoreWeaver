@@ -8,7 +8,7 @@ export default function CapituloForm({ onChapterCreated }) {
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
-    API.get("/api/historias")
+    API.get("/historias")
       .then((res) => setHistorias(res.data))
       .catch((err) => {
         console.error("❌ Error al cargar historias:", err);
@@ -30,7 +30,7 @@ export default function CapituloForm({ onChapterCreated }) {
     }
 
     try {
-      await API.post("/api/capitulos", {
+      await API.post("/capitulos", {
         titulo_capitulo: titulo,
         historiaId,
       });
