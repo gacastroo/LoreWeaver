@@ -19,11 +19,6 @@ import ResetPassword from "@/components/ResetPassword";
 import IdeaGenerator from "@/pages/IdeaGenerator";
 
 
-
-
-
-
-
 export default function App() {
   return (
     <BrowserRouter>
