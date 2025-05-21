@@ -41,45 +41,51 @@ export default function IdeaGenerator() {
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-3xl text-center font-bold text-neutral-700 mb-6">
-        💡 Chat de Generación de Ideas
-      </h1>
+    <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center px-4">
+      <div className="w-full max-w-2xl">
+        <h1 className="text-2xl font-bold text-center mb-6">
+          💡 Chat de Generación de Ideas Narrativas
+        </h1>
 
-      <div className="border p-4 rounded-md h-96 overflow-y-auto bg-white shadow-inner mb-4 space-y-2">
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`max-w-[80%] p-3 rounded-lg text-sm shadow-md ${
-              msg.sender === "user"
-                ? "ml-auto bg-blue-100 text-blue-900"
-                : "mr-auto bg-green-100 text-green-900"
-            }`}
+        <div className="border border-gray-700 p-4 rounded-md h-96 overflow-y-auto bg-gray-800 shadow-inner mb-4 space-y-2">
+          {messages.map((msg, i) => (
+            <div
+              key={i}
+              className={`max-w-[80%] p-3 rounded-lg text-sm shadow-md ${
+                msg.sender === "user"
+                  ? "ml-auto bg-blue-700 text-white"
+                  : "mr-auto bg-green-700 text-white"
+              }`}
+            >
+              {msg.text}
+            </div>
+          ))}
+          {loading && (
+            <div className="text-gray-400 italic">⏳ Pensando...</div>
+          )}
+        </div>
+
+        <div className="flex gap-2">
+          <input
+            type="text"
+            className="flex-1 p-3 rounded-md border border-gray-600 bg-gray-800 text-white focus:outline-none"
+            placeholder="Escribe tu idea o prompt..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+          />
+          <button
+            onClick={handleSend}
+            disabled={loading}
+            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 transition rounded-md text-white disabled:opacity-50"
           >
-            {msg.text}
-          </div>
-        ))}
-        {loading && (
-          <div className="text-gray-500 italic">⏳ Pensando...</div>
-        )}
-      </div>
+            Enviar
+          </button>
+        </div>
 
-      <div className="flex gap-2">
-        <input
-          type="text"
-          className="flex-1 border rounded-md p-3 text-sm focus:outline-blue-400"
-          placeholder="Escribe tu idea o prompt..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-        />
-        <button
-          onClick={handleSend}
-          disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
-        >
-          Enviar
-        </button>
+        <div className="mt-6 text-sm text-gray-400 text-center">
+          Este chat usa inteligencia artificial para ayudarte a generar ideas narrativas.
+        </div>
       </div>
     </div>
   );
