@@ -6,7 +6,7 @@ import jsPDF from "jspdf"
 export default function EditorPersonaje({ onUpdate }) {
   const { id } = useParams()
   const navigate = useNavigate()
-  const [personaje, setPersonaje] = useState(null)
+  const [setPersonaje] = useState(null)
   const [nombre, setNombre] = useState("")
   const [descripcion, setDescripcion] = useState("")
   const [loading, setLoading] = useState(true)
@@ -30,7 +30,7 @@ export default function EditorPersonaje({ onUpdate }) {
     fetchPersonaje()
   }, [id])
 
-  const ajustarAlturaTextarea = (value) => {
+  const ajustarAlturaTextarea = () => {
     const ta = textareaRef.current
     if (ta) {
       ta.style.height = "auto"

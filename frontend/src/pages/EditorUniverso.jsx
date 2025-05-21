@@ -7,7 +7,7 @@ import jsPDF from "jspdf"
 export default function EditorUniverso({ onUpdate }) {
   const { id } = useParams()
   const navigate = useNavigate()
-  const [universo, setUniverso] = useState(null)
+  const [setUniverso] = useState(null)
   const [titulo, setTitulo] = useState("")
   const [descripcion, setDescripcion] = useState("")
   const [loading, setLoading] = useState(true)
@@ -32,7 +32,7 @@ export default function EditorUniverso({ onUpdate }) {
   }, [id])
 
   // Ajustar altura automática del textarea
-  const ajustarAlturaTextarea = (value) => {
+  const ajustarAlturaTextarea = () => {
     const ta = textareaRef.current
     if (ta) {
       ta.style.height = "auto"
