@@ -31,7 +31,6 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }))
 // ✅ Rutas públicas
 app.use('/api/usuarios', usuarioRoutes)
 app.use('/api/names', nameRoutes)
-app.use('/api/reset-password', nameRoutes) // (¡Nota! esto apunta a nameRoutes, ¿es correcto?)
 
 // 🔒 Rutas protegidas con verifyToken
 app.use('/api/personajes', verifyToken, personajeRoutes)
