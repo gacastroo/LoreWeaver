@@ -63,7 +63,7 @@ export default function Universes() {
   return (
     <div className="flex flex-col h-full w-full bg-neutral-100 px-8 py-6 overflow-auto space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-neutral-700">Universos</h1>
+        <h1 className="text-2xl text-neutral-700">Universos</h1>
         <AddButton onClick={handleAgregarUniverso} label="Nuevo universo" />
       </div>
 
