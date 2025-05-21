@@ -43,7 +43,7 @@ export default function IdeaGenerator() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-neutral-700 font-bold mb-4">💡 Chat de Generación de Ideas</h1>
+      <h1 className="px-12 text-neutral-700 mb-4">💡 Chat de Generación de Ideas</h1>
 
       <div className="border p-4 rounded-md h-96 overflow-y-auto bg-gray-50 shadow-inner mb-4">
         {messages.map((msg, i) => (
