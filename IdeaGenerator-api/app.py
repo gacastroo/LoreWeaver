@@ -9,8 +9,8 @@ CORS(app, resources={r"/generate": {"origins": [
 ]}})
 
 print("🔄 Cargando modelo distilgpt2...")
-tokenizer = GPT2Tokenizer.from_pretrained("distilgpt2")
-model = GPT2LMHeadModel.from_pretrained("distilgpt2")
+tokenizer = GPT2Tokenizer.from_pretrained("sshleifer/tiny-gpt2")
+model = GPT2LMHeadModel.from_pretrained("sshleifer/tiny-gpt2")
 print("✅ Modelo cargado.")
 
 @app.route('/generate', methods=['POST'])
