@@ -15,7 +15,7 @@ export default function IdeaGenerator() {
 
     try {
       const res = await axios.post(
-        "https://idea-generator.up.railway.app/generate",
+        "https://ideagenerator-ovyw.onrender.com/generate",
         { prompt: input },
         {
           headers: {
