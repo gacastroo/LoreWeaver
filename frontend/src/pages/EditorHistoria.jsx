@@ -58,7 +58,7 @@ export default function EditorHistoria({ onUpdate }) {
     }
   }
 
-  if (loading) return <p className="p-6">Cargando historia...</p>
+  if (loading) return <p className="p-6 text-neutral-700">Cargando historia...</p>
 
   return (
     <div className="p-8 max-w-4xl mx-auto"> {/* Contenedor más ancho */}

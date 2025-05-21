@@ -58,7 +58,7 @@ export default function EditorUniverso({ onUpdate }) {
     }
   }
 
-  if (loading) return <p className="p-6">Cargando universo...</p>
+  if (loading) return <p className="p-6 text-neutral-700">Cargando universo...</p>
 
   return (
     <div className="p-8 max-w-4xl mx-auto"> {/* max-w-4xl para más ancho */}
