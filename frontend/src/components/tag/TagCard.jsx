@@ -8,7 +8,7 @@ export default function TagCard({ tag, onDelete }) {
 
   const handleDelete = async () => {
     try {
-      await API.delete(`/tags/${tag.id_Tag}`);
+      await API.delete(`/api/tags/${tag.id_Tag}`);
       if (typeof onDelete === "function") {
         onDelete(); // recargar lista desde el padre
       } else {

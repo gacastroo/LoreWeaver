@@ -12,13 +12,13 @@ export default function CharacterForm({ onCharacterCreated }) {
 
   // 🔹 Cargar historias y tags
   useEffect(() => {
-    API.get("/historias")
+    API.get("/api/historias")
       .then((res) => {
         setHistorias(Array.isArray(res.data) ? res.data : []);
       })
       .catch((err) => console.error("❌ Error al cargar historias:", err));
 
-    API.get("/tags")
+    API.get("/api/tags")
       .then((res) => {
         setTags(Array.isArray(res.data) ? res.data : []);
       })
@@ -43,7 +43,7 @@ export default function CharacterForm({ onCharacterCreated }) {
       if (historiaId) data.historiaId = historiaId;
       if (tagId) data.tagId = tagId;
 
-      const res = await API.post("/personajes", data);
+      const res = await API.post("/api/personajes", data);
 
       const historiaSeleccionada = historias.find(
         (h) => h.id.toString() === historiaId

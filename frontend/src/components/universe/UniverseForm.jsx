@@ -9,7 +9,7 @@ export default function UniverseForm({ onUniverseCreated }) {
   const [universoCreado, setUniversoCreado] = useState(null);
 
   useEffect(() => {
-    API.get("/historias")
+    API.get("/api/historias")
       .then((res) => setHistorias(Array.isArray(res.data) ? res.data : []))
       .catch((err) => {
         console.error("❌ Error al cargar historias:", err);
@@ -31,7 +31,7 @@ export default function UniverseForm({ onUniverseCreated }) {
       if (descripcion) data.descripcion_universo = descripcion;
       if (historiaId) data.historiaId = historiaId;
 
-      const res = await API.post("/universos", data);
+      const res = await API.post("/api/universos", data);
 
       const historiaSeleccionada = historias.find(
         (h) => h.id.toString() === historiaId

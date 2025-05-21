@@ -12,7 +12,7 @@ export default function Tags() {
 
   const fetchTags = async () => {
     try {
-      const res = await API.get("/tags");
+      const res = await API.get("/api/tags");
       setTags(res.data);
     } catch (error) {
       console.error("❌ Error al cargar tags:", error);
@@ -21,7 +21,7 @@ export default function Tags() {
 
   const fetchHistorias = async () => {
     try {
-      const res = await API.get("/historias");
+      const res = await API.get("/api/historias");
       if (res.data.length > 0) {
         setHistoriaId(res.data[0].id);
       }
@@ -68,7 +68,7 @@ export default function Tags() {
         <CreateTagModal
           onClose={() => setModalOpen(false)}
           onSuccess={handleSuccess}
-          endpoint="/tags"
+          endpoint="/api/tags"
           label="Tag"
           historiaId={historiaId}
         />

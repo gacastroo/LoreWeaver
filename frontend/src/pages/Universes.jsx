@@ -14,7 +14,7 @@ export default function Universes() {
   const fetchUniversos = async () => {
     setLoading(true);
     try {
-      const res = await API.get("/universos");
+      const res = await API.get("/api/universos");
       setUniversos(res.data);
     } catch (error) {
       console.error("❌ Error al obtener universos:", error);
@@ -26,7 +26,7 @@ export default function Universes() {
   // 🔄 Cargar historias (para mostrar nombre en las tarjetas)
   const fetchHistorias = async () => {
     try {
-      const res = await API.get("/historias");
+      const res = await API.get("/api/historias");
       setHistorias(res.data);
     } catch (error) {
       console.error("❌ Error al obtener historias:", error);
@@ -53,7 +53,7 @@ export default function Universes() {
 
   const handleEliminarUniverso = async (id) => {
     try {
-      await API.delete(`/universos/${id}`);
+      await API.delete(`/api/universos/${id}`);
       setUniversos((prev) => prev.filter((u) => u.id_Universo !== id));
     } catch (error) {
       console.error("❌ Error al eliminar universo:", error);

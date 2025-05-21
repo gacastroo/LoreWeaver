@@ -15,7 +15,7 @@ export default function Sidebar() {
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        const res = await API.get("/historias");
+        const res = await API.get("/api/historias");
         setUserStories(res.data);
       } catch (err) {
         console.error("❌ Error al cargar historias en sidebar:", err);

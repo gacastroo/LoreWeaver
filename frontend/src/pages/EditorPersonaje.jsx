@@ -15,7 +15,7 @@ export default function EditorPersonaje({ onUpdate }) {
   useEffect(() => {
     const fetchPersonaje = async () => {
       try {
-        const res = await API.get(`/personajes/${id}`)
+        const res = await API.get(`/api/personajes/${id}`)
         setPersonaje(res.data)
         setNombre(res.data.nombre_personaje || "")
         setDescripcion(res.data.descripcion_personaje || "")
@@ -45,14 +45,14 @@ export default function EditorPersonaje({ onUpdate }) {
 
   const handleGuardar = async () => {
     try {
-      const res = await API.put(`/personajes/${id}`, {
+      const res = await API.put(`/api/personajes/${id}`, {
         nombre_personaje: nombre,
         descripcion_personaje: descripcion,
       })
 
       alert("✅ Personaje actualizado correctamente")
       onUpdate && onUpdate(res.data)
-      navigate("/universes")
+      navigate("/api/characters")
     } catch (error) {
       console.error("❌ Error al actualizar personaje:", error)
     }

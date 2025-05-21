@@ -9,7 +9,7 @@ export default function AsociarPersonajeModal({ historiaId, onClose, onSuccess }
   useEffect(() => {
     const fetchPersonajes = async () => {
       try {
-        const res = await API.get("/personajes");
+        const res = await API.get("/api/personajes");
         // Filtrar personajes que no estén asignados a esta historia
         const libres = res.data.filter(
           (p) => p.historiaId !== historiaId
@@ -32,7 +32,7 @@ export default function AsociarPersonajeModal({ historiaId, onClose, onSuccess }
   const asociar = async () => {
     if (!personajeSeleccionado) return;
     try {
-      await API.patch(`/personajes/${personajeSeleccionado}/asociar`, {
+      await API.patch(`/api/personajes/${personajeSeleccionado}/asociar`, {
         historiaId: parseInt(historiaId),
       });
       onSuccess(); // Recargar lista en padre

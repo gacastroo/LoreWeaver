@@ -11,7 +11,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const res = await API.get("/dashboard");
+        const res = await API.get("/api/dashboard");
         setData(res.data);
       } catch (err) {
         console.error("❌ Error al cargar dashboard:", err);

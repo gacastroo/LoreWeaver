@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // ✅ Ahora usa la variable del entorno (.env)
-  withCredentials: true // opcional: si usas cookies
+  baseURL: import.meta.env.VITE_API_URL || '/', // Fallback a proxy local
+  withCredentials: true,
 });
+
 
 // Interceptor para añadir token JWT desde localStorage
 API.interceptors.request.use(
