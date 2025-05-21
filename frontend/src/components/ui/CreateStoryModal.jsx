@@ -12,7 +12,7 @@ export default function CreateStoryModal({ onClose, onSuccess }) {
 
     setLoading(true)
     try {
-      const res = await API.post("/api/historias", { titulo })
+      const res = await API.post("/historias", { titulo })
       onSuccess(res.data) // devuelve la nueva historia
       onClose()
     } catch (error) {

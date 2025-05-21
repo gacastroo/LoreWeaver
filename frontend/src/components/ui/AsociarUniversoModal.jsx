@@ -9,7 +9,7 @@ export default function AsociarUniversoModal({ historiaId, onClose, onSuccess })
   useEffect(() => {
     const fetchUniversos = async () => {
       try {
-        const res = await API.get("/api/universos");
+        const res = await API.get("/universos");
         // Filtrar universos que no estén asignados a esta historia
         const libres = res.data.filter(
           (u) => u.historiaId !== historiaId
@@ -32,7 +32,7 @@ export default function AsociarUniversoModal({ historiaId, onClose, onSuccess })
   const asociar = async () => {
     if (!universoSeleccionado) return;
     try {
-      await API.patch(`/api/universos/${universoSeleccionado}/asociar`, {
+      await API.patch(`/universos/${universoSeleccionado}/asociar`, {
         historiaId: parseInt(historiaId),
       });
       onSuccess();

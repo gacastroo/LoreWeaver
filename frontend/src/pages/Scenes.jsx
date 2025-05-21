@@ -10,7 +10,7 @@ export default function Scenes() {
 
   const fetchEscenas = async () => {
     try {
-      const res = await API.get("/api/escenas");
+      const res = await API.get("/escenas");
       setEscenas(res.data);
     } catch (error) {
       console.error("❌ Error al cargar escenas:", error);
@@ -51,7 +51,7 @@ export default function Scenes() {
               escena={escena}
               onDelete={async (id) => {
                 try {
-                  await API.delete(`/api/escenas/${id}`);
+                  await API.delete(`/escenas/${id}`);
                   setEscenas((prev) => prev.filter((e) => e.id_Escena !== id));
                   console.log("✅ Escena eliminada:", id);
                 } catch (error) {

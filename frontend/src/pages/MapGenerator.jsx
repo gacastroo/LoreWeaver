@@ -29,7 +29,7 @@ export default function MapGenerator() {
   const fetchMapa = async () => {
     setError("");
     try {
-      const res = await API.get("/api/mapa");
+      const res = await API.get("/mapa");
       return res.data;
     } catch (err) {
       console.error("❌ Error al obtener datos del mapa:", err);

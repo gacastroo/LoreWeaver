@@ -12,7 +12,7 @@ export default function Historias() {
   useEffect(() => {
     const fetchHistorias = async () => {
       try {
-        const res = await API.get("/api/historias")
+        const res = await API.get("/historias")
         setHistorias(res.data)
       } catch (error) {
         console.error("❌ Error al cargar historias:", error)
@@ -26,7 +26,7 @@ export default function Historias() {
 
   const handleEliminar = async (id) => {
     try {
-      await API.delete(`/api/historias/${id}`)
+      await API.delete(`/historias/${id}`)
       setHistorias(prev => prev.filter(h => h.id !== id))
     } catch (error) {
       console.error("❌ Error al eliminar historia:", error)

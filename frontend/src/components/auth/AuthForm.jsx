@@ -57,7 +57,7 @@ export default function AuthForm() {
     }
 
     try {
-      const endpoint = registro ? "/api/usuarios/registro" : "/api/usuarios/login"
+      const endpoint = registro ? "/usuarios/registro" : "/usuarios/login"
       const payload = registro ? { email, password, nombre } : { email, password }
 
       const res = await API.post(endpoint, payload)
@@ -92,7 +92,7 @@ export default function AuthForm() {
     }
 
     try {
-      await API.post("/api/usuarios/reset-password", { email: resetEmail })
+      await API.post("/usuarios/reset-password", { email: resetEmail })
       setResetMsg("✅ Se ha enviado un email con instrucciones para restablecer tu contraseña.")
     } catch (err) {
       setResetError("❌ Error al enviar el email. Intenta más tarde.")

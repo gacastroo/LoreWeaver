@@ -23,7 +23,7 @@ export default function Characters() {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const res = await API.get("/api/tags");
+        const res = await API.get("/tags");
         setTags(res.data);
       } catch (error) {
         console.error("❌ Error al cargar tags:", error);
@@ -36,7 +36,7 @@ export default function Characters() {
   const fetchCharacters = async () => {
     setLoading(true);
     try {
-      const res = await API.get("/api/personajes");
+      const res = await API.get("/personajes");
       setCharacters(res.data);
     } catch (error) {
       console.error("❌ Error al cargar personajes:", error);
@@ -51,7 +51,7 @@ export default function Characters() {
 
   const handleDeleteCharacter = async (id) => {
     try {
-      await API.delete(`/api/personajes/${id}`);
+      await API.delete(`/personajes/${id}`);
       setCharacters((prev) => prev.filter((c) => c.id_Personaje !== id));
     } catch (error) {
       console.error("❌ Error al eliminar personaje:", error);
