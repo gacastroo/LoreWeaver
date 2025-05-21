@@ -3,18 +3,22 @@ from flask_cors import CORS
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 
 app = Flask(__name__)
-CORS(app, resources={r"/generate": {"origins": [
-    "http://localhost:5173",
-    "https://lore-weaver-1zpq.vercel.app"
-]}})
 
-print("🔄 Cargando modelo distilgpt2...")
+# ✅ Permitir CORS desde tu frontend en Vercel
+CORS(app, resources={r"/generate": {"origins": [
+    "https://lore-weaver-1zpq.vercel.app",  # Producción
+    "http://localhost:5173"                 # Desarrollo
+]}}, supports_credentials=True)
+
 tokenizer = GPT2Tokenizer.from_pretrained("sshleifer/tiny-gpt2")
 model = GPT2LMHeadModel.from_pretrained("sshleifer/tiny-gpt2")
-print("✅ Modelo cargado.")
 
-@app.route('/generate', methods=['POST'])
+@app.route('/generate', methods=['POST', 'OPTIONS'])
 def generate():
+    if request.method == 'OPTIONS':
+        # Respuesta explícita al preflight
+        return '', 200
+
     data = request.get_json()
     prompt = data.get('prompt', '')
 
