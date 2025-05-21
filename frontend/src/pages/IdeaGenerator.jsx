@@ -42,7 +42,7 @@ export default function IdeaGenerator() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-3xl text-center font-bold text-blue-700 mb-6">
+      <h1 className="text-3xl text-center font-bold text-neutral-700 mb-6">
         💡 Chat de Generación de Ideas
       </h1>
 
