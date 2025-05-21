@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import API from "@/services/api"
+import jsPDF from "jspdf"
 
 export default function EditorPersonaje({ onUpdate }) {
   const { id } = useParams()
@@ -29,7 +30,6 @@ export default function EditorPersonaje({ onUpdate }) {
     fetchPersonaje()
   }, [id])
 
-  // Función para ajustar altura del textarea automáticamente
   const ajustarAlturaTextarea = (value) => {
     const ta = textareaRef.current
     if (ta) {
@@ -58,17 +58,26 @@ export default function EditorPersonaje({ onUpdate }) {
     }
   }
 
+  const handleExportarPDF = () => {
+    const doc = new jsPDF()
+
+    doc.setFontSize(18)
+    doc.text(`Personaje: ${nombre}`, 10, 20)
+
+    doc.setFontSize(12)
+    const lineas = doc.splitTextToSize(descripcion, 180)
+    doc.text(lineas, 10, 30)
+
+    doc.save(`personaje_${nombre || "sin_nombre"}.pdf`)
+  }
+
   if (loading) return <p className="p-6 text-neutral-700">Cargando personaje...</p>
 
   return (
-    <div className="p-8 max-w-4xl mx-auto"> {/* Aumentado max-w-4xl para mayor ancho */}
-      <h1 className="text-2xl font-bold mb-4 text-neutral-700">
-        ✍️ Editar Personaje
-      </h1>
+    <div className="p-8 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4 text-neutral-700">✍️ Editar Personaje</h1>
 
-      <label className="block mb-2 text-sm font-medium text-neutral-700">
-        Nombre
-      </label>
+      <label className="block mb-2 text-sm font-medium text-neutral-700">Nombre</label>
       <input
         type="text"
         className="w-full p-3 border border-neutral-400 text-lg font-semibold rounded-md mb-4"
@@ -77,9 +86,7 @@ export default function EditorPersonaje({ onUpdate }) {
         placeholder="Nombre del personaje"
       />
 
-      <label className="block mb-2 text-sm font-medium text-neutral-700">
-        Descripción
-      </label>
+      <label className="block mb-2 text-sm font-medium text-neutral-700">Descripción</label>
       <textarea
         ref={textareaRef}
         className="w-full p-4 border border-neutral-400 text-neutral-800 rounded-md bg-white resize-none"
@@ -95,6 +102,13 @@ export default function EditorPersonaje({ onUpdate }) {
           className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700"
         >
           Guardar cambios
+        </button>
+
+        <button
+          onClick={handleExportarPDF}
+          className="ml-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+        >
+          Exportar PDF
         </button>
       </div>
     </div>
