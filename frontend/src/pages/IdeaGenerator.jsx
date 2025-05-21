@@ -14,16 +14,15 @@ export default function IdeaGenerator() {
     setLoading(true);
 
     try {
-        const res = await axios.post(
-        "https://idea-generator.up.railway.app/generate", // <-- aquí falta la coma
+      const res = await axios.post(
+        "https://idea-generator.up.railway.app/generate",
         { prompt: input },
         {
-            headers: {
+          headers: {
             "Content-Type": "application/json",
-            },
+          },
         }
-        );
-
+      );
 
       setMessages((prev) => [
         ...prev,
@@ -43,28 +42,32 @@ export default function IdeaGenerator() {
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="px-12 text-neutral-700 mb-4">💡 Chat de Generación de Ideas</h1>
+      <h1 className="text-3xl text-center font-bold text-blue-700 mb-6">
+        💡 Chat de Generación de Ideas
+      </h1>
 
-      <div className="border p-4 rounded-md h-96 overflow-y-auto bg-gray-50 shadow-inner mb-4">
+      <div className="border p-4 rounded-md h-96 overflow-y-auto bg-white shadow-inner mb-4 space-y-2">
         {messages.map((msg, i) => (
           <div
             key={i}
-            className={`mb-2 p-2 rounded ${
+            className={`max-w-[80%] p-3 rounded-lg text-sm shadow-md ${
               msg.sender === "user"
-                ? "bg-blue-100 text-right"
-                : "bg-green-100 text-left"
+                ? "ml-auto bg-blue-100 text-blue-900"
+                : "mr-auto bg-green-100 text-green-900"
             }`}
           >
             {msg.text}
           </div>
         ))}
-        {loading && <div className="text-gray-400 italic">⏳ Pensando...</div>}
+        {loading && (
+          <div className="text-gray-500 italic">⏳ Pensando...</div>
+        )}
       </div>
 
       <div className="flex gap-2">
         <input
           type="text"
-          className="flex-1 border rounded-md p-2"
+          className="flex-1 border rounded-md p-3 text-sm focus:outline-blue-400"
           placeholder="Escribe tu idea o prompt..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -73,7 +76,7 @@ export default function IdeaGenerator() {
         <button
           onClick={handleSend}
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
         >
           Enviar
         </button>
