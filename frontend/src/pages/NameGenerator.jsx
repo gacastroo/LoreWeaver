@@ -15,7 +15,7 @@ export default function NameGenerator() {
   useEffect(() => {
     const fetchHistorias = async () => {
       try {
-        const res = await API.get("/historias");
+        const res = await API.get("/api/historias");
         setHistorias(res.data);
         if (res.data.length > 0) {
           setHistoriaId(res.data[0].id.toString());
@@ -32,7 +32,7 @@ export default function NameGenerator() {
     setError("");
     setSuccess("");
     try {
-      const res = await API.post("/names/ia", { type }); // ✅ CORREGIDO
+      const res = await API.post("/api/names/ia", { type }); // ✅ CORREGIDO
       setName(res.data.name);
     } catch (err) {
       console.error("❌ Error al generar nombre:", err);
@@ -47,7 +47,7 @@ export default function NameGenerator() {
     setError("");
     setSuccess("");
     try {
-      const res = await API.post("/personajes", {
+      const res = await API.post("/api/personajes", {
         nombre: name,
         descripcion: "",
         historiaId: parseInt(historiaId),

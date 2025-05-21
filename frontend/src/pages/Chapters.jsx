@@ -12,8 +12,8 @@ export default function Chapters() {
   const fetchData = async () => {
     try {
       const [capRes, hisRes] = await Promise.all([
-        API.get("/capitulos"),
-        API.get("/historias"),
+        API.get("/api/capitulos"),
+        API.get("/api/historias"),
       ]);
       setCapitulos(capRes.data);
       setHistorias(hisRes.data);
@@ -28,7 +28,7 @@ export default function Chapters() {
 
   const handleDelete = async (id) => {
     try {
-      await API.delete(`/capitulos/${id}`);
+      await API.delete(`/api/capitulos/${id}`);
       setCapitulos((prev) => prev.filter((c) => c.id_Capitulo !== id));
     } catch (error) {
       console.error("❌ Error al eliminar capítulo:", error);

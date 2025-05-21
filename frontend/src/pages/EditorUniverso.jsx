@@ -16,7 +16,7 @@ export default function EditorUniverso({ onUpdate }) {
   useEffect(() => {
     const fetchUniverso = async () => {
       try {
-        const res = await API.get(`/universos/${id}`)
+        const res = await API.get(`/api/universos/${id}`)
         setUniverso(res.data)
         setTitulo(res.data.titulo_universo || "")
         setDescripcion(res.data.descripcion_universo || "")

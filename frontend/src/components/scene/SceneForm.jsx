@@ -7,7 +7,7 @@ export default function SceneForm({ onSceneCreated }) {
   const [capitulos, setCapitulos] = useState([]);
 
   useEffect(() => {
-    API.get("/capitulos")
+    API.get("/api/capitulos")
       .then((res) => setCapitulos(res.data))
       .catch((err) => console.error("❌ Error al cargar capítulos:", err));
   }, []);
@@ -20,7 +20,7 @@ export default function SceneForm({ onSceneCreated }) {
     }
 
     try {
-      await API.post("/escenas", {
+      await API.post("/api/escenas", {
         titulo_escena: titulo,
         capituloId,
       });

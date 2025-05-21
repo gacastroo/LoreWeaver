@@ -15,7 +15,7 @@ export default function EditorHistoria({ onUpdate }) {
   useEffect(() => {
     const fetchHistoria = async () => {
       try {
-        const res = await API.get(`/historias/${id}`)
+        const res = await API.get(`/api/historias/${id}`)
         setHistoria(res.data)
         setTitulo(res.data.titulo || "")
         setContenido(res.data.contenido || "")
@@ -45,7 +45,7 @@ export default function EditorHistoria({ onUpdate }) {
 
   const handleGuardar = async () => {
     try {
-      const res = await API.put(`/historias/${id}`, {
+      const res = await API.put(`/api/historias/${id}`, {
         titulo,
         contenido,
       })

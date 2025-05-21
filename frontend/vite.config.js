@@ -13,14 +13,15 @@ export default defineConfig(({ command }) => ({
       '@': resolve(__dirname, 'src'),
     },
   },
-  base: '/', // Necesario para Vercel
-  server: command === 'serve' ? {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-  } : undefined,
+  base: '/',
+  server: command === 'serve'
+    ? {
+        proxy: {
+          '/api': {
+            target: 'http://localhost:3000',
+            changeOrigin: true,
+          },
+        },
+      }
+    : undefined,
 }))

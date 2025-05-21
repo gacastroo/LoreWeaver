@@ -31,7 +31,7 @@ export default function ResetPassword() {
       // Petición PUT al backend para cambiar la contraseña con token
       await API.put(`/usuarios/reset-password/${token}`, { password });
       setSuccess("✅ Contraseña actualizada correctamente. Redirigiendo...");
-      setTimeout(() => navigate("/login"), 3000);
+      setTimeout(() => navigate("/api/login"), 3000);
     } catch (err) {
       console.error(err);
       const msg = err.response?.data?.message || "Error al cambiar la contraseña.";

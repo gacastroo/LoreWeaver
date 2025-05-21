@@ -12,7 +12,7 @@ export default function AssignTagModal({ personajeId, onClose, onSuccess, tagsAs
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const res = await API.get("/tags")
+        const res = await API.get("/api/tags")
         const tagsDisponibles = res.data.filter(
           (tag) => !tagsAsignados.some((t) => t.id_Tag === tag.id_Tag)
         )
@@ -26,7 +26,7 @@ export default function AssignTagModal({ personajeId, onClose, onSuccess, tagsAs
 
   const handleAssign = async () => {
     try {
-      await API.post("/personajes/agregar-tag", {
+      await API.post("/api/personajes/agregar-tag", {
         personajeId,
         tagId: selectedTag,
       })
