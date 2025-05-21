@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api', // Fallback a proxy local
+  baseURL: import.meta.env.VITE_API_URL || '/', // Fallback a proxy local
   withCredentials: true,
 });
 
