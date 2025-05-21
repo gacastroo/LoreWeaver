@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import API from "@/services/api"
+import jsPDF from "jspdf"
+
 
 export default function EditorUniverso({ onUpdate }) {
   const { id } = useParams()
@@ -43,6 +45,8 @@ export default function EditorUniverso({ onUpdate }) {
     ajustarAlturaTextarea(e.target.value)
   }
 
+  
+
   const handleGuardar = async () => {
     try {
       const res = await API.put(`/universos/${id}`, {
@@ -58,7 +62,22 @@ export default function EditorUniverso({ onUpdate }) {
     }
   }
 
+      const handleExportarPDF = () => {
+      const doc = new jsPDF()
+
+      doc.setFontSize(18)
+      doc.text(`Universo: ${titulo}`, 10, 20)
+
+      doc.setFontSize(12)
+      const lineas = doc.splitTextToSize(descripcion, 180)
+      doc.text(lineas, 10, 30)
+
+      doc.save(`universo_${titulo || "sin_titulo"}.pdf`)
+    }
+
   if (loading) return <p className="p-6 text-neutral-700">Cargando universo...</p>
+
+  
 
   return (
     <div className="p-8 max-w-4xl mx-auto"> {/* max-w-4xl para más ancho */}
@@ -88,6 +107,13 @@ export default function EditorUniverso({ onUpdate }) {
           className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700"
         >
           Guardar cambios
+        </button>
+
+        <button
+          onClick={handleExportarPDF}
+          className="ml-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+        >
+          Exportar PDF
         </button>
       </div>
     </div>
