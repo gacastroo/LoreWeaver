@@ -58,7 +58,7 @@ export default function EditorPersonaje({ onUpdate }) {
     }
   }
 
-  if (loading) return <p className="p-6">Cargando personaje...</p>
+  if (loading) return <p className="p-6 text-neutral-700">Cargando personaje...</p>
 
   return (
     <div className="p-8 max-w-4xl mx-auto"> {/* Aumentado max-w-4xl para mayor ancho */}
