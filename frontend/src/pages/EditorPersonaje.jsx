@@ -6,7 +6,7 @@ import jsPDF from "jspdf"
 export default function EditorPersonaje({ onUpdate }) {
   const { id } = useParams()
   const navigate = useNavigate()
-  const [setPersonaje] = useState(null)
+  const [personaje, setPersonaje] = useState(null)
   const [nombre, setNombre] = useState("")
   const [descripcion, setDescripcion] = useState("")
   const [loading, setLoading] = useState(true)
