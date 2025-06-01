@@ -93,7 +93,6 @@ model Personaje_Tag {
   id          Int @id @default(autoincrement())
   personajeId Int
   tagId       Int
-  usuarioId Int
   personaje Personaje @relation(fields: [personajeId], references: [id_Personaje], onDelete: Cascade)
   tag       Tags      @relation(fields: [tagId], references: [id_Tag], onDelete: Cascade)
 }
