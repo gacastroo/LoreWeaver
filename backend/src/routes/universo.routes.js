@@ -5,7 +5,8 @@ import {
   obtenerUniversos,
   obtenerUniversoPorId,
   actualizarUniverso,
-  asociarUniversoAHistoria
+  asociarUniversoAHistoria,
+  desasociarHistoriaUniverso
 } from "../controllers/universo.controller.js";
 import { verifyToken } from "../middlewares/auth.js";
 
@@ -31,4 +32,6 @@ router.delete("/:id", verifyToken, eliminarUniverso);
 
 // ✅ Asociar universo
 router.patch("/:id/asociar", verifyToken, asociarUniversoAHistoria);
+// ✅ Desasociar historia de un universo
+router.patch("/:id/desasociar-historia", desasociarHistoriaUniverso);
 export default router;

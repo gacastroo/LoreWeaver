@@ -239,38 +239,41 @@ export const quitarTagPersonaje = async (req, res) => {
 
 // 🔹 Asociar personaje a una historia
 export const asociarPersonajeAHistoria = async (req, res) => {
-  const userId = getUserIdFromToken(req);
-  const { id } = req.params;
+  const personajeId = parseInt(req.params.id);
   const { historiaId } = req.body;
+  const userId = req.usuario.id;
 
   try {
-    const historia = await prisma.historia.findFirst({
-      where: { id: parseInt(historiaId), usuarioId: userId },
+    const personaje = await prisma.personaje.findUnique({
+      where: { id_Personaje: personajeId },
     });
 
-    if (!historia) {
-      return res.status(403).json({ error: "No puedes asociar a esta historia." });
+    if (!personaje || personaje.usuarioId !== userId) {
+      return res.status(403).json({ message: "Acceso no autorizado" });
     }
 
-    const personaje = await prisma.personaje.findFirst({
-      where: { id_Personaje: parseInt(id), usuarioId: userId },
-    });
+    if (historiaId) {
+      const historia = await prisma.historia.findUnique({
+        where: { id: historiaId },
+      });
 
-    if (!personaje) {
-      return res.status(404).json({ error: "Personaje no encontrado o sin permiso" });
+      if (!historia || historia.usuarioId !== userId) {
+        return res.status(400).json({ message: "Historia no válida" });
+      }
     }
 
-    const actualizado = await prisma.personaje.update({
-      where: { id_Personaje: parseInt(id) },
-      data: { historiaId: historia.id },
+    await prisma.personaje.update({
+      where: { id_Personaje: personajeId },
+      data: { historiaId: historiaId || null },
     });
 
-    res.json(actualizado);
+    res.json({ message: "Historia asociada correctamente" });
   } catch (error) {
-    console.error("❌ Error al asociar personaje:", error);
-    res.status(500).json({ error: "Error interno al asociar personaje." });
+    console.error("❌ Error al asociar historia:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
   }
 };
+
 
 // 🔹 Desasociar historia del personaje
 export const desasociarHistoriaPersonaje = async (req, res) => {

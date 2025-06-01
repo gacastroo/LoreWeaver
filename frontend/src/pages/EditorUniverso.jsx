@@ -80,12 +80,26 @@ export default function EditorUniverso({ onUpdate }) {
   
 
   return (
+    
     <div className="p-8 max-w-4xl mx-auto"> {/* max-w-4xl para más ancho */}
+    {universo && (
+      <div className="flex flex-wrap gap-4 mb-6 border-b pb-4">
+        {universo.historia && (
+          <button
+            onClick={() => navigate(`/historia/${universo.historia.id}`)}
+            className="text-white-600 hover:underline"
+          >
+            📖 Ir a historia: {universo.historia.titulo}
+          </button>
+        )}
+      </div>
+    )}
+
       <h1 className="text-2xl font-bold mb-4 text-neutral-700">✍️ Editar Universo</h1>
 
       <label className="block mb-2 text-sm font-medium text-neutral-700">Nombre</label>
       <input
-        className="w-full p-3 border border-neutral-400 text-lg font-semibold rounded-md mb-4"
+        className="w-full p-3 border border-neutral-400 text-lg font-semibold rounded-md mb-4"  
         value={titulo}
         onChange={(e) => setTitulo(e.target.value)}
         placeholder="Nombre del universo"

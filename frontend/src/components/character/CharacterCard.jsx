@@ -5,6 +5,7 @@ import DeleteButton from "@/components/ui/button/DeleteButton";
 import DeleteConfirmModal from "@/components/ui/deletemodal";
 import AssignTagModal from "@/components/ui/AssignTagModal";
 import QuitarTagModal from "@/components/ui/QuitarTagModal";
+import AssignHistoriaModal from "@/components/ui/AssignHistoriaModal";
 
 import API from "@/services/api";
 
@@ -13,6 +14,7 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [loadingRemoveHistoria, setLoadingRemoveHistoria] = useState(false);
   const [showRemoveTagModal, setShowRemoveTagModal] = useState(false);
+  const [showAssignHistoriaModal, setShowAssignHistoriaModal] = useState(false);
   const navigate = useNavigate();
 
   const descripcionCorta =
@@ -59,7 +61,16 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
             </button>
           </>
         ) : (
-          <p className="text-xs text-neutral-400 italic mt-2">Sin historia asignada</p>
+          <div className="mt-2">
+            <p className="text-xs text-neutral-400 italic mb-2">Sin historia asignada</p>
+            <button
+              onClick={() => setShowAssignHistoriaModal(true)}
+              className="w-40 text-xs px-3 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition"
+            >
+              + Asignar historia
+            </button>
+          </div>
+
         )}
 
         <div className="mt-2 min-h-[2.5rem] flex flex-wrap gap-2 items-start">
@@ -118,6 +129,17 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
           onSuccess={() => window.location.reload()}
         />
       )}
+
+      {showAssignHistoriaModal && (
+        <AssignHistoriaModal
+          tipo="personaje"
+          id={character.id_Personaje}
+          onClose={() => setShowAssignHistoriaModal(false)}
+          onSuccess={() => window.location.reload()}
+        />
+      )}
+
+
 
       {showRemoveTagModal && (
         <QuitarTagModal
