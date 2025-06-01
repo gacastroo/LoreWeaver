@@ -12,7 +12,6 @@ export const verifyToken = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     
-    // ✅ Soporte dual: compatibilidad con "id" y transición a "id_usuario"
     req.usuario = {
       id_usuario: decoded.id_usuario,
       id: decoded.id_usuario
