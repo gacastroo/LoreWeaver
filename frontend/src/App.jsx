@@ -16,7 +16,8 @@ import EditorPersonaje from "@/pages/EditorPersonaje";
 import EditorUniverso from "@/pages/EditorUniverso";
 import NameGenerator from "@/pages/NameGenerator";
 import ResetPassword from "@/components/ResetPassword";
-import IdeaGenerator from "@/pages/IdeaGenerator";
+import GeneradorIdea from "./pages/GeneradorIdea"
+
 
 
 export default function App() {
@@ -48,7 +49,8 @@ export default function App() {
           <Route path="/universo/:id" element={<EditorUniverso />} />
           <Route path="/name-generator" element={<NameGenerator />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
-          <Route path="/idea-generator" element={<IdeaGenerator />} />
+          <Route path="/idea-generator" element={<GeneradorIdea />} />
+
 
 
           </Route>
