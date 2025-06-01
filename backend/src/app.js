@@ -12,6 +12,8 @@ import capituloRoutes from './routes/capitulo.routes.js'
 import escenaRoutes from './routes/escena.routes.js'
 import mapaRoutes from './routes/mapa.routes.js'
 import nameRoutes from './routes/name.routes.js'
+import ideaRoutes from "./routes/idea.routes.js"
+
 
 import { verifyToken } from './middlewares/auth.js'
 
@@ -41,5 +43,7 @@ app.use('/api/universos', verifyToken, universoRoutes)
 app.use('/api/capitulos', verifyToken, capituloRoutes)
 app.use('/api/escenas', verifyToken, escenaRoutes)
 app.use('/api/mapa', verifyToken, mapaRoutes)
+app.use("/api/ideas", ideaRoutes)
+
 
 export default app
