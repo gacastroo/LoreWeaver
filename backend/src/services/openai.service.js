@@ -1,5 +1,6 @@
 import axios from "axios"
 import dotenv from "dotenv"
+console.log("🔐 OPENAI_API_KEY:", process.env.OPENAI_API_KEY)
 dotenv.config()
 
 // Configuración de OpenRouter (usa DeepSeek u otro modelo compatible)
