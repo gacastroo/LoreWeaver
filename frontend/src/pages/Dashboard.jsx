@@ -34,13 +34,12 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <SummaryCard title="Stories" value={data.stories} />
         <SummaryCard title="Characters" value={data.characters} />
-        <SummaryCard title="Chapters" value={data.chapters} />
         <SummaryCard title="Universes" value={data.universes} />
       </div>
 
       {/* Actividad y estadísticas */}
       <div className="grid md:grid-cols-3 gap-6">
-        {(data.scenes > 0 || data.tags > 0 || data.words > 0) ? (
+        {(data.scenes > 0 || data.tags > 0) ? (
           <QuickStats stats={data} />
         ) : (
           <div className="p-4 bg-white rounded border text-sm text-neutral-400">

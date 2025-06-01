@@ -75,6 +75,19 @@ export default function EditorPersonaje({ onUpdate }) {
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
+      {personaje && (
+    <div className="flex flex-wrap gap-4 mb-6 border-b pb-4">
+      {personaje.historia && (
+        <button
+          onClick={() => navigate(`/historia/${personaje.historia?.id}`)}
+          className="text-white-600 hover:underline"
+        >
+          📖 Ir a historia: {personaje.historia.titulo}
+        </button>
+      )}
+    </div>
+)}
+
       <h1 className="text-2xl font-bold mb-4 text-neutral-700">✍️ Editar Personaje</h1>
 
       <label className="block mb-2 text-sm font-medium text-neutral-700">Nombre</label>

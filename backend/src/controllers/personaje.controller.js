@@ -85,7 +85,7 @@ export const obtenerPersonajePorId = async (req, res) => {
     const personaje = await prisma.personaje.findFirst({
       where: { id_Personaje: parseInt(id), usuarioId: userId },
       include: {
-        historia: { select: { titulo: true } },
+        historia: { select: {id: true,  titulo: true } },
         tags: { include: { tag: true } },
       },
     });

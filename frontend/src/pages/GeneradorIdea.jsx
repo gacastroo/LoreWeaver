@@ -1,10 +1,10 @@
 import { useState } from "react"
-import API from "@/services/api" // asegúrate de tener configurado Axios con baseURL y JWT
+import API from "@/services/api"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/inpuut"
 import { Loader2 } from "lucide-react"
+import ReactMarkdown from "react-markdown"
 
 export default function GeneradorIdea() {
   const [titulo, setTitulo] = useState("")
@@ -34,29 +34,37 @@ export default function GeneradorIdea() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4 space-y-4">
-      <Card>
+  <div className="min-h-screen bg-gray-900 text-white flex justify-center items-center p-6">
+      <Card className="bg-zinc-800 border border-zinc-700 rounded-2xl shadow-xl max-w-2xl w-full">
         <CardHeader>
-          <CardTitle>🧠 Generador de Ideas Narrativas</CardTitle>
+          <CardTitle className="text-white text-2xl font-bold">
+            🧠 Generador de Ideas Narrativas
+          </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-5">
           <Input
-            placeholder="Escribe el título de tu historia..."
+            placeholder="Título de tu historia..."
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
+            className="bg-zinc-700 text-white placeholder-zinc-400 border border-zinc-600"
           />
-          <Button onClick={handleGenerar} disabled={loading}>
+          <Button
+            onClick={handleGenerar}
+            disabled={loading}
+            className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded"
+          >
             {loading ? <Loader2 className="animate-spin mr-2" /> : "Generar Idea"}
           </Button>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-red-400 text-sm">{error}</p>}
 
           {idea && (
-            <Textarea
-              className="min-h-[160px] border border-gray-300 bg-gray-50 p-3"
-              value={idea}
-              readOnly
-            />
+            <div
+              className="prose prose-invert bg-zinc-800 text-white border border-zinc-600 rounded-xl p-4 overflow-y-auto shadow-inner"
+              style={{ maxHeight: "300px" }}
+            >
+              <ReactMarkdown>{idea}</ReactMarkdown>
+            </div>
           )}
         </CardContent>
       </Card>

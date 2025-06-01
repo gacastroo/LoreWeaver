@@ -22,6 +22,5 @@ export const verifyToken = (req, res, next) => {
   } catch (error) {
     return res.status(401).json({ message: "Token inválido" })
   }
-  console.log("🧪 TOKEN RECIBIDO:", req.headers.authorization)
 
 }

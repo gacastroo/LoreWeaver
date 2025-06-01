@@ -2,9 +2,10 @@ import axios from "axios"
 import dotenv from "dotenv"
 dotenv.config()
 
-const apiUrl = process.env.OPENAI_API_URL || "https://api.openai.com/v1/chat/completions"
+// Configuración de OpenRouter (usa DeepSeek u otro modelo compatible)
+const apiUrl = process.env.OPENAI_API_URL || "https://openrouter.ai/api/v1/chat/completions"
 const apiKey = process.env.OPENAI_API_KEY
-const model = process.env.OPENAI_MODEL || "gpt-3.5-turbo"
+const model = process.env.OPENAI_MODEL || "deepseek-chat"
 
 if (!apiUrl || !apiKey) {
   console.error("❌ Faltan variables de entorno OPENAI_API_URL o OPENAI_API_KEY")
@@ -13,7 +14,8 @@ if (!apiUrl || !apiKey) {
 
 const getAIRecommendation = async (prompt) => {
   try {
-    console.log("📤 Enviando prompt a OpenAI...")
+    console.log("📤 Enviando prompt a OpenRouter...")
+
     const response = await axios.post(
       apiUrl,
       {
@@ -29,32 +31,38 @@ const getAIRecommendation = async (prompt) => {
           },
         ],
         temperature: 0.7,
-        max_tokens: 700,
+        max_tokens: 1500,
       },
       {
         headers: {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
+          "HTTP-Referer": "http://localhost:3000", // Cambia por tu dominio real si despliegas
+          "X-Title": "LoreWeaver", // Nombre de tu aplicación
         },
       }
     )
 
     const content = response.data.choices?.[0]?.message?.content
-    console.log("✅ Respuesta recibida de OpenAI")
+    console.log("✅ Respuesta recibida de OpenRouter")
     return content || "No se pudo generar una idea."
   } catch (error) {
     const status = error.response?.status
     const data = error.response?.data
 
-    console.error("❌ Error con OpenAI:")
+    console.error("❌ Error con OpenRouter:")
     console.error("Status:", status)
     console.error("Data:", data)
 
-   console.error("❌ OpenAI Error Details:", error.response?.data || error.message)
-   throw new Error("Error al obtener la recomendación de IA.")
+    if (status === 401 || status === 429) {
+      console.warn("⚠️ Usando idea simulada por falta de acceso o límite excedido")
+    }
 
+    throw new Error("Error al obtener la recomendación de IA.")
   }
 }
+
+console.log("🔑 API Key cargada:", JSON.stringify(apiKey))
 
 export default {
   getAIRecommendation,
