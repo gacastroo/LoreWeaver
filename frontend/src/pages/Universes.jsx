@@ -53,7 +53,7 @@ export default function Universes() {
 
   const handleEliminarUniverso = async (id) => {
     try {
-      await API.delete(`/api/universos/${id}`);
+      await API.delete(`/universos/${id}`);
       setUniversos((prev) => prev.filter((u) => u.id_Universo !== id));
     } catch (error) {
       console.error("❌ Error al eliminar universo:", error);

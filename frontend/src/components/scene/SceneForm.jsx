@@ -7,7 +7,7 @@ export default function SceneForm({ onSceneCreated }) {
   const [capitulos, setCapitulos] = useState([]);
 
   useEffect(() => {
-    API.get("/api/capitulos")
+    API.get("/capitulos")
       .then((res) => setCapitulos(res.data))
       .catch((err) => console.error("❌ Error al cargar capítulos:", err));
   }, []);
