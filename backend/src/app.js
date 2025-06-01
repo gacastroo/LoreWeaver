@@ -21,7 +21,6 @@ dotenv.config()
 
 const app = express()
 
-// ✅ CORRECTA configuración de CORS
 app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true
@@ -33,6 +32,9 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }))
 // ✅ Rutas públicas
 app.use('/api/usuarios', usuarioRoutes)
 app.use('/api/names', nameRoutes)
+app.use("/api/ideas", ideaRoutes)
+app.use("/api/personajes", personajeRoutes);
+
 
 // 🔒 Rutas protegidas con verifyToken
 app.use('/api/personajes', verifyToken, personajeRoutes)
@@ -43,8 +45,6 @@ app.use('/api/universos', verifyToken, universoRoutes)
 app.use('/api/capitulos', verifyToken, capituloRoutes)
 app.use('/api/escenas', verifyToken, escenaRoutes)
 app.use('/api/mapa', verifyToken, mapaRoutes)
-app.use("/api/ideas", ideaRoutes)
-app.use("/api/personajes", personajeRoutes);
 
 
 
