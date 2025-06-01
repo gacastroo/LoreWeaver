@@ -28,7 +28,7 @@ export const crearUniverso = async (req, res) => {
         titulo_universo,
         descripcion_universo: descripcion_universo || "",
         historiaId: historia ? historia.id : null,
-        usuarioId: userId, // ✅ Asociar universo al usuario
+        usuarioId: userId,
       },
     });
 
@@ -146,7 +146,25 @@ export const eliminarUniverso = async (req, res) => {
   }
 };
 
-// 🔹 Asociar universo a una historia
+// 🔹 Desasociar historia de un universo
+export const desasociarHistoriaUniverso = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const universo = await prisma.universo.update({
+      where: { id_Universo: parseInt(id) },
+      data: { historiaId: null }
+    });
+
+    res.json(universo);
+  } catch (error) {
+    console.error("❌ Error al desasociar historia:", error);
+    res.status(500).json({ error: "Error al desasociar historia del universo" });
+  }
+};
+
+
+// 🔹 Asociar universo a una historia (con validación)
 export const asociarUniversoAHistoria = async (req, res) => {
   const userId = getUserIdFromToken(req);
   const { id } = req.params;
@@ -183,4 +201,3 @@ export const asociarUniversoAHistoria = async (req, res) => {
     res.status(500).json({ error: "Error al asociar universo" });
   }
 };
-  
