@@ -1,6 +1,8 @@
 import { useRef, useState, useEffect } from "react";
 import cytoscape from "cytoscape";
 import API from "@/services/api";
+import { Map } from "lucide-react" 
+
 
 const colores = {
   historia: "#facc15",
@@ -180,7 +182,11 @@ export default function MapGenerator() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
-      <h1 className="text-2xl font-bold mb-6">Generador de Mapa Narrativo</h1>
+      
+      <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
+        <Map className="w-6 h-6 text-yellow-400" />
+        Generador de Mapa Narrativo
+      </h1>
 
       {/* Botones */}
       <div className="flex flex-wrap items-center gap-4 mb-6">

@@ -1,4 +1,4 @@
-import { FileText, Tag } from "lucide-react";
+import { FileText, Tag, BookOpen } from "lucide-react";
 
 export default function QuickStats({ stats }) {
   return (
@@ -8,6 +8,14 @@ export default function QuickStats({ stats }) {
         <li>
           <Tag className="inline w-4 h-4 mr-2 text-pink-500" />
           Tags: {stats.tags}
+        </li>
+        <li>
+          <BookOpen className="inline w-4 h-4 mr-2 text-yellow-500"/>
+          Capitulos: {stats.chapters}
+        </li>
+        <li>
+          <FileText className="inline w-4 h-4 mr-2 text-sky-500" />
+          Escenas: {stats.scenes}
         </li>
       </ul>
     </div>

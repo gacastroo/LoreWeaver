@@ -1,10 +1,10 @@
 import express from "express";
 import prisma from "../lib/prisma.js";
-import { verifyToken  } from "../middlewares/auth.js";
+import { verifyToken } from "../middlewares/auth.js";
 
 const router = express.Router();
 
-router.get("/dashboard", verifyToken , async (req, res) => {
+router.get("/dashboard", verifyToken, async (req, res) => {
   try {
     const userId = req.usuario.id;
 
@@ -13,7 +13,7 @@ router.get("/dashboard", verifyToken , async (req, res) => {
     });
 
     const characters = await prisma.personaje.count({
-      where: { historia: { usuarioId: userId } }
+      where: { usuarioId: userId }
     });
 
     const chapters = await prisma.capitulo.count({
@@ -25,7 +25,7 @@ router.get("/dashboard", verifyToken , async (req, res) => {
     });
 
     const universes = await prisma.universo.count({
-      where: { historia: { usuarioId: userId } }
+      where: { usuarioId: userId }
     });
 
     const tags = await prisma.tags.count({
@@ -43,7 +43,6 @@ router.get("/dashboard", verifyToken , async (req, res) => {
       },
     });
 
-    // 🔹 Simulación de actividad reciente (puedes adaptarlo más adelante)
     const activity = [
       { text: "Nuevo personaje creado: Carrie White", time: "Hace 3 horas" },
       { text: "Nueva historia añadida: Speak", time: "Hace 1 día" }
