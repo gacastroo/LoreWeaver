@@ -14,8 +14,6 @@ if (!apiUrl || !apiKey) {
 
 const getAIRecommendation = async (prompt) => {
   try {
-    console.log("📤 Enviando prompt a OpenRouter...")
-
     const response = await axios.post(
       apiUrl,
       {
@@ -44,7 +42,6 @@ const getAIRecommendation = async (prompt) => {
     )
 
     const content = response.data.choices?.[0]?.message?.content
-    console.log("✅ Respuesta recibida de OpenRouter")
     return content || "No se pudo generar una idea."
   } catch (error) {
     const status = error.response?.status
@@ -62,7 +59,6 @@ const getAIRecommendation = async (prompt) => {
   }
 }
 
-console.log("🔑 API Key cargada:", JSON.stringify(apiKey))
 
 export default {
   getAIRecommendation,

@@ -6,8 +6,6 @@ export const generarIdeaNarrativa = async (req, res) => {
     const userId = req.usuario?.id_usuario || req.usuario?.id
     const { historiaTitulo } = req.body
 
-    console.log("✅ ID del usuario:", userId)
-    console.log("📖 Título recibido:", historiaTitulo)
 
     if (!userId) {
       return res.status(401).json({ error: "Usuario no autenticado" })
@@ -26,7 +24,6 @@ export const generarIdeaNarrativa = async (req, res) => {
     }
 
     const prompt = buildPrompt(user.nombre, historiaTitulo)
-    console.log("🧠 Prompt generado:", prompt)
 
     const idea = await aiService.getAIRecommendation(prompt)
 
