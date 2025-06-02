@@ -17,6 +17,7 @@ import EditorUniverso from "@/pages/EditorUniverso";
 import NameGenerator from "@/pages/NameGenerator";
 import ResetPassword from "@/components/ResetPassword";
 import GeneradorIdea from "./pages/GeneradorIdea"
+import ChatNarrativo from "./pages/ChatNarrativo";
 
 
 
@@ -50,6 +51,7 @@ export default function App() {
           <Route path="/name-generator" element={<NameGenerator />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/idea-generator" element={<GeneradorIdea />} />
+          <Route path="/chat" element={<ChatNarrativo />} />
 
 
 
