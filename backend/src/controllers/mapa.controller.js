@@ -14,6 +14,7 @@ export const obtenerDatosMapa = async (req, res) => {
           },
         },
         tags: true,
+        universos: true,
       },
     });
 
@@ -40,6 +41,13 @@ export const obtenerDatosMapa = async (req, res) => {
         elements.push({ data: { id: perId, label: personaje.nombre_personaje, tipo: "personaje" } });
         elements.push({ data: { source: historiaId, target: perId } });
 
+      for (const universo of historia.universos) {
+        const uniId = `u-${universo.id_Universo}`;
+        elements.push({ data: { id: uniId, label: universo.titulo_universo, tipo: "universo" } });
+        elements.push({ data: { source: historiaId, target: uniId } });
+      }
+
+
         for (const pt of personaje.tags) {
           if (pt.tag) {
             const tagId = `t-${pt.tag.id_Tag}`;
@@ -65,4 +73,6 @@ export const obtenerDatosMapa = async (req, res) => {
     console.error("❌ Error al generar datos del mapa:", error);
     res.status(500).json({ error: "Error al generar el mapa" });
   }
+
+  
 };

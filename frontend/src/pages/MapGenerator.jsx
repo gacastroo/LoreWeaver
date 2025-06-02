@@ -10,7 +10,7 @@ const colores = {
   escena: "#a78bfa",
   personaje: "#4ade80",
   tag: "#f87171",
-  universo: "#fbbf24",
+  universo: "#79443b",
 };
 
 export default function MapGenerator() {
@@ -68,7 +68,7 @@ export default function MapGenerator() {
       layoutConfig = {
         name: "breadthfirst",
         directed: true,
-        spacingFactor: 2,  // Aumentado para menos solapamiento
+        spacingFactor: 0.9,  // Aumentado para menos solapamiento
         padding: 50,
         animate: true,
         animationDuration: 600,
@@ -78,7 +78,7 @@ export default function MapGenerator() {
       layoutConfig = {
         name: "grid",
         spacingFactor: 1, 
-        padding: 50,
+        padding: 20,
         animate: true,
         animationDuration: 600,
       };
@@ -87,10 +87,10 @@ export default function MapGenerator() {
         name: "cose",
         padding: 50,
         animate: true,
-          spacingFactor: 3, 
+          spacingFactor: 1, 
         animationDuration: 600,
-        idealEdgeLength: 100,
-        nodeOverlap: 50,  // Aumentar para menos solapamiento
+        idealEdgeLength: 50,
+        nodeOverlap: 10,  // Aumentar para menos solapamiento
       };
     }
 
@@ -107,7 +107,7 @@ export default function MapGenerator() {
             "text-max-width": 160,
             width: "mapData(label.length, 5, 30, 80, 200)",
             height: 50,
-            padding: 10,
+            padding: 5,
             "font-size": 11,
             "text-valign": "center",
             "text-halign": "center",
@@ -120,7 +120,7 @@ export default function MapGenerator() {
         {
           selector: "edge",
           style: {
-            width: 2,
+            width: 3,
             "line-color": "#9ca3af",
             "target-arrow-color": "#9ca3af",
             "target-arrow-shape": "triangle",
@@ -131,7 +131,7 @@ export default function MapGenerator() {
       layout: layoutConfig,
     });
 
-    cyRef.current.fit(cyRef.current.elements(), 120);
+    cyRef.current.fit(cyRef.current.elements(), 10);
   };
 
   const generarMapa = async () => {
@@ -149,7 +149,7 @@ export default function MapGenerator() {
   const centrarMapa = () => {
     if (!cyRef.current) return;
     cyRef.current.animate({
-      fit: { eles: cyRef.current.elements(), padding: 120 },
+      fit: { eles: cyRef.current.elements(), padding: 10 },
       duration: 600,
     });
   };
@@ -269,6 +269,5 @@ export default function MapGenerator() {
     </div>
     
   );
-
   
 }
