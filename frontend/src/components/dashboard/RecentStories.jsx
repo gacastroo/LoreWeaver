@@ -7,7 +7,7 @@ export default function RecentStories({ stories }) {
   return (
     <div className="bg-white p-4 rounded-lg shadow-sm border">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg text-neutral-900 font-semibold">Recent Stories</h2>
+        <h2 className="text-lg text-neutral-900 font-semibold">Historias recientes</h2>
       </div>
       <div className="space-y-2">
         {stories.map((story, i) => (
