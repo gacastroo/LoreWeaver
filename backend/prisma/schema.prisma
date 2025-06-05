@@ -22,26 +22,24 @@ model Usuario {
 model Historia {
   id         Int         @id @default(autoincrement())
   titulo     String
-  contenido  String?     @db.LongText
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   usuarioId  Int
-  usuario    Usuario     @relation(fields: [usuarioId], references: [id_usuario])
+  usuario    Usuario     @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
   personajes Personaje[]
   capitulos  Capitulo[]
   escenas    Escena[]
   universos  Universo[]
-  tags       Tags[]
 }
 
 model Personaje {
   id_Personaje          Int             @id @default(autoincrement())
   nombre_personaje      String
   descripcion_personaje String?         @db.LongText
-  historiaId            Int? // opcional
-  historia              Historia?       @relation(fields: [historiaId], references: [id], onDelete: SetNull)
+  historiaId            Int?
+  historia              Historia?       @relation(fields: [historiaId], references: [id], onDelete: Cascade)
   usuarioId             Int
-  usuario               Usuario         @relation(fields: [usuarioId], references: [id_usuario])
+  usuario               Usuario         @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
   tags                  Personaje_Tag[]
 }
 
@@ -49,22 +47,23 @@ model Escena {
   id_Escena     Int    @id @default(autoincrement())
   titulo_escena String @default("Escena sin título")
   orden_escena  Int    @default(0)
-  historiaId    Int?
-  capituloId    Int?
+  historiaId    Int
+  capituloId    Int
   universoId    Int?
 
-  historia Historia? @relation(fields: [historiaId], references: [id], onDelete: SetNull)
-  capitulo Capitulo? @relation(fields: [capituloId], references: [id_Capitulo], onDelete: SetNull)
+  historia Historia  @relation(fields: [historiaId], references: [id], onDelete: Cascade)
+  capitulo Capitulo  @relation(fields: [capituloId], references: [id_Capitulo], onDelete: Cascade)
   universo Universo? @relation(fields: [universoId], references: [id_Universo], onDelete: SetNull)
 }
 
 model Capitulo {
   id_Capitulo     Int    @id @default(autoincrement())
   titulo_capitulo String
-  historiaId      Int?
+  contenido String? @db.LongText
+  historiaId      Int
   universoId      Int?
 
-  historia Historia? @relation(fields: [historiaId], references: [id], onDelete: SetNull)
+  historia Historia  @relation(fields: [historiaId], references: [id], onDelete: Cascade)
   universo Universo? @relation(fields: [universoId], references: [id_Universo], onDelete: SetNull)
   escenas  Escena[]
 }
@@ -74,9 +73,9 @@ model Universo {
   titulo_universo      String
   descripcion_universo String?    @db.LongText
   historiaId           Int?
-  historia             Historia?  @relation(fields: [historiaId], references: [id], onDelete: SetNull)
+  historia             Historia?  @relation(fields: [historiaId], references: [id], onDelete: Cascade)
   usuarioId            Int
-  usuario              Usuario    @relation(fields: [usuarioId], references: [id_usuario])
+  usuario              Usuario    @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
   escenas              Escena[]
   capitulos            Capitulo[]
 }
@@ -84,25 +83,22 @@ model Universo {
 model Tags {
   id_Tag     Int             @id @default(autoincrement())
   nombre_tag String
-  historiaId Int?
-  historia   Historia?       @relation(fields: [historiaId], references: [id], onDelete: Cascade)
   personajes Personaje_Tag[]
 }
 
 model Personaje_Tag {
-  id          Int @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   personajeId Int
   tagId       Int
-
-  personaje Personaje @relation(fields: [personajeId], references: [id_Personaje], onDelete: Cascade)
-  tag       Tags      @relation(fields: [tagId], references: [id_Tag], onDelete: Cascade)
+  personaje   Personaje @relation(fields: [personajeId], references: [id_Personaje], onDelete: Cascade)
+  tag         Tags      @relation(fields: [tagId], references: [id_Tag], onDelete: Cascade)
 }
 
 model ResetToken {
   id        Int      @id @default(autoincrement())
   token     String   @unique
   usuarioId Int
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id_usuario])
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id_usuario], onDelete: Cascade)
   expiresAt DateTime
   createdAt DateTime @default(now())
 }

@@ -6,10 +6,10 @@ import { Input } from "@/components/ui/input"
 import { Loader2 } from "lucide-react"
 import ReactMarkdown from "react-markdown"
 
-const entidades = ["historia", "personaje", "universo"]
+const entidades = ["capitulo", "personaje", "universo"]
 
 export default function ChatNarrativo() {
-  const [tipo, setTipo] = useState("historia")
+  const [tipo, setTipo] = useState("capitulo")
   const [id, setId] = useState(null)
   const [elementos, setElementos] = useState([])
   const [mensaje, setMensaje] = useState("")

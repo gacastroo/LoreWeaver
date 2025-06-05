@@ -9,9 +9,7 @@ export default function CreateTagModal({ onClose, onSuccess, endpoint, historiaI
   const handleSubmit = async () => {
     if (!titulo.trim()) return;
 
-    const data = {
-      nombre_tag: titulo,
-    };
+    const data = { nombre_tag: titulo.trim() };
 
     if (historiaId) {
       data.historiaId = parseInt(historiaId);
@@ -22,8 +20,14 @@ export default function CreateTagModal({ onClose, onSuccess, endpoint, historiaI
 
     try {
       const res = await API.post(endpoint, data);
-      onSuccess(res.data);
-      onClose();
+
+      // Verificación segura antes de llamar a onSuccess
+      if (res.data && res.data.id_Tag) {
+        onSuccess(res.data); // Agrega el nuevo tag a la lista
+        onClose();           // Cierra el modal
+      } else {
+        throw new Error("Tag creado sin ID válido");
+      }
     } catch (error) {
       console.error("❌ Error al crear tag:", error);
       setErrorMessage("Error al crear el tag. Intenta nuevamente.");

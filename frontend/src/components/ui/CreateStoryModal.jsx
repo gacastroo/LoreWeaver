@@ -1,4 +1,3 @@
-"use client"
 
 import { useState } from "react"
 import API from "@/services/api"
@@ -8,12 +7,20 @@ export default function CreateStoryModal({ onClose, onSuccess }) {
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async () => {
-    if (!titulo.trim()) return
+    if (!titulo.trim()) return;
 
     setLoading(true)
     try {
-      const res = await API.post("/historias", { titulo })
-      onSuccess(res.data) // devuelve la nueva historia
+
+      const historiaRes = await API.post("/historias", { titulo })
+      const historia = historiaRes.data
+
+      await API.post("/capitulos", {
+        titulo_capitulo: "Capítulo 1",
+        historiaId: historia.id
+      })
+
+      onSuccess(historia)
       onClose()
     } catch (error) {
       console.error("❌ Error al crear historia:", error)

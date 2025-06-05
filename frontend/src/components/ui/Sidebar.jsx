@@ -6,10 +6,9 @@ import {
   Film, Bookmark, Map, User, Lightbulb, LogOut, Menu
 } from "lucide-react";
 
-export default function Sidebar() {
+export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const [userStories, setUserStories] = useState([]);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,6 +41,14 @@ export default function Sidebar() {
       >
         <Menu className="w-6 h-6 text-gray-700" />
       </button>
+
+      {/* Overlay al abrir sidebar en móviles */}
+      {sidebarOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-30 bg-black bg-opacity-40"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
       {/* Sidebar responsive */}
       <aside className={`

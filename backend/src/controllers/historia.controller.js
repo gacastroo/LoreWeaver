@@ -1,19 +1,24 @@
 import prisma from '../lib/prisma.js'
-import { getUserIdFromToken } from '../utils/auth.js'
 
-// 🔹 Crear historia (solo para el usuario autenticado)
+// 🔹 Crear historia (vacía, solo con título)
 export const crearHistoria = async (req, res) => {
-  const { titulo, contenido } = req.body;
+  const { titulo } = req.body;
   const usuarioId = req.usuario?.id;
+
+  console.log("📥 POST /historias →", { titulo, usuarioId });
+
+  if (!titulo?.trim()) {
+    return res.status(400).json({ error: "El título es obligatorio." });
+  }
 
   try {
     const historia = await prisma.historia.create({
       data: {
         titulo,
-        contenido,
-        usuarioId, // conexión directa
+        usuarioId
       },
     });
+
     res.status(201).json(historia);
   } catch (error) {
     console.error("❌ Error al crear historia:", error);
@@ -34,7 +39,6 @@ export const obtenerHistorias = async (req, res) => {
         universos: true,
         capitulos: true,
         escenas: true,
-        tags: true
       },
     });
     res.json(historias);
@@ -60,7 +64,6 @@ export const obtenerHistoria = async (req, res) => {
         capitulos: true,
         escenas: true,
         universos: true,
-        tags: true
       }
     });
 
@@ -71,11 +74,15 @@ export const obtenerHistoria = async (req, res) => {
   }
 };
 
-// 🔹 Actualizar una historia del usuario
+// 🔹 Actualizar solo el título de la historia
 export const actualizarHistoria = async (req, res) => {
   const { id } = req.params;
-  const { titulo, contenido } = req.body;
+  const { titulo } = req.body;
   const usuarioId = req.usuario?.id;
+
+  if (!titulo?.trim()) {
+    return res.status(400).json({ error: "El título no puede estar vacío." });
+  }
 
   try {
     const historia = await prisma.historia.findFirst({
@@ -86,10 +93,7 @@ export const actualizarHistoria = async (req, res) => {
 
     const historiaActualizada = await prisma.historia.update({
       where: { id: historia.id },
-      data: {
-        ...(titulo && { titulo }),
-        ...(contenido && { contenido }),
-      },
+      data: { titulo }
     });
 
     res.json(historiaActualizada);
@@ -121,5 +125,66 @@ export const eliminarHistoria = async (req, res) => {
     res.json({ message: 'Historia eliminada correctamente' });
   } catch (error) {
     res.status(500).json({ error: 'Error al eliminar historia' });
+  }
+};
+
+export const obtenerRelacionesHistoria = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.usuario?.id;
+
+  try {
+    const historia = await prisma.historia.findFirst({
+      where: {
+        id: Number(id),
+        usuarioId: userId,
+      },
+      include: {
+        personajes: {
+          include: {
+            tags: {
+              include: {
+                tag: true,
+              },
+            },
+          },
+        },
+        universos: true,
+        capitulos: true,
+        escenas: {
+          include: {
+            universo: true,
+            capitulo: true,
+          },
+        },
+      },
+    });
+
+    if (!historia) {
+      return res.status(404).json({ error: "Historia no encontrada" });
+    }
+
+    // Obtener tags únicos desde los personajes
+    const tagsUnicos = Array.from(
+      new Set(
+        historia.personajes.flatMap((p) =>
+          p.tags.map((t) => t.tag.nombre_tag)
+        )
+      )
+    );
+
+    res.json({
+      historia: {
+        id: historia.id,
+        titulo: historia.titulo,
+      },
+      personajes: historia.personajes,
+      universos: historia.universos,
+      capitulos: historia.capitulos,
+      escenas: historia.escenas,
+      tags: tagsUnicos,
+    });
+  } catch (error) {
+    console.error("❌ Error al obtener relaciones de historia:", error);
+    res.status(500).json({ error: "Error al obtener relaciones de historia" });
   }
 };

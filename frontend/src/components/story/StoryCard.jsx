@@ -6,6 +6,8 @@
   import API from "@/services/api";
   import AsociarPersonajeModal from "@/components/ui/AsociarPersonajeModal";
   import AsociarUniversoModal from "@/components/ui/AsociarUniversoModal";
+  import DeleteStoryCascadeModal from "@/components/ui/DeleteStoryCascadeModal";
+
 
   export default function StoryCard({ story, onDelete }) {
     const [showModal, setShowModal] = useState(false);
@@ -57,7 +59,8 @@
           </div>
 
           {showModal && (
-            <DeleteConfirmModal
+            <DeleteStoryCascadeModal
+              story={story}
               onCancel={() => setShowModal(false)}
               onConfirm={() => {
                 onDelete(story.id);
@@ -65,6 +68,7 @@
               }}
             />
           )}
+
 
           {abrirAsociarModal && (
             <AsociarPersonajeModal
