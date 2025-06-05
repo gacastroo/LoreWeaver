@@ -14,7 +14,7 @@ CREATE TABLE `Usuario` (
 CREATE TABLE `Historia` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `titulo` VARCHAR(191) NOT NULL,
-    `contenido` LONGTEXT NULL,
+    `contenido` JSON NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `usuarioId` INTEGER NOT NULL,
