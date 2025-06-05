@@ -75,9 +75,9 @@ export default function Dashboard() {
     <div className="p-8 bg-neutral-100 space-y-8">
       {/* Tarjetas de resumen */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <SummaryCard title="Stories" value={data.stories} />
-        <SummaryCard title="Characters" value={data.characters} />
-        <SummaryCard title="Universes" value={data.universes} />
+        <SummaryCard title="Historias" value={data.stories} />
+        <SummaryCard title="Personajes" value={data.characters} />
+        <SummaryCard title="Universos" value={data.universes} />
       </div>
 
       {/* Actividad y estadísticas */}
