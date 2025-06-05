@@ -8,28 +8,39 @@ router.get("/dashboard", verifyToken, async (req, res) => {
   try {
     const userId = req.usuario.id;
 
-    const stories = await prisma.historia.count({
-      where: { usuarioId: userId }
-    });
+    const [stories, characters, chapters, scenes, universes] = await Promise.all([
+      prisma.historia.count({ where: { usuarioId: userId } }),
+      prisma.personaje.count({ where: { usuarioId: userId } }),
+      prisma.capitulo.count({ where: { historia: { usuarioId: userId } } }),
+      prisma.escena.count({ where: { historia: { usuarioId: userId } } }),
+      prisma.universo.count({ where: { usuarioId: userId } }),
+    ]);
 
-    const characters = await prisma.personaje.count({
-      where: { usuarioId: userId }
+    // 🔹 Obtener todos los personajes del usuario
+    const personajesUsuario = await prisma.personaje.findMany({
+      where: { usuarioId: userId },
+      select: { id_Personaje: true },
     });
+    const idsPersonajes = personajesUsuario.map(p => p.id_Personaje);
 
-    const chapters = await prisma.capitulo.count({
-      where: { historia: { usuarioId: userId } }
+    // 🔹 Obtener IDs únicos de tags asociados a esos personajes
+    const tagsAsociados = await prisma.personaje_Tag.findMany({
+      where: { personajeId: { in: idsPersonajes } },
+      select: { tagId: true },
+      distinct: ['tagId'],
     });
+    const tagIdsAsociados = tagsAsociados.map(t => t.tagId);
 
-    const scenes = await prisma.escena.count({
-      where: { historia: { usuarioId: userId } }
-    });
-
-    const universes = await prisma.universo.count({
-      where: { usuarioId: userId }
-    });
-
+    // 🔹 Contar todos los tags del sistema que estén:
+    //   - Asociados a personajes del usuario, o
+    //   - Sueltos (sin personajes relacionados)
     const tags = await prisma.tags.count({
-      where: { historia: { usuarioId: userId } }
+      where: {
+        OR: [
+          { id_Tag: { in: tagIdsAsociados } },
+          { personajes: { none: {} } },
+        ],
+      },
     });
 
     const recentStories = await prisma.historia.findMany({
@@ -55,7 +66,6 @@ router.get("/dashboard", verifyToken, async (req, res) => {
       scenes,
       universes,
       tags,
-      words: 0,
       recentStories: recentStories.map((h) => ({
         id: h.id,
         title: h.titulo,

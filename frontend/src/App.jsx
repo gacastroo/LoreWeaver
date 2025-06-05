@@ -14,6 +14,8 @@ import RutaPrivada from "@/components/auth/RutaPrivada";
 import EditorHistoria from "@/pages/EditorHistoria";
 import EditorPersonaje from "@/pages/EditorPersonaje";
 import EditorUniverso from "@/pages/EditorUniverso";
+import EditorCapitulo from "@/pages/EditorCapitulo";
+import VistaRelaciones from "@/pages/VistaRelaciones";
 import NameGenerator from "@/pages/NameGenerator";
 import ResetPassword from "@/components/ResetPassword";
 import GeneradorIdea from "./pages/GeneradorIdea"
@@ -46,8 +48,10 @@ export default function App() {
           <Route path="/tags" element={<Tags />} />
           <Route path="/map-generator" element={<MapGenerator />} />
           <Route path="/historia/:id" element={<EditorHistoria />} />
+          <Route path="/editor-capitulo/:id" element={<EditorCapitulo />} />
           <Route path="/personaje/:id" element={<EditorPersonaje />} />
           <Route path="/universo/:id" element={<EditorUniverso />} />
+          <Route path="/historia/:id/relaciones" element={<VistaRelaciones />} />
           <Route path="/name-generator" element={<NameGenerator />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/idea-generator" element={<GeneradorIdea />} />

@@ -263,6 +263,7 @@ export default function MapGenerator() {
           <span className="text-purple-400">Escena</span>
           <span className="text-green-400">Personaje</span>
           <span className="text-red-400">Tag</span>
+          <span className="text-orange-900">Universes</span>
         </div>
       </div>
 

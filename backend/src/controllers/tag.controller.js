@@ -1,54 +1,88 @@
 import prisma from '../lib/prisma.js';
 import { getUserIdFromToken } from '../utils/auth.js';
 
-// 🔹 Obtener todos los tags del usuario
+// 🔹 Obtener todos los tags asociados a personajes del usuario
 export const obtenerTags = async (req, res) => {
   const usuarioId = getUserIdFromToken(req);
 
   try {
+    // ✅ Obtenemos todos los tags cuyos personajes (si existen) sean del usuario
     const tags = await prisma.tags.findMany({
-      where: {
-        historia: {
-          usuarioId,
-        },
-      },
       include: {
-        historia: {
-          select: { titulo: true },
-        },
         personajes: {
           include: {
             personaje: {
-              select: { nombre_personaje: true },
+              select: { nombre_personaje: true, usuarioId: true },
             },
           },
         },
       },
     });
 
-    res.json(tags);
+    // ✅ Filtramos los tags que:
+    // - no tienen ningún personaje asociado
+    // - o al menos un personaje asociado es del usuario
+    const filtered = tags.filter(
+      (tag) =>
+        tag.personajes.length === 0 ||
+        tag.personajes.some((pt) => pt.personaje?.usuarioId === usuarioId)
+    );
+
+    res.json(filtered);
   } catch (error) {
     console.error("❌ Error al obtener tags:", error);
     res.status(500).json({ error: "Error al obtener tags" });
   }
 };
 
-// 🔹 Eliminar un tag si pertenece a una historia del usuario
+
+// 🔹 Crear un nuevo tag sin historiaId
+export const crearTag = async (req, res) => {
+  const { nombre_tag } = req.body;
+
+  try {
+    const tag = await prisma.tags.create({
+      data: { nombre_tag },
+    });
+
+    res.status(201).json(tag);
+  } catch (error) {
+    console.error("❌ Error al crear tag:", error);
+    res.status(500).json({ error: "Error al crear el tag" });
+  }
+};
+
+// 🔹 Eliminar tag si pertenece a un personaje del usuario
 export const eliminarTag = async (req, res) => {
   const usuarioId = getUserIdFromToken(req);
   const { id } = req.params;
 
   try {
-    const tag = await prisma.tags.findFirst({
-      where: {
-        id_Tag: parseInt(id),
-        historia: {
-          usuarioId,
+    // Buscar el tag con sus personajes
+    const tag = await prisma.tags.findUnique({
+      where: { id_Tag: parseInt(id) },
+      include: {
+        personajes: {
+          include: {
+            personaje: true,
+          },
         },
       },
     });
 
     if (!tag) {
+      return res.status(404).json({ error: "Tag no encontrado" });
+    }
+
+    // Validar si algún personaje asociado es del usuario
+    const perteneceAlUsuario = tag.personajes.some(
+      (pt) => pt.personaje?.usuarioId === usuarioId
+    );
+
+    // También permitir eliminar si el tag no tiene personajes asociados
+    const sinPersonajes = tag.personajes.length === 0;
+
+    if (!perteneceAlUsuario && !sinPersonajes) {
       return res.status(403).json({ error: "No tienes permiso para eliminar este tag" });
     }
 
@@ -63,40 +97,3 @@ export const eliminarTag = async (req, res) => {
   }
 };
 
-// 🔹 Crear un nuevo tag
-export const crearTag = async (req, res) => {
-  console.log("🧠 REQ.USUARIO:", req.usuario);
-  const { nombre_tag, historiaId } = req.body; // historiaId puede ser opcional
-  const usuarioId = getUserIdFromToken(req);
-  console.log("🔑 usuarioId extraído:", usuarioId);
-
-  try {
-    let tagData = {
-      nombre_tag,
-    };
-
-    // Si historiaId se proporciona, verificar que la historia pertenezca al usuario
-    if (historiaId) {
-      const historia = await prisma.historia.findUnique({
-        where: { id: historiaId },
-        select: { usuarioId: true },
-      });
-
-      if (!historia || historia.usuarioId !== usuarioId) {
-        return res.status(403).json({ error: "No tienes permiso para crear un tag en esta historia" });
-      }
-
-      tagData.historiaId = historiaId; // Asocia el tag con la historia
-    }
-
-    // Crear el tag
-    const tag = await prisma.tags.create({
-      data: tagData,
-    });
-
-    res.status(201).json(tag);
-  } catch (error) {
-    console.error("❌ Error al crear tag:", error);
-    res.status(500).json({ error: "Error al crear el tag" });
-  }
-};

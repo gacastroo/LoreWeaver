@@ -4,7 +4,8 @@ import {
   obtenerHistorias,
   obtenerHistoria,
   actualizarHistoria,
-  eliminarHistoria
+  eliminarHistoria,
+  obtenerRelacionesHistoria
 } from '../controllers/historia.controller.js'
 import { verifyToken  } from '../middlewares/auth.js'
 
@@ -15,5 +16,7 @@ router.get('/', verifyToken , obtenerHistorias)
 router.get('/:id', verifyToken , obtenerHistoria)
 router.put('/:id', verifyToken , actualizarHistoria)
 router.delete('/:id', verifyToken , eliminarHistoria)
+router.get("/:id/relaciones", verifyToken, obtenerRelacionesHistoria);
+
 
 export default router
