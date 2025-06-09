@@ -1,7 +1,8 @@
-import { useEffect, useState, useRef } from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import API from "@/services/api"
-import jsPDF from "jspdf"
+import { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import API from "@/services/api";
+import jsPDF from "jspdf";
+import toast from 'react-hot-toast';
 
 
 export default function EditorUniverso({ onUpdate }) {
@@ -54,7 +55,7 @@ export default function EditorUniverso({ onUpdate }) {
         descripcion_universo: descripcion,
       })
 
-      alert("✅ Universo actualizado correctamente")
+      toast.success("Universo actualizado correctamente")
       onUpdate && onUpdate(res.data)
       navigate("/universes")
     } catch (error) {

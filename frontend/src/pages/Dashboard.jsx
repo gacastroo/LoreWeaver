@@ -64,6 +64,14 @@ export default function Dashboard() {
           >
             🌍 Universo
           </button>
+          <button
+            onClick={() => navigate("/guia")}
+            className="bg-neutral-600 hover:bg-neutral-700 text-white px-4 py-2 rounded-md text-sm transition"
+          >
+             ¿No sabes como empezar? Haz click aquí
+          </button>
+
+          
         </div>
       </div>
     </div>
