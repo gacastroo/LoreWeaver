@@ -1,7 +1,8 @@
-import { useEffect, useState, useRef } from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import API from "@/services/api"
-import jsPDF from "jspdf"
+import { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import API from "@/services/api";
+import jsPDF from "jspdf";
+import toast from 'react-hot-toast';
 
 export default function EditorPersonaje({ onUpdate }) {
   const { id } = useParams()
@@ -50,7 +51,7 @@ export default function EditorPersonaje({ onUpdate }) {
         descripcion_personaje: descripcion,
       })
 
-      alert("✅ Personaje actualizado correctamente")
+      toast.success("Personaje actualizado correctamente")
       onUpdate && onUpdate(res.data)
       navigate("/characters")
     } catch (error) {

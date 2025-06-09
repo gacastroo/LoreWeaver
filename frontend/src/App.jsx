@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast"; // ← AÑADIDO
+
 import Inicio from "@/layouts/Inicio";
 import Characters from "@/pages/Characters";
 import LogoScreen from "@/pages/LogoScreen";
@@ -18,14 +20,14 @@ import EditorCapitulo from "@/pages/EditorCapitulo";
 import VistaRelaciones from "@/pages/VistaRelaciones";
 import NameGenerator from "@/pages/NameGenerator";
 import ResetPassword from "@/components/ResetPassword";
-import GeneradorIdea from "./pages/GeneradorIdea"
+import GeneradorIdea from "./pages/GeneradorIdea";
 import ChatNarrativo from "./pages/ChatNarrativo";
-
-
+import Guia from './pages/Guia';
 
 export default function App() {
   return (
     <BrowserRouter>
+      <Toaster position="top-right" toastOptions={{ duration: 3000 }} /> {/* ← AÑADIDO */}
       <Routes>
         {/* Público */}
         <Route path="/" element={<LoginRegister />} />
@@ -56,11 +58,8 @@ export default function App() {
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/idea-generator" element={<GeneradorIdea />} />
           <Route path="/chat" element={<ChatNarrativo />} />
-
-
-
-          </Route>
-          
+          <Route path="/guia" element={<Guia />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
