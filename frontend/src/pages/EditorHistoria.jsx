@@ -1,16 +1,15 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "@/services/api";
 import jsPDF from "jspdf";
 import toast from 'react-hot-toast';
 
-
 export default function EditorHistoria({ onUpdate }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [historia, setHistoria] = useState(null);
   const [titulo, setTitulo] = useState("");
   const [capitulos, setCapitulos] = useState([]);
+  const [capitulosOriginales, setCapitulosOriginales] = useState([]);
   const [expandido, setExpandido] = useState([]);
   const [loading, setLoading] = useState(true);
   const textareaRefs = useRef([]);
@@ -19,9 +18,9 @@ export default function EditorHistoria({ onUpdate }) {
     const fetchHistoria = async () => {
       try {
         const res = await API.get(`/historias/${id}`);
-        setHistoria(res.data);
         setTitulo(res.data.titulo || "");
         setCapitulos(res.data.capitulos || []);
+        setCapitulosOriginales(res.data.capitulos || []);
         setExpandido(res.data.capitulos?.map(() => true) || []);
       } catch (error) {
         console.error("❌ Error al cargar historia:", error);
@@ -33,13 +32,9 @@ export default function EditorHistoria({ onUpdate }) {
     fetchHistoria();
   }, [id]);
 
-  const toggleExpandido = (index) => {
-    setExpandido((prev) => prev.map((val, i) => {
-      if (i === index && !val) setTimeout(() => ajustarAlturaTextarea(i), 0);
-      return i === index ? !val : val;
-    }));
-  };
-
+  useLayoutEffect(() => {
+    capitulos.forEach((_, i) => ajustarAlturaTextarea(i));
+  }, [capitulos]);
 
   const ajustarAlturaTextarea = (index) => {
     const ta = textareaRefs.current[index];
@@ -47,6 +42,13 @@ export default function EditorHistoria({ onUpdate }) {
       ta.style.height = "auto";
       ta.style.height = ta.scrollHeight + "px";
     }
+  };
+
+  const toggleExpandido = (index) => {
+    setExpandido((prev) =>
+      prev.map((val, i) => (i === index ? !val : val))
+    );
+    setTimeout(() => ajustarAlturaTextarea(index), 0);
   };
 
   const handleChangeContenido = (index, value) => {
@@ -76,26 +78,49 @@ export default function EditorHistoria({ onUpdate }) {
   const handleGuardar = async () => {
     try {
       await API.put(`/historias/${id}`, { titulo });
+
+      const nuevos = [];
+      const existentes = [];
+
       for (const cap of capitulos) {
         if (cap.id_Capitulo) {
-          await API.put(`/capitulos/${cap.id_Capitulo}`, {
-            titulo_capitulo: cap.titulo_capitulo,
-            contenido: cap.contenido,
-            historiaId: parseInt(id)
-          });
+          existentes.push(cap);
         } else {
-          await API.post(`/capitulos`, {
-            titulo_capitulo: cap.titulo_capitulo,
-            contenido: cap.contenido,
-            historiaId: parseInt(id)
-          });
+          nuevos.push(cap);
         }
       }
-      toast.success("Historia y capítulos actualizados correctamente");
+
+      for (const cap of nuevos) {
+        await API.post(`/capitulos`, {
+          titulo_capitulo: cap.titulo_capitulo,
+          contenido: cap.contenido,
+          historiaId: parseInt(id)
+        });
+      }
+
+      for (const cap of existentes) {
+        await API.put(`/capitulos/${cap.id_Capitulo}`, {
+          titulo_capitulo: cap.titulo_capitulo,
+          contenido: cap.contenido,
+          historiaId: parseInt(id)
+        });
+      }
+
+      const idsActuales = capitulos.map((c) => c.id_Capitulo).filter(Boolean);
+      const idsOriginales = capitulosOriginales.map((c) => c.id_Capitulo);
+      const eliminados = idsOriginales.filter((id) => !idsActuales.includes(id));
+
+      for (const idCap of eliminados) {
+        await API.delete(`/capitulos/${idCap}`);
+      }
+
+      setCapitulosOriginales([...capitulos]); // ✅ importante
+
+      toast.success("✅ Historia y capítulos actualizados correctamente");
       onUpdate && onUpdate();
       navigate("/stories");
     } catch (error) {
-      console.error("❌ Error al actualizar historia:", error);
+      console.error("❌ Error al guardar historia:", error);
     }
   };
 

@@ -1,27 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import API from "@/services/api";
 import {
   BookOpen, LayoutDashboard, Users, Globe, Layers,
   Film, Bookmark, Map, User, Lightbulb, LogOut, Menu
 } from "lucide-react";
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
-  const [userStories, setUserStories] = useState([]);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchStories = async () => {
-      try {
-        const res = await API.get("/historias");
-        setUserStories(res.data);
-      } catch (err) {
-        console.error("❌ Error al cargar historias en sidebar:", err);
-      }
-    };
-    fetchStories();
-  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -103,15 +89,12 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
               <NavLink to="/idea-generator" className="nav-link" onClick={() => setSidebarOpen(false)}>
                 <Lightbulb className="icon" /> Generador de Ideas
               </NavLink>
-              
               <NavLink to="/chat" className="nav-link" onClick={() => setSidebarOpen(false)}>
                 <Lightbulb className="icon" /> Chat Narrativo
               </NavLink>
-
               <NavLink to="/guia" className="nav-link" onClick={() => setSidebarOpen(false)}>
-                 <BookOpen className="icon" /> Guía de Uso
-                </NavLink>
-
+                <BookOpen className="icon" /> Guía de Uso
+              </NavLink>
             </nav>
           </div>
         </div>

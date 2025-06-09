@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "@/services/api";
 import jsPDF from "jspdf";
+import toast from "react-hot-toast";
 
 export default function EditorCapitulo({ onUpdate }) {
   const { id } = useParams();
@@ -50,7 +51,7 @@ export default function EditorCapitulo({ onUpdate }) {
         contenido,
       });
 
-      alert("✅ Capítulo actualizado correctamente");
+      toast.success("Capítulo actualizado correctamente");
       onUpdate && onUpdate(res.data);
       navigate("/chapters");
     } catch (error) {

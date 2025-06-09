@@ -43,7 +43,7 @@ export default function Scenes() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {escenas.length === 0 ? (
-          <p className="text-neutral-500">No hay escenas registradas.</p>
+          <p className="text-sm text-neutral-500">No hay escenas registradas.</p>
         ) : (
           escenas.map((escena) => (
             <SceneCard

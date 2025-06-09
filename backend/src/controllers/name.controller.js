@@ -9,32 +9,41 @@ const localNames = {
   medieval: ["Godric", "Isolde", "Beatrix", "Cedric", "Rowena", "Alaric", "Thorn", "Morgana"],
 }
 
-// 🔧 Controlador principal
+// 🔧 Controlador principal mejorado
 export const generarNombreConIA = async (req, res) => {
-  const { type = "fantasy" } = req.body
-  const prompt = `Dame un solo nombre de personaje estilo ${type}. No des explicaciones, solo el nombre.`
+  const { type = "fantasy", gender = "masculino" } = req.body;
+
+  const promptNombre = `Dame un solo nombre de personaje ${gender} estilo ${type}. No des explicaciones, solo el nombre.`;
+  const promptDescripcion = (nombre) => 
+    `Dame una breve descripción (1-2 frases) para un personaje llamado "${nombre}". Es un personaje ${gender} de una historia de estilo ${type}. No des explicaciones adicionales.`;
 
   try {
-    const texto = await getAI.getAIRecommendation(prompt)
+    // 1. Generar nombre
+    const texto = await getAI.getAIRecommendation(promptNombre);
+    const nombreExtraído = texto?.split("\n")[0]?.split(" ")[0]?.trim();
+    const nombre = nombreExtraído.replace(/[^a-zA-Z0-9\-]/g, "");
 
-    const nombreExtraído = texto?.split("\n")[0]?.split(" ")[0]?.trim()
-    const nombre = nombreExtraído.replace(/[^a-zA-Z0-9\-]/g, "")
+    if (!nombre || nombre.length < 2) throw new Error("Nombre inválido");
 
-    if (!nombre || nombre.length < 2) throw new Error("Nombre inválido")
+    // 2. Generar descripción
+    const descripcionTexto = await getAI.getAIRecommendation(promptDescripcion(nombre));
+    const descripcion = descripcionTexto.split("\n")[0]?.trim();
 
-    console.log("✅ Nombre generado con IA:", nombre)
-    return res.json({ name: nombre, from: "ia" })
+    console.log("✅ Nombre generado con IA:", nombre);
+    console.log("📝 Descripción generada con IA:", descripcion);
+
+    return res.json({ name: nombre, descripcion, from: "ia" });
   } catch (error) {
-    console.warn("⚠️ Fallback a nombre local:", error.message)
-    const fallback = obtenerNombreLocal(type)
-    return res.json({ name: fallback, from: "local" })
+    console.warn("⚠️ Fallback a nombre local:", error.message);
+    const fallback = obtenerNombreLocal(type);
+    return res.json({ name: fallback, descripcion: "", from: "local" });
   }
 }
 
 // 🔁 Fallback local
 const obtenerNombreLocal = (type) => {
-  const lista = localNames[type] || localNames.fantasy
-  const nombre = lista[Math.floor(Math.random() * lista.length)]
-  console.log("🔄 Nombre generado localmente:", nombre)
-  return nombre
+  const lista = localNames[type] || localNames.fantasy;
+  const nombre = lista[Math.floor(Math.random() * lista.length)];
+  console.log("🔄 Nombre generado localmente:", nombre);
+  return nombre;
 }

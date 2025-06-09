@@ -6,31 +6,33 @@ import DeleteConfirmModal from "@/components/ui/deletemodal";
 import AssignTagModal from "@/components/ui/AssignTagModal";
 import QuitarTagModal from "@/components/ui/QuitarTagModal";
 import AssignHistoriaModal from "@/components/ui/AssignHistoriaModal";
-
 import API from "@/services/api";
 
 export default function CharacterCard({ character, onDelete, onTagClick }) {
   const [showModal, setShowModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
-  const [loadingRemoveHistoria, setLoadingRemoveHistoria] = useState(false);
   const [showRemoveTagModal, setShowRemoveTagModal] = useState(false);
   const [showAssignHistoriaModal, setShowAssignHistoriaModal] = useState(false);
+  const [loadingRemoveHistoria, setLoadingRemoveHistoria] = useState(false);
   const navigate = useNavigate();
 
-  const descripcionCorta =
-    character.descripcion_personaje?.length > 100
-      ? character.descripcion_personaje.slice(0, 100) + "..."
-      : character.descripcion_personaje || "Sin descripción";
+  const MAX_CARACTERES = 40; // <-- Aquí ajustas el límite
 
-  // Función para quitar la historia
+  const cortarDescripcion = (text) => {
+    if (!text) return "Sin descripción";
+    return text.length > MAX_CARACTERES
+      ? text.slice(0, MAX_CARACTERES).trimEnd() + "..."
+      : text;
+  };
+
   const quitarHistoria = async () => {
     if (!character.historia) return;
     setLoadingRemoveHistoria(true);
     try {
       await API.patch(`/personajes/${character.id_Personaje}/desasociar-historia`, {
-        historiaId: null, // desasociar
+        historiaId: null,
       });
-      window.location.reload(); // o actualizar estado para refrescar UI sin recargar toda la página
+      window.location.reload();
     } catch (error) {
       console.error("Error quitando historia:", error);
       setLoadingRemoveHistoria(false);
@@ -43,8 +45,9 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
         <h2 className="text-lg font-semibold text-neutral-800">
           {character.nombre_personaje}
         </h2>
+
         <p className="text-sm text-neutral-600 mt-1 flex-grow">
-          {descripcionCorta}
+          {cortarDescripcion(character.descripcion_personaje)}
         </p>
 
         {character.historia ? (
@@ -55,7 +58,7 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
             <button
               onClick={quitarHistoria}
               disabled={loadingRemoveHistoria}
-              className="w-40 text-xs px-3 py-1 mt-1 bg-red-500 text-white text-align-center rounded hover:bg-red-700 transition"
+              className="w-40 text-xs px-3 py-1 mt-1 bg-red-500 text-white rounded hover:bg-red-700 transition"
             >
               {loadingRemoveHistoria ? "Quitando..." : "Quitar historia"}
             </button>
@@ -70,7 +73,6 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
               + Asignar historia
             </button>
           </div>
-
         )}
 
         <div className="mt-2 min-h-[2.5rem] flex flex-wrap gap-2 items-start">
@@ -101,7 +103,6 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
           >
             + Agregar tag
           </button>
-
           <button
             onClick={() => setShowRemoveTagModal(true)}
             className="text-sm px-4 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded transition"
@@ -139,22 +140,13 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
         />
       )}
 
-
-
       {showRemoveTagModal && (
         <QuitarTagModal
           personajeId={character.id_Personaje}
           tagsAsignados={character.tags.map((pt) => pt.tag)}
           onClose={() => setShowRemoveTagModal(false)}
           onSuccess={() => window.location.reload()}
-        >
-          <button
-            onClick={() => setShowRemoveTagModal(false)}
-            className="absolute top-3 right-3 px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 text-sm"
-          >
-            Cerrar
-          </button>
-        </QuitarTagModal>
+        />
       )}
     </div>
   );
