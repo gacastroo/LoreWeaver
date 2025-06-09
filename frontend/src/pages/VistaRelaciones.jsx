@@ -50,7 +50,7 @@ export default function VistaRelaciones() {
     },
     {
       titulo: "Capítulos",
-      icono: <BookOpen className="w-5 h-5 text-blue-600 mr-2" />,
+      icono: <BookOpen className="w-5 h-5 text-yellow-600 mr-2" />,
       items: capitulos,
       key: "id_Capitulo",
       nombre: "titulo_capitulo",
@@ -58,7 +58,7 @@ export default function VistaRelaciones() {
     },
     {
       titulo: "Escenas",
-      icono: <Film className="w-5 h-5 text-rose-600 mr-2" />,
+      icono: <Film className="w-5 h-5 text-sky-600 mr-2" />,
       items: escenas,
       key: "id_Escena",
       nombre: "titulo_escena",

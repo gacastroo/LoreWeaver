@@ -3,12 +3,13 @@ import { getUserIdFromToken } from "../utils/auth.js";
 
 // 🔹 Crear capítulo
 export const crearCapitulo = async (req, res) => {
-  const { titulo_capitulo, historiaId } = req.body;
+  const { titulo_capitulo, contenido, historiaId } = req.body;
 
   try {
     const capitulo = await prisma.capitulo.create({
       data: {
         titulo_capitulo,
+        contenido,
         historia: { connect: { id: parseInt(historiaId) } }
       }
     });
@@ -20,8 +21,7 @@ export const crearCapitulo = async (req, res) => {
   }
 };
 
-
-// 🔹 Obtener capítulos
+// 🔹 Obtener todos los capítulos del usuario
 export const obtenerCapitulos = async (req, res) => {
   const userId = getUserIdFromToken(req);
 
@@ -45,29 +45,11 @@ export const obtenerCapitulos = async (req, res) => {
   }
 };
 
-export const actualizarContenidoCapitulo = async (req, res) => {
-  const { id } = req.params;
-  const { contenido } = req.body;
-
-  try {
-    const actualizado = await prisma.capitulo.update({
-      where: { id_Capitulo: parseInt(id) },
-      data: { contenido },
-    });
-
-    res.json(actualizado);
-  } catch (error) {
-    console.error("❌ Error al actualizar contenido del capítulo:", error);
-    res.status(500).json({ error: "Error al actualizar contenido del capítulo" });
-  }
-};
-
-
-// 🔹 Actualizar capítulo
+// 🔹 Actualizar capítulo (título y contenido)
 export const actualizarCapitulo = async (req, res) => {
   const userId = getUserIdFromToken(req);
   const { id } = req.params;
-  const { titulo_capitulo } = req.body;
+  const { titulo_capitulo, contenido } = req.body;
 
   try {
     const capitulo = await prisma.capitulo.findFirst({
@@ -83,7 +65,10 @@ export const actualizarCapitulo = async (req, res) => {
 
     const actualizado = await prisma.capitulo.update({
       where: { id_Capitulo: parseInt(id) },
-      data: { titulo_capitulo },
+      data: {
+        titulo_capitulo,
+        contenido,
+      },
     });
 
     res.json(actualizado);
@@ -92,27 +77,6 @@ export const actualizarCapitulo = async (req, res) => {
     res.status(500).json({ error: "Error al actualizar capítulo" });
   }
 };
-
-export const obtenerCapitulo = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const capitulo = await prisma.capitulo.findUnique({
-      where: { id_Capitulo: parseInt(id) },
-      include: {
-        historia: { select: { titulo: true } },
-      },
-    });
-
-    if (!capitulo) return res.status(404).json({ error: "Capítulo no encontrado" });
-
-    res.json(capitulo);
-  } catch (error) {
-    console.error("❌ Error al obtener capítulo:", error);
-    res.status(500).json({ error: "Error al obtener capítulo" });
-  }
-};
-
 
 // 🔹 Eliminar capítulo
 export const eliminarCapitulo = async (req, res) => {
@@ -142,7 +106,35 @@ export const eliminarCapitulo = async (req, res) => {
   }
 };
 
-// 🔹 Obtener capítulos de una historia con su contenido
+// 🔹 Obtener un solo capítulo por ID
+export const obtenerCapitulo = async (req, res) => {
+  const userId = getUserIdFromToken(req);
+  const { id } = req.params;
+
+  try {
+    const capitulo = await prisma.capitulo.findFirst({
+      where: {
+        id_Capitulo: parseInt(id),
+        historia: { usuarioId: userId },
+      },
+      include: {
+        historia: { select: { titulo: true } },
+        universo: { select: { titulo_universo: true } },
+      },
+    });
+
+    if (!capitulo) {
+      return res.status(404).json({ error: "Capítulo no encontrado" });
+    }
+
+    res.json(capitulo);
+  } catch (error) {
+    console.error("❌ Error al obtener capítulo:", error);
+    res.status(500).json({ error: "Error al obtener capítulo" });
+  }
+};
+
+// 🔹 Obtener todos los capítulos de una historia (con contenido)
 export const obtenerCapitulosPorHistoria = async (req, res) => {
   const userId = getUserIdFromToken(req);
   const { historiaId } = req.params;
@@ -174,4 +166,3 @@ export const obtenerCapitulosPorHistoria = async (req, res) => {
     res.status(500).json({ error: "Error al obtener capítulos por historia" });
   }
 };
-

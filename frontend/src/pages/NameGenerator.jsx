@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "@/services/api"; // ✅ Instancia personalizada de Axios
+import API from "@/services/api";
 
 export default function NameGenerator() {
   const [type, setType] = useState("fantasy");
+  const [gender, setGender] = useState("masculino");
   const [name, setName] = useState("");
+  const [descripcion, setDescripcion] = useState("");
   const [historiaId, setHistoriaId] = useState("");
   const [historias, setHistorias] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -32,12 +34,14 @@ export default function NameGenerator() {
     setError("");
     setSuccess("");
     try {
-      const res = await API.post("/names/ia", { type }); // ✅ CORREGIDO
+      const res = await API.post("/names/ia", { type, gender });
       setName(res.data.name);
+      setDescripcion(res.data.descripcion || "");
     } catch (err) {
       console.error("❌ Error al generar nombre:", err);
       setError("No se pudo generar el nombre. Intenta de nuevo.");
       setName("");
+      setDescripcion("");
     } finally {
       setLoading(false);
     }
@@ -49,7 +53,7 @@ export default function NameGenerator() {
     try {
       const res = await API.post("/personajes", {
         nombre: name,
-        descripcion: "",
+        descripcion,
         historiaId: parseInt(historiaId),
       });
       setSuccess(`✅ Personaje "${res.data.nombre_personaje}" creado correctamente`);
@@ -65,15 +69,14 @@ export default function NameGenerator() {
       <div className="w-full max-w-md text-center">
         <h1 className="text-2xl font-bold mb-6">🎲 Generador de Nombres Narrativos</h1>
 
+        {/* Tipo de personaje */}
         <div className="mb-4 text-left">
-          <label htmlFor="type" className="block text-sm mb-2 text-gray-300">
-            Tipo de personaje
-          </label>
+          <label htmlFor="type" className="block text-sm mb-1 text-gray-300">Tipo</label>
           <select
             id="type"
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full p-2 rounded border border-gray-700 bg-gray-800 text-white focus:outline-none"
+            className="w-full p-2 rounded border border-gray-700 bg-gray-800 text-white"
           >
             <option value="fantasy">Fantástico</option>
             <option value="sciFi">Sci-Fi</option>
@@ -81,10 +84,25 @@ export default function NameGenerator() {
           </select>
         </div>
 
+        {/* Género */}
+        <div className="mb-4 text-left">
+          <label htmlFor="gender" className="block text-sm mb-1 text-gray-300">Género</label>
+          <select
+            id="gender"
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+            className="w-full p-2 rounded border border-gray-700 bg-gray-800 text-white"
+          >
+            <option value="masculino">Masculino</option>
+            <option value="femenino">Femenino</option>
+          </select>
+        </div>
+
+        {/* Botón para generar */}
         <button
           onClick={handleGenerate}
           disabled={loading}
-          className="bg-indigo-500 hover:bg-indigo-600 transition-colors px-6 py-2 rounded text-white font-medium mb-4 w-full"
+          className="bg-indigo-500 hover:bg-indigo-600 w-full px-6 py-2 rounded font-medium mb-4"
         >
           {loading ? "Generando..." : "Generar Nombre"}
         </button>
@@ -92,36 +110,57 @@ export default function NameGenerator() {
         {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
         {success && <p className="text-green-400 text-sm mb-4">{success}</p>}
 
+        {/* Si hay nombre generado */}
         {name && (
-          <div className="mt-6 space-y-4">
-            <div className="text-2xl font-bold text-green-400">✨ {name}</div>
+          <div className="space-y-4 mt-6 text-left">
+            {/* Nombre editable */}
+            <div>
+              <label className="block text-sm text-gray-300 mb-1">Nombre generado</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full p-2 rounded border border-gray-700 bg-gray-800 text-white"
+              />
+            </div>
 
-            <div className="text-left">
-              <label className="block text-sm mb-2 text-gray-300">Asociar a historia:</label>
+            {/* Descripción editable */}
+            <div>
+              <label className="block text-sm text-gray-300 mb-1">Descripción del personaje</label>
+              <textarea
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
+                rows={4}
+                className="w-full p-2 rounded border border-gray-700 bg-gray-800 text-white"
+              />
+            </div>
+
+            {/* Historia a asociar */}
+            <div>
+              <label className="block text-sm text-gray-300 mb-1">Asociar a historia</label>
               <select
                 value={historiaId}
                 onChange={(e) => setHistoriaId(e.target.value)}
-                className="w-full p-2 rounded border border-gray-700 bg-gray-800 text-white focus:outline-none"
+                className="w-full p-2 rounded border border-gray-700 bg-gray-800 text-white"
               >
                 {historias.map((h) => (
-                  <option key={h.id} value={h.id}>
-                    {h.titulo}
-                  </option>
+                  <option key={h.id} value={h.id}>{h.titulo}</option>
                 ))}
               </select>
             </div>
 
+            {/* Botón para crear personaje */}
             <button
               onClick={crearPersonaje}
-              className="bg-green-600 hover:bg-green-700 transition-colors px-6 py-2 rounded text-white font-medium w-full"
+              className="bg-green-600 hover:bg-green-700 w-full px-6 py-2 rounded font-medium"
             >
               Crear personaje con este nombre
             </button>
           </div>
         )}
 
-        <div className="mt-10 text-sm text-gray-400">
-          Usa este generador para obtener nombres únicos de personajes según el tipo de historia.
+        <div className="mt-10 text-sm text-gray-400 text-center">
+          Usa este generador para obtener nombres únicos y personalizados para tus personajes.
         </div>
       </div>
     </div>

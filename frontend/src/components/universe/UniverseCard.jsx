@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import ViewButton from "@/components/ui/button/ViewButton";
 import DeleteButton from "@/components/ui/button/DeleteButton";
 import DeleteConfirmModal from "@/components/ui/deletemodal";
-import AssignHistoriaModal from "@/components/ui/AssignHistoriaModal"; // ✅ IMPORTANTE
-import API from "@/services/api"; // ✅ FALTABA
+import AssignHistoriaModal from "@/components/ui/AssignHistoriaModal";
+import API from "@/services/api";
 
 export default function UniverseCard({ universo, historias, onDelete }) {
   const [showModal, setShowModal] = useState(false);
@@ -14,9 +14,10 @@ export default function UniverseCard({ universo, historias, onDelete }) {
 
   const historia = historias.find((h) => h.id === universo.historiaId);
 
+  const MAX_CARACTERES = 120;
   const descripcionCorta =
-    universo.descripcion_universo?.length > 120
-      ? universo.descripcion_universo.slice(0, 120) + "..."
+    universo.descripcion_universo?.length > MAX_CARACTERES
+      ? universo.descripcion_universo.slice(0, MAX_CARACTERES).trimEnd() + "..."
       : universo.descripcion_universo || "Sin descripción";
 
   const quitarHistoria = async () => {
@@ -39,11 +40,9 @@ export default function UniverseCard({ universo, historias, onDelete }) {
             {universo.titulo_universo}
           </h2>
 
-          {descripcionCorta && (
-            <p className="text-sm text-neutral-600 italic mb-2">
-              {descripcionCorta}
-            </p>
-          )}
+          <p className="text-sm text-neutral-600 italic mb-2">
+            {descripcionCorta}
+          </p>
 
           {historia ? (
             <>
@@ -100,7 +99,6 @@ export default function UniverseCard({ universo, historias, onDelete }) {
             onSuccess={() => window.location.reload()}
           />
         )}
-
       </div>
     </div>
   );
