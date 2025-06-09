@@ -103,9 +103,15 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
               <NavLink to="/idea-generator" className="nav-link" onClick={() => setSidebarOpen(false)}>
                 <Lightbulb className="icon" /> Generador de Ideas
               </NavLink>
+              
               <NavLink to="/chat" className="nav-link" onClick={() => setSidebarOpen(false)}>
                 <Lightbulb className="icon" /> Chat Narrativo
               </NavLink>
+
+              <NavLink to="/guia" className="nav-link" onClick={() => setSidebarOpen(false)}>
+                 <BookOpen className="icon" /> Guía de Uso
+                </NavLink>
+
             </nav>
           </div>
         </div>
