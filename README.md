@@ -1,4 +1,7 @@
-﻿# LoreWeaver
+﻿"El backend se encuentra actualmente desplegado en Render. Los antiguos deploys de Railway no son relevantes."
+
+
+# LoreWeaver
 
 > **Descripción:**
 > LoreWeaver, consiste en una aplicación web dirigida a quienes quieren crear una historia: escritores, guionistas, creadores de contenido narrativo. La idea es proporcionar una herramienta que permita desarrollar historias de forma interactiva. La aplicación permitirá a los usuarios crear y gestionar fichas de personajes, eventos, universos, capítulos, escenas y relaciones entre ellos. A través de un sistema visual, se podrán visualizar las conexiones narrativas, ayudando a detectar incoherencias y ayudando a mantener la cohesión de la historia.
