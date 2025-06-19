@@ -14,11 +14,11 @@
 | **Backend**                    |                                                                                 |
 | Node.js + Express + Prisma     | Lógica del servidor, gestión de rutas y conexión con la base de datos.          |
 | Bcrypt + JWT                   | Autenticación.                                                                  |
-| Conexión con MySQL (Railway)   | Base de datos en MySQL usando Railway.                                           |
+| Base de datos PostgreSQL (Neon)  | Base de datos PostgreSQL en la nube.                                            |
 | Dotenv                         | Para la gestión de variables de entorno y seguridad.                            |
-| Despliegue en Railway          | Para el despliegue del backend.                                                 |
+| Despliegue en Render         | Para el despliegue del backend.                                                 |
 | **Extras**                     |                                                                                 |
-| Editor de texto (Quill/TipTap) | Para crear un editor de texto interactivo.                                       |
+| Editor de texto (TipTap) | Para crear un editor de texto interactivo.                                       |
 | Mapa de relaciones (Cytoscape.js) | Para crear un mapa de relaciones básico.                                      |
 | Testing (Jest)                 | Para pruebas unitarias y de integración.                                        |
 
@@ -35,7 +35,8 @@
 #### 🔧 Backend (Node.js + Prisma)
 - Node.js **v14 o superior**
 - Prisma
-- Base de datos configurada mediante `.env`
+- Base de datos configurada (Neon) con .env
+
 
 ---
 
@@ -59,6 +60,9 @@ npm install
 
 # Generar el cliente de Prisma
 npx prisma generate
+
+# (opcional) Crear las tablas si es la primera vez
+npx prisma db push
 ```
 
 #### 🌐 Frontend (React + Vite)
@@ -84,7 +88,11 @@ npm run dev
 
 Puedes acceder directamente sin instalar nada desde:
 
-🔗 **[https://lore-weaver-1zpq.vercel.app](https://lore-weaver-1zpq.vercel.app)**
+🔹 Frontend (Vercel):
+https://lore-weaver-1zpq.vercel.app
+
+🔹 Backend (Render):
+https://loreweaver-ztq8.onrender.com/api
 
 ---
 
@@ -104,8 +112,8 @@ LoreWeaver/
 - 🧩 Gestión modular de historias, personajes, universos, capítulos y escenas
 - ✨ Generador de nombres y de ideas con IA
 - 🗺️ Mapa visual de relaciones narrativas con Cytoscape.js
-- 🔐 Autenticación con JWT y recuperación de contraseña por email
-- 📦 Backend Express con Prisma + MySQL
+- 🔐 Autenticación JWT con recuperación de contraseña por email
+- 📦 Backend Express + Prisma + PostgreSQL
 - ⚛️ Frontend React + Vite + Tailwind
 
 ---
@@ -119,28 +127,41 @@ URL: https://loreweaver.vercel.app
 Tecnologías usadas:
 React · Vite · Tailwind CSS
 
-🔹 Backend (Railway)
+🔹 Backend (Render)
 URL del API:
-https://loreweaver-api.up.railway.app
+https://loreweaver-ztq8.onrender.com/api
 
 Tecnologías usadas:
-Express · Prisma · MySQL
+Express · Prisma · PostgreSQL (Neon)
 
 El backend está protegido con autenticación por JWT, por lo que necesitas registrarte e iniciar sesión para acceder a las funcionalidades protegidas.
 
-📦 Variables de entorno necesarias
-Para correr el proyecto localmente, necesitas un archivo .env con las siguientes variables:
+📦 Variables de entorno necesarias (para desarrollo local)
+Backend (/backend/.env):
 
 ```
-DATABASE_URL=mysql://usuario:contraseña@host:puerto/nombre_db
+PORT=3000
+DATABASE_URL=postgresql://usuario:contraseña@host:puerto/dbname
 JWT_SECRET=tu_clave_secreta
+
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=usuario@gmail.com
+SMTP_PASS=contraseña_app
+
 FRONTEND_URL=http://localhost:5173
 
-OPENAI_API_URL=
-OPENAI_API_KEY=
-OPENAI_MODEL= 
+```
+
+Frontend (/frontend/.env):
 
 ```
+VITE_API_URL=http://localhost:3000/api
+
+```
+
+
+
 
 
 ## Autor
@@ -162,8 +183,6 @@ Tailwind CSS. (s.f.). Utility-first CSS framework. https://tailwindcss.com/docs
 Tiptap. (s.f.). The headless editor framework for web applications. https://tiptap.dev
 
 Cytoscape.js. (s.f.). Graph theory library for visualization and analysis. https://js.cytoscape.org
-
-MySQL. (s.f.). MySQL Reference Manual. Oracle. https://dev.mysql.com/doc
 
 Vite. (s.f.). Vite documentation. https://vitejs.dev
 
@@ -188,4 +207,4 @@ https://github.com/gacastroo/LoreWeaver
 
 ## Enlace Despliegue
 https://lore-weaver-1zpq.vercel.app
-https://loreweaver-api.up.railway.app
+https://loreweaver-ztq8.onrender.com/api
