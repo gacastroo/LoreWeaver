@@ -96,7 +96,10 @@ export const obtenerDatosMapa = async (req, res) => {
     }
 
     // 🔹 Añadir todos los tags existentes, aunque no estén conectados a personajes
-    const tags = await prisma.tags.findMany();
+    const tags = await prisma.tags.findMany({
+      where: { usuarioId },
+    });
+
     for (const tag of tags) {
       const tagId = `t-${tag.id_Tag}`;
       if (!elements.find((e) => e.data.id === tagId)) {

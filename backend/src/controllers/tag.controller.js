@@ -1,13 +1,14 @@
 import prisma from '../lib/prisma.js';
 import { getUserIdFromToken } from '../utils/auth.js';
 
-// 🔹 Obtener todos los tags asociados a personajes del usuario
+// 🔹 Obtener todos los tags creados por el usuario
 export const obtenerTags = async (req, res) => {
   const usuarioId = getUserIdFromToken(req);
 
   try {
-    // ✅ Obtenemos todos los tags cuyos personajes (si existen) sean del usuario
+    // ✅ Obtenemos los tags que pertenecen al usuario
     const tags = await prisma.tags.findMany({
+      where: { usuarioId },
       include: {
         personajes: {
           include: {
@@ -19,30 +20,24 @@ export const obtenerTags = async (req, res) => {
       },
     });
 
-    // ✅ Filtramos los tags que:
-    // - no tienen ningún personaje asociado
-    // - o al menos un personaje asociado es del usuario
-    const filtered = tags.filter(
-      (tag) =>
-        tag.personajes.length === 0 ||
-        tag.personajes.some((pt) => pt.personaje?.usuarioId === usuarioId)
-    );
-
-    res.json(filtered);
+    res.json(tags);
   } catch (error) {
     console.error("❌ Error al obtener tags:", error);
     res.status(500).json({ error: "Error al obtener tags" });
   }
 };
 
-
-// 🔹 Crear un nuevo tag sin historiaId
+// 🔹 Crear un nuevo tag para el usuario
 export const crearTag = async (req, res) => {
+  const usuarioId = getUserIdFromToken(req);
   const { nombre_tag } = req.body;
 
   try {
     const tag = await prisma.tags.create({
-      data: { nombre_tag },
+      data: { 
+        nombre_tag,
+        usuarioId
+      },
     });
 
     res.status(201).json(tag);
@@ -52,37 +47,22 @@ export const crearTag = async (req, res) => {
   }
 };
 
-// 🔹 Eliminar tag si pertenece a un personaje del usuario
+// 🔹 Eliminar tag si pertenece al usuario
 export const eliminarTag = async (req, res) => {
   const usuarioId = getUserIdFromToken(req);
   const { id } = req.params;
 
   try {
-    // Buscar el tag con sus personajes
+    // Buscar el tag
     const tag = await prisma.tags.findUnique({
       where: { id_Tag: parseInt(id) },
-      include: {
-        personajes: {
-          include: {
-            personaje: true,
-          },
-        },
-      },
     });
 
     if (!tag) {
       return res.status(404).json({ error: "Tag no encontrado" });
     }
 
-    // Validar si algún personaje asociado es del usuario
-    const perteneceAlUsuario = tag.personajes.some(
-      (pt) => pt.personaje?.usuarioId === usuarioId
-    );
-
-    // También permitir eliminar si el tag no tiene personajes asociados
-    const sinPersonajes = tag.personajes.length === 0;
-
-    if (!perteneceAlUsuario && !sinPersonajes) {
+    if (tag.usuarioId !== usuarioId) {
       return res.status(403).json({ error: "No tienes permiso para eliminar este tag" });
     }
 
@@ -96,4 +76,3 @@ export const eliminarTag = async (req, res) => {
     res.status(500).json({ error: "Error al eliminar tag" });
   }
 };
-

@@ -8,7 +8,6 @@ export default function Tags() {
   const [tags, setTags] = useState([]);
   const [filtroTag] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [historiaId, setHistoriaId] = useState(null);
 
   const fetchTags = async () => {
     try {
@@ -19,20 +18,8 @@ export default function Tags() {
     }
   };
 
-  const fetchHistorias = async () => {
-    try {
-      const res = await API.get("/historias");
-      if (res.data.length > 0) {
-        setHistoriaId(res.data[0].id);
-      }
-    } catch (error) {
-      console.error("❌ Error al cargar historias:", error);
-    }
-  };
-
   useEffect(() => {
     fetchTags();
-    fetchHistorias();
   }, []);
 
   const handleAdd = () => {
@@ -64,13 +51,12 @@ export default function Tags() {
         </div>
       )}
 
-      {modalOpen && historiaId && (
+      {modalOpen && (
         <CreateTagModal
           onClose={() => setModalOpen(false)}
           onSuccess={handleSuccess}
           endpoint="/tags"
           label="Tag"
-          historiaId={historiaId}
         />
       )}
     </div>
