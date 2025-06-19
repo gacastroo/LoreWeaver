@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -35,7 +35,7 @@ model Historia {
 model Personaje {
   id_Personaje          Int             @id @default(autoincrement())
   nombre_personaje      String
-  descripcion_personaje String?         @db.LongText
+  descripcion_personaje String?
   historiaId            Int?
   historia              Historia?       @relation(fields: [historiaId], references: [id], onDelete: Cascade)
   usuarioId             Int
@@ -59,7 +59,7 @@ model Escena {
 model Capitulo {
   id_Capitulo     Int    @id @default(autoincrement())
   titulo_capitulo String
-  contenido String? @db.LongText
+  contenido String?
   historiaId      Int
   universoId      Int?
 
@@ -71,7 +71,7 @@ model Capitulo {
 model Universo {
   id_Universo          Int        @id @default(autoincrement())
   titulo_universo      String
-  descripcion_universo String?    @db.LongText
+  descripcion_universo String?    
   historiaId           Int?
   historia             Historia?  @relation(fields: [historiaId], references: [id], onDelete: Cascade)
   usuarioId            Int
