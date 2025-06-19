@@ -116,7 +116,7 @@ export default function EditorHistoria({ onUpdate }) {
 
       setCapitulosOriginales([...capitulos]); // ✅ importante
 
-      toast.success("✅ Historia y capítulos actualizados correctamente");
+      toast.success("Historia y capítulos actualizados correctamente");
       onUpdate && onUpdate();
       navigate("/stories");
     } catch (error) {
