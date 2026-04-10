@@ -18,19 +18,27 @@ import { verifyToken } from './middlewares/auth.js';
 
 const app = express();
 
+// ✅ Orígenes permitidos — añade aquí todos los dominios de Vercel que uses
 const allowedOrigins = [
   'http://localhost:5173',
-  process.env.FRONTEND_URL
-];
+  'http://localhost:3000',
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL_PREVIEW,
+].filter(Boolean);
+
+console.log('✅ CORS allowedOrigins:', allowedOrigins);
 
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
+
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
-    } else {
-      return callback(new Error('Not allowed by CORS'));
     }
+
+    console.warn(`🚫 CORS bloqueado para origen: ${origin}`);
+    console.warn(`   Orígenes permitidos: ${allowedOrigins.join(', ')}`);
+    return callback(new Error('Not allowed by CORS'));
   },
   credentials: true
 }));
@@ -43,8 +51,8 @@ app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/names', nameRoutes);
 
 // 🔒 Rutas protegidas con verifyToken
-app.use('/api/ideas', verifyToken, ideaRoutes);       // ✅ Movido aquí — necesita req.usuario
-app.use('/api/chat', verifyToken, chatRoutes);         // ✅ Añadido verifyToken a nivel de app
+app.use('/api/ideas', verifyToken, ideaRoutes);
+app.use('/api/chat', verifyToken, chatRoutes);
 app.use('/api/personajes', verifyToken, personajeRoutes);
 app.use('/api/historias', verifyToken, historiaRoutes);
 app.use('/api/tags', verifyToken, tagRoutes);
