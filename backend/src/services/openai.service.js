@@ -7,12 +7,17 @@ const apiUrl = process.env.OPENAI_API_URL || "https://openrouter.ai/api/v1/chat/
 const apiKey = process.env.OPENAI_API_KEY
 const model = process.env.OPENAI_MODEL || "deepseek-chat"
 
+// ✅ Aviso en consola pero sin romper el arranque del servidor
 if (!apiUrl || !apiKey) {
-  console.error("❌ Faltan variables de entorno OPENAI_API_URL o OPENAI_API_KEY")
-  throw new Error("No se puede inicializar el servicio de OpenAI")
+  console.warn("⚠️ Faltan variables de entorno OPENAI_API_URL o OPENAI_API_KEY — las rutas de IA devolverán error 503")
 }
 
 const getAIRecommendation = async (prompt) => {
+  // ✅ Comprobación en runtime en vez de al importar el módulo
+  if (!apiKey) {
+    throw new Error("Servicio de IA no configurado: falta OPENAI_API_KEY")
+  }
+
   try {
     const response = await axios.post(
       apiUrl,
@@ -35,8 +40,8 @@ const getAIRecommendation = async (prompt) => {
         headers: {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "http://localhost:3000", // Cambia por tu dominio real si despliegas
-          "X-Title": "LoreWeaver", // Nombre de tu aplicación
+          "HTTP-Referer": process.env.FRONTEND_URL || "http://localhost:5173",
+          "X-Title": "LoreWeaver",
         },
       }
     )
@@ -49,16 +54,18 @@ const getAIRecommendation = async (prompt) => {
 
     console.error("❌ Error con OpenRouter:")
     console.error("Status:", status)
-    console.error("Data:", data)
+    console.error("Data:", JSON.stringify(data))
 
-    if (status === 401 || status === 429) {
-      console.warn("⚠️ Usando idea simulada por falta de acceso o límite excedido")
+    if (status === 401) {
+      throw new Error("API key inválida o sin permisos")
+    }
+    if (status === 429) {
+      throw new Error("Límite de peticiones alcanzado, inténtalo más tarde")
     }
 
     throw new Error("Error al obtener la recomendación de IA.")
   }
 }
-
 
 export default {
   getAIRecommendation,

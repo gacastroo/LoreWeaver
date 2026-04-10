@@ -20,7 +20,7 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:5173',
-  process.env.FRONTEND_URL // se lee de .env en local o de Render en producción
+  process.env.FRONTEND_URL
 ];
 
 app.use(cors({
@@ -41,9 +41,10 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 // ✅ Rutas públicas
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/names', nameRoutes);
-app.use('/api/ideas', ideaRoutes);
 
 // 🔒 Rutas protegidas con verifyToken
+app.use('/api/ideas', verifyToken, ideaRoutes);       // ✅ Movido aquí — necesita req.usuario
+app.use('/api/chat', verifyToken, chatRoutes);         // ✅ Añadido verifyToken a nivel de app
 app.use('/api/personajes', verifyToken, personajeRoutes);
 app.use('/api/historias', verifyToken, historiaRoutes);
 app.use('/api/tags', verifyToken, tagRoutes);
@@ -52,6 +53,5 @@ app.use('/api/universos', verifyToken, universoRoutes);
 app.use('/api/capitulos', verifyToken, capituloRoutes);
 app.use('/api/escenas', verifyToken, escenaRoutes);
 app.use('/api/mapa', verifyToken, mapaRoutes);
-app.use('/api/chat', chatRoutes);
 
 export default app;

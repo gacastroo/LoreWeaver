@@ -202,7 +202,8 @@ export default function AuthForm() {
           )}
 
           <button
-            className="text-sm text-gray-100 transition-colors"
+            className="text-sm text-white-500 transition-colors"
+            type="button"
             onClick={() => setRegistro(!registro)}
           >
             {registro ? "¿Ya tienes cuenta? Inicia sesión" : "¿No tienes cuenta? Regístrate"}

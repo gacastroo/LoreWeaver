@@ -24,7 +24,8 @@ export const chatNarrativo = async (req, res) => {
         })
         if (!historia) return res.status(404).json({ error: "Historia no encontrada" })
 
-        contexto = `Título: ${historia.titulo}\nDescripción: ${historia.contenido || "Sin descripción"}`
+        // ✅ Historia no tiene campo "contenido" en el schema — solo "titulo"
+        contexto = `Título: ${historia.titulo}`
         break
       }
 
@@ -96,6 +97,6 @@ Responde de forma clara, creativa y útil.
     res.status(200).json({ respuesta })
   } catch (error) {
     console.error("❌ Error en chatNarrativo:", error)
-    res.status(500).json({ error: "Error procesando el chat" })
+    res.status(500).json({ error: error.message || "Error procesando el chat" })
   }
 }

@@ -1,9 +1,9 @@
 import express from "express"
 import { generarIdeaNarrativa } from "../services/idea.service.js"
-import { verifyToken } from "../middlewares/auth.js"
 
 const router = express.Router()
 
-router.post("/generar", verifyToken, generarIdeaNarrativa)
+// ✅ verifyToken ya se aplica en app.js al montar /api/ideas
+router.post("/generar", generarIdeaNarrativa)
 
 export default router
