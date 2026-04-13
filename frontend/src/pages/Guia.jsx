@@ -1,4 +1,3 @@
-import { color } from "framer-motion"
 import { useState, useMemo } from "react"
 
 const secciones = [
@@ -374,17 +373,24 @@ export default function Guia() {
 
         {/* Header */}
         <div style={{ marginBottom: "32px" }}>
-          <h1
-            style={{
-              fontFamily: "Bebas Neue, Orbitron, monospace",
-              fontSize: "clamp(28px, 5vw, 42px)",
-              letterSpacing: "0.12em",
-              color: "#fff",
-              margin: "0 0 6px 0",
-            }}
-          >
-          <img src="/logo.png"  alt="LoreWeaver"  style="filter: grayscale(100%); -webkit-filter: grayscale(100%);"/> Guía LoreWeaver
-          </h1>
+          <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "6px" }}>
+            <img
+              src="/logo.png"
+              alt="LoreWeaver"
+              style={{ width: "48px", height: "48px", objectFit: "contain", borderRadius: "10px", filter: "invert(1)" }}
+            />
+            <h1
+              style={{
+                fontFamily: "Bebas Neue, Orbitron, monospace",
+                fontSize: "clamp(28px, 5vw, 42px)",
+                letterSpacing: "0.12em",
+                color: "#fff",
+                margin: 0,
+              }}
+            >
+              Guía LoreWeaver
+            </h1>
+          </div>
           <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "14px", margin: 0 }}>
             Todo lo que necesitas para construir tu mundo narrativo.
           </p>
