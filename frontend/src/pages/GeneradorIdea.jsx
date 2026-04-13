@@ -2,7 +2,7 @@ import { useState } from "react"
 import API from "@/services/api"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/inpuut"
+import { Input } from "@/components/ui/input"
 import { Loader2 } from "lucide-react"
 import ReactMarkdown from "react-markdown"
 
@@ -33,8 +33,12 @@ export default function GeneradorIdea() {
     }
   }
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleGenerar()
+  }
+
   return (
-  <div className="min-h-screen bg-gray-900 text-white flex justify-center items-center p-6">
+    <div className="min-h-screen bg-gray-900 text-white flex justify-center items-center p-6">
       <Card className="bg-zinc-800 border border-zinc-700 rounded-2xl shadow-xl max-w-2xl w-full">
         <CardHeader>
           <CardTitle className="text-white text-2xl font-bold">
@@ -46,6 +50,7 @@ export default function GeneradorIdea() {
             placeholder="Título de tu historia..."
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="bg-zinc-700 text-white placeholder-zinc-400 border border-zinc-600"
           />
           <Button

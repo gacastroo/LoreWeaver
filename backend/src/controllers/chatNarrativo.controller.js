@@ -4,7 +4,7 @@ import aiService from "../services/openai.service.js"
 export const chatNarrativo = async (req, res) => {
   try {
     const userId = req.usuario?.id_usuario || req.usuario?.id
-    const { tipo, id, mensaje } = req.body
+    const { tipo, id, mensaje, historial = [] } = req.body
 
     if (!userId || !tipo || !id || !mensaje) {
       return res.status(400).json({ error: "Faltan parámetros" })
@@ -20,12 +20,17 @@ export const chatNarrativo = async (req, res) => {
     switch (tipo) {
       case "historia": {
         const historia = await prisma.historia.findFirst({
-          where: { id: parsedId, usuarioId: userId }
+          where: { id: parsedId, usuarioId: userId },
+          include: {
+            personajes: { select: { nombre_personaje: true } },
+            capitulos: { select: { titulo_capitulo: true } },
+          }
         })
         if (!historia) return res.status(404).json({ error: "Historia no encontrada" })
 
-        // ✅ Historia no tiene campo "contenido" en el schema — solo "titulo"
-        contexto = `Título: ${historia.titulo}`
+        const personajes = historia.personajes.map(p => p.nombre_personaje).join(", ") || "Ninguno"
+        const capitulos = historia.capitulos.map(c => c.titulo_capitulo).join(", ") || "Ninguno"
+        contexto = `Título: ${historia.titulo}\nPersonajes: ${personajes}\nCapítulos: ${capitulos}`
         break
       }
 
@@ -46,11 +51,15 @@ export const chatNarrativo = async (req, res) => {
           where: {
             id_Capitulo: parsedId,
             historia: { usuarioId: userId }
+          },
+          include: {
+            escenas: { select: { titulo_escena: true } }
           }
         })
         if (!capitulo) return res.status(404).json({ error: "Capítulo no encontrado" })
 
-        contexto = `Título del capítulo: ${capitulo.titulo_capitulo}`
+        const escenas = capitulo.escenas.map(e => e.titulo_escena).join(", ") || "Ninguna"
+        contexto = `Título del capítulo: ${capitulo.titulo_capitulo}\nContenido: ${capitulo.contenido || "Sin contenido aún"}\nEscenas: ${escenas}`
         break
       }
 
@@ -81,19 +90,20 @@ export const chatNarrativo = async (req, res) => {
         return res.status(400).json({ error: "Tipo de entidad inválido" })
     }
 
-    const prompt = `
-Actúa como asistente narrativo. El usuario quiere hablar sobre su ${tipo}.
+    // Construir mensajes con historial real para que la IA tenga contexto de la conversación
+    const mensajesHistorial = historial.map(msg => ({
+      role: msg.tipo === "user" ? "user" : "assistant",
+      content: msg.texto
+    }))
 
-Contexto:
+    const systemPrompt = `Eres un asistente narrativo creativo. El usuario quiere hablar sobre su ${tipo}.
+
+Contexto del ${tipo}:
 ${contexto}
 
-Mensaje del usuario:
-"${mensaje}"
+Responde de forma clara, creativa y útil. Mantén coherencia con los datos del ${tipo} proporcionados.`
 
-Responde de forma clara, creativa y útil.
-    `.trim()
-
-    const respuesta = await aiService.getAIRecommendation(prompt)
+    const respuesta = await aiService.getAIRecommendationWithHistory(systemPrompt, mensajesHistorial, mensaje)
     res.status(200).json({ respuesta })
   } catch (error) {
     console.error("❌ Error en chatNarrativo:", error)

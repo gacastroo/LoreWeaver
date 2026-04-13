@@ -5,7 +5,6 @@ import { sendResetEmail } from '../services/emailService.js'
 import jwt from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.JWT_SECRET
-const tokensReset = new Map()
 
 export const registrar = async (req, res) => {
   try {
@@ -21,7 +20,7 @@ export const registrar = async (req, res) => {
     })
 
     const token = jwt.sign(
-      { id_usuario: nuevo.id_usuario, id: nuevo.id_usuario }, // ✅ incluye ambos
+      { id_usuario: nuevo.id_usuario, id: nuevo.id_usuario },
       JWT_SECRET,
       { expiresIn: '7d' }
     )
@@ -51,7 +50,7 @@ export const login = async (req, res) => {
     if (!valido) return res.status(401).json({ message: 'Contraseña incorrecta' })
 
     const token = jwt.sign(
-      { id_usuario: usuario.id_usuario, id: usuario.id_usuario }, // ✅ compatibilidad
+      { id_usuario: usuario.id_usuario, id: usuario.id_usuario },
       JWT_SECRET,
       { expiresIn: '7d' }
     )
@@ -76,14 +75,24 @@ export async function solicitarResetPassword(req, res) {
     if (!email) return res.status(400).json({ message: 'Email requerido' })
 
     const usuario = await prisma.usuario.findUnique({ where: { email } })
+    // Respuesta genérica para no revelar si el email existe
     if (!usuario) {
       return res.status(200).json({ message: 'Si el email existe, se enviará un link' })
     }
 
-    const token = crypto.randomBytes(32).toString('hex')
-    const expiracion = Date.now() + 3600 * 1000 // 1 hora
+    // Limpiar tokens previos del usuario
+    await prisma.resetToken.deleteMany({ where: { usuarioId: usuario.id_usuario } })
 
-    tokensReset.set(token, { userId: usuario.id_usuario, expires: expiracion })
+    const token = crypto.randomBytes(32).toString('hex')
+    const expiresAt = new Date(Date.now() + 3600 * 1000) // 1 hora
+
+    await prisma.resetToken.create({
+      data: {
+        token,
+        usuarioId: usuario.id_usuario,
+        expiresAt
+      }
+    })
 
     await sendResetEmail(email, token)
 
@@ -103,22 +112,25 @@ export async function resetPasswordConToken(req, res) {
       return res.status(400).json({ message: 'Contraseña inválida' })
     }
 
-    const data = tokensReset.get(token)
-    if (!data) return res.status(400).json({ message: 'Token inválido o expirado' })
+    const resetToken = await prisma.resetToken.findUnique({ where: { token } })
 
-    if (data.expires < Date.now()) {
-      tokensReset.delete(token)
+    if (!resetToken) {
+      return res.status(400).json({ message: 'Token inválido o expirado' })
+    }
+
+    if (resetToken.expiresAt < new Date()) {
+      await prisma.resetToken.delete({ where: { token } })
       return res.status(400).json({ message: 'Token expirado' })
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
 
     await prisma.usuario.update({
-      where: { id_usuario: data.userId },
-      data: { password: hashedPassword },
+      where: { id_usuario: resetToken.usuarioId },
+      data: { password: hashedPassword }
     })
 
-    tokensReset.delete(token)
+    await prisma.resetToken.delete({ where: { token } })
 
     return res.status(200).json({ message: 'Contraseña actualizada' })
   } catch (error) {

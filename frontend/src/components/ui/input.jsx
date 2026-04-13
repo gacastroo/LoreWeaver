@@ -1,3 +1,5 @@
+// Componente único de Input — sustituye tanto input.jsx como inpuut.jsx
+// Actualiza el import en GeneradorIdea.jsx de "@/components/ui/inpuut" a "@/components/ui/input"
 import React from "react"
 import { cn } from "../../lib/utils"
 

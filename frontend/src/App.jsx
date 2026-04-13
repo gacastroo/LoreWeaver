@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Toaster } from "react-hot-toast"; // ← AÑADIDO
+import { Toaster } from "react-hot-toast"; 
 
 import Inicio from "@/layouts/Inicio";
 import Characters from "@/pages/Characters";
