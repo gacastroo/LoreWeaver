@@ -5,6 +5,7 @@ import CharacterGrid from "@/components/character/CharacterGrid";
 import CharacterForm from "@/components/character/CharacterForm";
 import API from "@/services/api";
 import Select from "@/components/ui/input/Select";
+import { useApp } from "@/context/AppContext";
 
 export default function Characters() {
   const [characters, setCharacters] = useState([]);
@@ -12,14 +13,13 @@ export default function Characters() {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [tags, setTags] = useState([]);
   const [filtroTag, setFiltroTag] = useState("");
+  const { theme, t } = useApp();
+  const isLight = theme === "light";
 
   const personajesFiltrados = filtroTag
-    ? characters.filter((p) =>
-        p.tags.some((t) => t.tagId === parseInt(filtroTag))
-      )
+    ? characters.filter((p) => p.tags.some((tg) => tg.tagId === parseInt(filtroTag)))
     : characters;
 
-  // 🔹 Cargar tags
   useEffect(() => {
     const fetchTags = async () => {
       try {
@@ -32,7 +32,6 @@ export default function Characters() {
     fetchTags();
   }, []);
 
-  // 🔹 Cargar personajes
   const fetchCharacters = async () => {
     setLoading(true);
     try {
@@ -45,9 +44,7 @@ export default function Characters() {
     }
   };
 
-  useEffect(() => {
-    fetchCharacters();
-  }, []);
+  useEffect(() => { fetchCharacters(); }, []);
 
   const handleDeleteCharacter = async (id) => {
     try {
@@ -58,63 +55,41 @@ export default function Characters() {
     }
   };
 
-  const handleAddCharacter = () => {
-    setMostrarModal(true);
-  };
-
-  const handleCerrarModal = () => {
-    setMostrarModal(false);
-  };
-
-  // ✅ Recargar personajes tras crear uno
   const handlePersonajeCreado = async () => {
-    await fetchCharacters(); // recarga personajes actualizados desde backend
+    await fetchCharacters();
     setMostrarModal(false);
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-neutral-100 px-8 py-6 overflow-auto space-y-4">
-      <SectionHeader title="Personajes">
-        <AddButton onClick={handleAddCharacter} label="Nuevo personaje" />
+    <div className={`flex flex-col h-full w-full px-8 py-6 overflow-auto space-y-4 ${isLight ? "bg-neutral-100" : "bg-zinc-950"}`}>
+      <SectionHeader title={t.tituloPersonajes}>
+        <AddButton onClick={() => setMostrarModal(true)} label={t.nuevoPersonajeBtn} />
       </SectionHeader>
 
-      {/* 🔽 Select para filtrar por tag */}
       <div className="mb-6 w-64">
         <Select
-          label="Filtrar por tag"
+          label={t.filtrarPorTag}
           value={filtroTag}
           onChange={(e) => setFiltroTag(e.target.value)}
           options={[
-            { value: "", label: "Todos los tags" },
-            ...tags.map((t) => ({
-              value: t.id_Tag.toString(),
-              label: `#${t.nombre_tag}`,
-            })),
+            { value: "", label: t.todosLosTags },
+            ...tags.map((tg) => ({ value: tg.id_Tag.toString(), label: `#${tg.nombre_tag}` })),
           ]}
         />
       </div>
 
       {loading ? (
-        <p className="text-sm text-neutral-500">Cargando personajes...</p>
+        <p className={`text-sm ${isLight ? "text-neutral-500" : "text-zinc-400"}`}>{t.cargandoPersonajes}</p>
       ) : personajesFiltrados.length > 0 ? (
-        <CharacterGrid
-          characters={personajesFiltrados}
-          onDelete={handleDeleteCharacter}
-        />
+        <CharacterGrid characters={personajesFiltrados} onDelete={handleDeleteCharacter} />
       ) : (
-        <p className="text-sm text-neutral-500">No hay personajes.</p>
+        <p className={`text-sm ${isLight ? "text-neutral-500" : "text-zinc-400"}`}>{t.noPersonajes}</p>
       )}
 
-      {/* 🔹 Modal para crear personaje */}
       {mostrarModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-6 max-w-xl w-full relative shadow-lg">
-            <button
-              onClick={handleCerrarModal}
-              className="absolute top-3 right-4 text-xl text-zinc-400 hover:text-red-500"
-            >
-              ✖
-            </button>
+          <div className={`rounded-2xl p-6 max-w-xl w-full relative shadow-lg ${isLight ? "bg-white" : "bg-zinc-800"}`}>
+            <button onClick={() => setMostrarModal(false)} className="absolute top-3 right-4 text-xl text-zinc-400 hover:text-red-500">✖</button>
             <CharacterForm onCharacterCreated={handlePersonajeCreado} />
           </div>
         </div>
