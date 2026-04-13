@@ -1,3 +1,4 @@
+import { color } from "framer-motion"
 import { useState, useMemo } from "react"
 
 const secciones = [
@@ -382,7 +383,7 @@ export default function Guia() {
               margin: "0 0 6px 0",
             }}
           >
-          <img src="/logo.png"  alt="LoreWeaver"/> Guía LoreWeaver
+          <img src="/logo.png"  alt="LoreWeaver"  style="filter: grayscale(100%); -webkit-filter: grayscale(100%);"/> Guía LoreWeaver
           </h1>
           <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "14px", margin: 0 }}>
             Todo lo que necesitas para construir tu mundo narrativo.
