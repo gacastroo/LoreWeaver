@@ -377,7 +377,7 @@ export default function Guia() {
             <img
               src="/logo.png"
               alt="LoreWeaver"
-              style={{ width: "48px", height: "48px", objectFit: "contain", borderRadius: "10px", filter: "invert(1)" }}
+              style={{ width: "70px", height: "70px", objectFit: "contain", borderRadius: "10px", filter: "invert(1)" }}
             />
             <h1
               style={{
