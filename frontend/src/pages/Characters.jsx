@@ -61,8 +61,8 @@ export default function Characters() {
   };
 
   return (
-    <div className={`flex flex-col h-full w-full px-8 py-6 overflow-auto space-y-4 ${isLight ? "bg-neutral-700" : "bg-zinc-950"}`}>
-      <SectionHeader title={t.tituloPersonajes}>
+    <div className={`flex flex-col h-full w-full px-8 py-6 overflow-auto space-y-4 ${isLight ? "bg-white" : "bg-zinc-950"}`}>
+      <SectionHeader title={t.tituloPersonajes} isLight={isLight}>
         <AddButton onClick={() => setMostrarModal(true)} label={t.nuevoPersonajeBtn} />
       </SectionHeader>
 
@@ -71,6 +71,7 @@ export default function Characters() {
           label={t.filtrarPorTag}
           value={filtroTag}
           onChange={(e) => setFiltroTag(e.target.value)}
+          isLight={isLight}
           options={[
             { value: "", label: t.todosLosTags },
             ...tags.map((tg) => ({ value: tg.id_Tag.toString(), label: `#${tg.nombre_tag}` })),
