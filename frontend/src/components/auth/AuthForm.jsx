@@ -18,11 +18,41 @@ import {
   CardTitle
 } from "@/components/ui/card"
 
+function LoadingOverlay({ registro }) {
+  return (
+    <div className="auth-loading-overlay">
+      <div className="auth-loading-card">
+        <div className="auth-quill-wrap">
+          <svg className="auth-quill" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M52 4C52 4 36 10 28 26C22 38 20 52 20 52C20 52 26 46 32 44C32 44 24 50 22 60C22 60 34 52 40 40C46 28 60 16 60 8L52 4Z"
+              fill="#2381fe" opacity="0.15"
+            />
+            <path
+              d="M52 4C52 4 36 10 28 26C22 38 20 52 20 52C20 52 26 46 32 44C32 44 24 50 22 60C22 60 34 52 40 40C46 28 60 16 60 8L52 4Z"
+              stroke="#2381fe" strokeWidth="2" strokeLinejoin="round"
+            />
+            <line x1="20" y1="52" x2="8" y2="60" stroke="#2381fe" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+          <div className="auth-ink-line" />
+        </div>
+        <p className="auth-loading-text">
+          {registro ? "Creando tu cuenta…" : "Iniciando sesión…"}
+        </p>
+        <div className="auth-dots">
+          <span /><span /><span />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function AuthForm() {
   const [registro, setRegistro] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [nombre, setNombre] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const [showResetModal, setShowResetModal] = useState(false)
   const [resetEmail, setResetEmail] = useState("")
@@ -56,6 +86,7 @@ export default function AuthForm() {
       return
     }
 
+    setLoading(true)
     try {
       const endpoint = registro ? "/usuarios/registro" : "/usuarios/login"
       const payload = registro ? { email, password, nombre } : { email, password }
@@ -79,6 +110,8 @@ export default function AuthForm() {
       console.error("Error en la autenticación:", error)
       const msg = error.response?.data?.message || "Error inesperado"
       showMessage("error", "🚫 " + msg)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -101,6 +134,9 @@ export default function AuthForm() {
 
   return (
     <div className="w-full max-w-md relative mx-auto">
+
+      {loading && <LoadingOverlay registro={registro} />}
+
       {/* Toast message */}
       {message && (
         <div
@@ -185,7 +221,8 @@ export default function AuthForm() {
         <CardFooter className="flex flex-col space-y-4 px-6 pb-6">
           <Button
             onClick={handleSubmit}
-            className="w-full bg-[#2381fe] hover:bg-[#0b6edf] text-white font-medium h-9 rounded-md transition-colors"
+            disabled={loading}
+            className="w-full bg-[#2381fe] hover:bg-[#0b6edf] text-white font-medium h-9 rounded-md transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <span>{registro ? "Crear cuenta" : "Iniciar sesión"}</span>
             <ArrowRight className="ml-2 h-4 w-4" />
