@@ -40,7 +40,7 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
   return (
     <div className={`rounded-lg shadow-sm border hover:shadow-md transition flex flex-col justify-between h-full ${isLight ? "bg-white border-neutral-200" : "bg-zinc-800 border-zinc-700"}`}>
       <div className="p-4 flex flex-col h-full">
-        <h2 className={`text-lg font-semibold ${isLight ? "text-neutral-800" : "text-gray-100"}`}>
+        <h2 className={`text-lg font-semibold ${isLight ? "text-white-800" : "text-gray-100"}`}>
           {character.nombre_personaje}
         </h2>
 

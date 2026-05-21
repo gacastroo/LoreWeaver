@@ -61,7 +61,7 @@ export default function Characters() {
   };
 
   return (
-    <div className={`flex flex-col h-full w-full px-8 py-6 overflow-auto space-y-4 ${isLight ? "bg-neutral-100" : "bg-zinc-950"}`}>
+    <div className={`flex flex-col h-full w-full px-8 py-6 overflow-auto space-y-4 ${isLight ? "bg-neutral-700" : "bg-zinc-950"}`}>
       <SectionHeader title={t.tituloPersonajes}>
         <AddButton onClick={() => setMostrarModal(true)} label={t.nuevoPersonajeBtn} />
       </SectionHeader>

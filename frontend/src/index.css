@@ -58,16 +58,6 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-/* Usa Tailwind con @apply si tienes PostCSS configurado */
-.nav-link {
-  @apply flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100 transition-colors text-gray-700;
-}
-
-.icon {
-  @apply w-4 h-4 text-gray-500;
-}
-
-
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -79,4 +69,44 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* ── Nav links ────────────────────────────────────────── */
+.nav-link {
+  @apply flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100 transition-colors text-gray-700;
+}
+
+.icon {
+  @apply w-4 h-4 text-gray-500;
+}
+
+/* ── Modo oscuro ──────────────────────────────────────── */
+.dark-mode {
+  color-scheme: dark;
+}
+.light-mode {
+  color-scheme: light;
+}
+
+/* Nav links modo oscuro — especificidad elevada para superar las clases de Tailwind */
+.nav-link.nav-link-dark,
+a.nav-link.nav-link-dark {
+  color: rgb(243, 244, 246) !important; /* gray-100 */
+}
+
+.nav-link.nav-link-dark:hover,
+a.nav-link.nav-link-dark:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+.nav-link.nav-link-dark.active,
+a.nav-link.nav-link-dark.active {
+  background-color: rgba(255, 255, 255, 0.13) !important;
+  color: #ffffff !important;
+}
+
+.nav-link.nav-link-dark .icon,
+a.nav-link.nav-link-dark .icon {
+  color: rgba(209, 213, 219, 0.75) !important; /* gray-300 semitransparente */
 }
