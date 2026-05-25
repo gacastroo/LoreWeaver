@@ -6,17 +6,49 @@ import jwt from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.JWT_SECRET
 
+// ── Helpers de validación ──────────────────────────────────────────────────
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+function validarRegistro({ email, password, nombre }) {
+  if (!nombre || nombre.trim().length < 2) {
+    return 'El nombre debe tener al menos 2 caracteres.'
+  }
+  if (!email || !EMAIL_REGEX.test(email)) {
+    return 'El email no es válido.'
+  }
+  if (!password || password.length < 8) {
+    return 'La contraseña debe tener al menos 8 caracteres.'
+  }
+  return null
+}
+
+function validarLogin({ email, password }) {
+  if (!email || !EMAIL_REGEX.test(email)) {
+    return 'El email no es válido.'
+  }
+  if (!password || password.length === 0) {
+    return 'La contraseña es obligatoria.'
+  }
+  return null
+}
+
+// ── Controladores ──────────────────────────────────────────────────────────
+
 export const registrar = async (req, res) => {
   try {
     const { email, password, nombre } = req.body
 
-    const existe = await prisma.usuario.findUnique({ where: { email } })
+    const error = validarRegistro({ email, password, nombre })
+    if (error) return res.status(400).json({ message: error })
+
+    const existe = await prisma.usuario.findUnique({ where: { email: email.toLowerCase() } })
     if (existe) return res.status(400).json({ message: 'Ya existe el usuario' })
 
     const hashed = await bcrypt.hash(password, 10)
 
     const nuevo = await prisma.usuario.create({
-      data: { email, password: hashed, nombre }
+      data: { email: email.toLowerCase(), password: hashed, nombre: nombre.trim() }
     })
 
     const token = jwt.sign(
@@ -43,11 +75,18 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body
 
-    const usuario = await prisma.usuario.findUnique({ where: { email } })
-    if (!usuario) return res.status(404).json({ message: 'Usuario no encontrado' })
+    const error = validarLogin({ email, password })
+    if (error) return res.status(400).json({ message: error })
+
+    const usuario = await prisma.usuario.findUnique({ where: { email: email.toLowerCase() } })
+
+    // Mensaje genérico para no revelar si el email existe (anti-enumeración)
+    const INVALID_MSG = 'Email o contraseña incorrectos'
+
+    if (!usuario) return res.status(401).json({ message: INVALID_MSG })
 
     const valido = await bcrypt.compare(password, usuario.password)
-    if (!valido) return res.status(401).json({ message: 'Contraseña incorrecta' })
+    if (!valido) return res.status(401).json({ message: INVALID_MSG })
 
     const token = jwt.sign(
       { id_usuario: usuario.id_usuario, id: usuario.id_usuario },
@@ -72,31 +111,28 @@ export const login = async (req, res) => {
 export async function solicitarResetPassword(req, res) {
   const { email } = req.body
   try {
-    if (!email) return res.status(400).json({ message: 'Email requerido' })
+    if (!email || !EMAIL_REGEX.test(email)) {
+      return res.status(400).json({ message: 'Email requerido' })
+    }
 
-    const usuario = await prisma.usuario.findUnique({ where: { email } })
+    const usuario = await prisma.usuario.findUnique({ where: { email: email.toLowerCase() } })
     // Respuesta genérica para no revelar si el email existe
     if (!usuario) {
       return res.status(200).json({ message: 'Si el email existe, se enviará un link' })
     }
 
-    // Limpiar tokens previos del usuario
     await prisma.resetToken.deleteMany({ where: { usuarioId: usuario.id_usuario } })
 
     const token = crypto.randomBytes(32).toString('hex')
     const expiresAt = new Date(Date.now() + 3600 * 1000) // 1 hora
 
     await prisma.resetToken.create({
-      data: {
-        token,
-        usuarioId: usuario.id_usuario,
-        expiresAt
-      }
+      data: { token, usuarioId: usuario.id_usuario, expiresAt }
     })
 
-    await sendResetEmail(email, token)
+    await sendResetEmail(email.toLowerCase(), token)
 
-    return res.status(200).json({ message: 'Email enviado con instrucciones' })
+    return res.status(200).json({ message: 'Si el email existe, se enviará un link' })
   } catch (error) {
     console.error('Error en solicitarResetPassword:', error)
     return res.status(500).json({ message: 'Error interno' })
@@ -108,8 +144,8 @@ export async function resetPasswordConToken(req, res) {
   const { password } = req.body
 
   try {
-    if (!password || password.length < 6) {
-      return res.status(400).json({ message: 'Contraseña inválida' })
+    if (!password || password.length < 8) {
+      return res.status(400).json({ message: 'La contraseña debe tener al menos 8 caracteres.' })
     }
 
     const resetToken = await prisma.resetToken.findUnique({ where: { token } })

@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 
 import usuarioRoutes from './routes/usuario.routes.js';
 import personajeRoutes from './routes/personaje.routes.js';
@@ -18,6 +19,23 @@ import { verifyToken } from './middlewares/auth.js';
 
 const app = express();
 
+// ✅ Cabeceras de seguridad HTTP (anti-clickjacking, CSP, HSTS, etc.)
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      frameSrc: ["'none'"],
+    },
+  },
+  crossOriginEmbedderPolicy: false, // evita romper carga de recursos externos si los usas
+}));
+
 // ✅ Orígenes permitidos — añade aquí todos los dominios de Vercel que uses
 const allowedOrigins = [
   'http://localhost:5173',
@@ -25,8 +43,6 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
   process.env.FRONTEND_URL_PREVIEW,
 ].filter(Boolean);
-
-console.log('CORS allowedOrigins:', allowedOrigins);
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -37,7 +53,6 @@ app.use(cors({
     }
 
     console.warn(`🚫 CORS bloqueado para origen: ${origin}`);
-    console.warn(`   Orígenes permitidos: ${allowedOrigins.join(', ')}`);
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true
