@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button/ButtonAuth"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -81,7 +80,6 @@ export default function AuthForm() {
   const [resetError, setResetError] = useState("")
 
   const [message, setMessage] = useState(null)
-  const navigate = useNavigate()
 
   const showMessage = (type, text) => {
     setMessage({ type, text })
@@ -123,7 +121,7 @@ export default function AuthForm() {
           setRegistro(false)
           showMessage("success", "✅ Cuenta creada correctamente. Ahora inicia sesión.")
         } else {
-          navigate("/inicio")
+          window.location.assign("/inicio")
         }
       } else {
         showMessage("error", "❌ No se recibió un token del servidor.")
