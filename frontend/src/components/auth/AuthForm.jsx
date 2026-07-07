@@ -4,8 +4,6 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Mail, Lock, User, ArrowRight } from "lucide-react"
 
-import API from "@/services/api"
-
 import { Button } from "@/components/ui/button/ButtonAuth"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -88,6 +86,7 @@ export default function AuthForm() {
 
     setLoading(true)
     try {
+      const { default: API } = await import("@/services/api")
       const endpoint = registro ? "/usuarios/registro" : "/usuarios/login"
       const payload = registro ? { email, password, nombre } : { email, password }
 
@@ -101,7 +100,7 @@ export default function AuthForm() {
           setRegistro(false)
           showMessage("success", "✅ Cuenta creada correctamente. Ahora inicia sesión.")
         } else {
-          navigate("/Inicio")
+          navigate("/inicio")
         }
       } else {
         showMessage("error", "❌ No se recibió un token del servidor.")
@@ -125,6 +124,7 @@ export default function AuthForm() {
     }
 
     try {
+      const { default: API } = await import("@/services/api")
       await API.post("/usuarios/reset-password", { email: resetEmail })
       setResetMsg("✅ Se ha enviado un email con instrucciones para restablecer tu contraseña.")
     } catch (err) {
@@ -154,7 +154,16 @@ export default function AuthForm() {
       <Card className="bg-white shadow-sm border border-gray-100 rounded-lg">
         <CardHeader className="text-center space-y-2 pb-4">
           <div className="flex justify-center">
-            <img src="/logo.png" alt="Lore Weaver" width={180} height={180} className="object-contain" />
+            <img
+              src="/logo-512.webp"
+              alt="Lore Weaver"
+              width={180}
+              height={180}
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+              className="object-contain"
+            />
           </div>
           <CardTitle className="text-2xl font-medium text-gray-800">
             {registro ? "Crear cuenta" : "¡Crea tus historias de una forma diferente!"}

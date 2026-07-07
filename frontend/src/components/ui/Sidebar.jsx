@@ -52,9 +52,13 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
           <div className="flex items-center justify-between mb-6 px-2">
             <NavLink to="/dashboard" onClick={() => setSidebarOpen(false)}>
               <img
-                src="/logo.png"
+                src="/logo-512.webp"
                 alt="LoreWeaver Logo"
-                className={`w-32 object-contain ${isLight ? "" : "invert"}`}
+                width={128}
+                height={128}
+                loading="lazy"
+                decoding="async"
+                className={`w-32 h-32 object-contain ${isLight ? "" : "invert"}`}
               />
             </NavLink>
 

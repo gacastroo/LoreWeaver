@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import API from "@/services/api";
 
 export default function ResetPassword() {
   const { token } = useParams(); // token de la URL
@@ -28,10 +27,11 @@ export default function ResetPassword() {
 
     try {
       setLoading(true);
+      const { default: API } = await import("@/services/api");
       // Petición PUT al backend para cambiar la contraseña con token
       await API.put(`/usuarios/reset-password/${token}`, { password });
       setSuccess("✅ Contraseña actualizada correctamente. Redirigiendo...");
-      setTimeout(() => navigate("/login"), 3000);
+      setTimeout(() => navigate("/"), 3000);
     } catch (err) {
       console.error(err);
       const msg = err.response?.data?.message || "Error al cambiar la contraseña.";

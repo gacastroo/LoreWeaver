@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect } from "react";
-import cytoscape from "cytoscape";
 import API from "@/services/api";
 import { Map } from "lucide-react";
 import { useApp } from "@/context/AppContext";
@@ -15,6 +14,7 @@ const colores = {
 
 export default function MapGenerator() {
   const cyRef = useRef(null);
+  const cytoscapeModuleRef = useRef(null);
   const containerRef = useRef(null);
   const [filtros, setFiltros] = useState({ historia: true, capitulo: true, escena: true, personaje: true, tag: true, universo: true });
   const [elementosOriginales, setElementosOriginales] = useState([]);
@@ -42,8 +42,17 @@ export default function MapGenerator() {
     }
   };
 
-  const renderizarMapa = (datos) => {
-    if (!datos.length) return;
+  const loadCytoscape = async () => {
+    if (!cytoscapeModuleRef.current) {
+      const module = await import("cytoscape");
+      cytoscapeModuleRef.current = module.default;
+    }
+    return cytoscapeModuleRef.current;
+  };
+
+  const renderizarMapa = async (datos) => {
+    if (!datos.length || !containerRef.current) return;
+    const cytoscape = await loadCytoscape();
     const visibles = new Set();
     const nodosVisibles = datos.filter((e) => {
       const tipo = e.data?.tipo;
@@ -95,12 +104,20 @@ export default function MapGenerator() {
   const generarMapa = async () => {
     const data = await fetchMapa();
     setElementosOriginales(data);
-    renderizarMapa(data);
+    await renderizarMapa(data);
   };
 
   useEffect(() => {
-    if (elementosOriginales.length > 0) renderizarMapa(elementosOriginales);
+    if (elementosOriginales.length > 0) {
+      renderizarMapa(elementosOriginales);
+    }
   }, [filtros, layoutType]);
+
+  useEffect(() => {
+    return () => {
+      if (cyRef.current) cyRef.current.destroy();
+    };
+  }, []);
 
   const centrarMapa = () => {
     if (!cyRef.current) return;

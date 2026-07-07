@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "@/services/api";
-import jsPDF from "jspdf";
 import toast from "react-hot-toast";
 import { useApp } from "@/context/AppContext";
 
@@ -57,7 +56,8 @@ export default function EditorPersonaje({ onUpdate }) {
     }
   };
 
-  const handleExportarPDF = () => {
+  const handleExportarPDF = async () => {
+    const { default: jsPDF } = await import("jspdf");
     const doc = new jsPDF();
     doc.setFontSize(18);
     doc.text(`Personaje: ${nombre}`, 10, 20);

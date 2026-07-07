@@ -1,64 +1,71 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Toaster } from "react-hot-toast"; 
 
-import Inicio from "@/layouts/Inicio";
-import Characters from "@/pages/Characters";
-import LogoScreen from "@/pages/LogoScreen";
 import LoginRegister from "./pages/LoginRegister";
-import Dashboard from "@/pages/Dashboard";
-import Stories from "@/pages/Stories";
-import Universes from "@/pages/Universes";
-import Chapters from "@/pages/Chapters";
-import Scenes from "@/pages/Scenes";
-import Tags from "@/pages/Tags";
-import MapGenerator from "@/pages/MapGenerator";
-import RutaPrivada from "@/components/auth/RutaPrivada";
-import EditorHistoria from "@/pages/EditorHistoria";
-import EditorPersonaje from "@/pages/EditorPersonaje";
-import EditorUniverso from "@/pages/EditorUniverso";
-import EditorCapitulo from "@/pages/EditorCapitulo";
-import VistaRelaciones from "@/pages/VistaRelaciones";
-import NameGenerator from "@/pages/NameGenerator";
-import ResetPassword from "@/components/ResetPassword";
-import GeneradorIdea from "./pages/GeneradorIdea";
-import ChatNarrativo from "./pages/ChatNarrativo";
-import Guia from './pages/Guia';
+
+const ProtectedLayout = lazy(() => import("@/layouts/ProtectedLayout"));
+const LogoScreen = lazy(() => import("@/pages/LogoScreen"));
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const Stories = lazy(() => import("@/pages/Stories"));
+const Characters = lazy(() => import("@/pages/Characters"));
+const Universes = lazy(() => import("@/pages/Universes"));
+const Chapters = lazy(() => import("@/pages/Chapters"));
+const Scenes = lazy(() => import("@/pages/Scenes"));
+const Tags = lazy(() => import("@/pages/Tags"));
+const MapGenerator = lazy(() => import("@/pages/MapGenerator"));
+const EditorHistoria = lazy(() => import("@/pages/EditorHistoria"));
+const EditorPersonaje = lazy(() => import("@/pages/EditorPersonaje"));
+const EditorUniverso = lazy(() => import("@/pages/EditorUniverso"));
+const EditorCapitulo = lazy(() => import("@/pages/EditorCapitulo"));
+const VistaRelaciones = lazy(() => import("@/pages/VistaRelaciones"));
+const NameGenerator = lazy(() => import("@/pages/NameGenerator"));
+const ResetPassword = lazy(() => import("@/components/ResetPassword"));
+const GeneradorIdea = lazy(() => import("@/pages/GeneradorIdea"));
+const ChatNarrativo = lazy(() => import("@/pages/ChatNarrativo"));
+const Guia = lazy(() => import("@/pages/Guia"));
+
+function RouteLoader() {
+  return (
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#f7f6f3] text-gray-600">
+      Cargando...
+    </div>
+  );
+}
+
+function loadRoute(Component) {
+  return (
+    <Suspense fallback={<RouteLoader />}>
+      <Component />
+    </Suspense>
+  );
+}
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Toaster position="top-right" toastOptions={{ duration: 3000 }} /> {/* ← AÑADIDO */}
       <Routes>
-        {/* Público */}
         <Route path="/" element={<LoginRegister />} />
+        <Route path="/reset-password/:token" element={loadRoute(ResetPassword)} />
 
-        {/* Protegidas con sidebar */}
-        <Route
-          element={
-            <RutaPrivada>
-              <Inicio />
-            </RutaPrivada>
-          }
-        >
-          <Route path="/inicio" element={<LogoScreen />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/stories" element={<Stories />} />
-          <Route path="/characters" element={<Characters />} />
-          <Route path="/universes" element={<Universes />} />
-          <Route path="/chapters" element={<Chapters />} />
-          <Route path="/scenes" element={<Scenes />} />
-          <Route path="/tags" element={<Tags />} />
-          <Route path="/map-generator" element={<MapGenerator />} />
-          <Route path="/historia/:id" element={<EditorHistoria />} />
-          <Route path="/editor-capitulo/:id" element={<EditorCapitulo />} />
-          <Route path="/personaje/:id" element={<EditorPersonaje />} />
-          <Route path="/universo/:id" element={<EditorUniverso />} />
-          <Route path="/historia/:id/relaciones" element={<VistaRelaciones />} />
-          <Route path="/name-generator" element={<NameGenerator />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
-          <Route path="/idea-generator" element={<GeneradorIdea />} />
-          <Route path="/chat" element={<ChatNarrativo />} />
-          <Route path="/guia" element={<Guia />} />
+        <Route element={loadRoute(ProtectedLayout)}>
+          <Route path="/inicio" element={loadRoute(LogoScreen)} />
+          <Route path="/dashboard" element={loadRoute(Dashboard)} />
+          <Route path="/stories" element={loadRoute(Stories)} />
+          <Route path="/characters" element={loadRoute(Characters)} />
+          <Route path="/universes" element={loadRoute(Universes)} />
+          <Route path="/chapters" element={loadRoute(Chapters)} />
+          <Route path="/scenes" element={loadRoute(Scenes)} />
+          <Route path="/tags" element={loadRoute(Tags)} />
+          <Route path="/map-generator" element={loadRoute(MapGenerator)} />
+          <Route path="/historia/:id" element={loadRoute(EditorHistoria)} />
+          <Route path="/editor-capitulo/:id" element={loadRoute(EditorCapitulo)} />
+          <Route path="/personaje/:id" element={loadRoute(EditorPersonaje)} />
+          <Route path="/universo/:id" element={loadRoute(EditorUniverso)} />
+          <Route path="/historia/:id/relaciones" element={loadRoute(VistaRelaciones)} />
+          <Route path="/name-generator" element={loadRoute(NameGenerator)} />
+          <Route path="/idea-generator" element={loadRoute(GeneradorIdea)} />
+          <Route path="/chat" element={loadRoute(ChatNarrativo)} />
+          <Route path="/guia" element={loadRoute(Guia)} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -39,7 +39,15 @@ export default function Dashboard() {
     return (
       <div className={`p-8 flex justify-center items-center min-h-[60vh] ${isLight ? "bg-neutral-100" : "bg-zinc-950"}`}>
         <div className={`p-6 rounded-lg shadow-md border max-w-md w-full text-center space-y-5 ${isLight ? "bg-white border-neutral-200" : "bg-zinc-800 border-zinc-700"}`}>
-          <img src="/logo.png" alt="Sin contenido" className={`w-24 h-24 mx-auto opacity-80 ${isLight ? "" : "invert"}`} />
+          <img
+            src="/logo-512.webp"
+            alt="Sin contenido"
+            width={96}
+            height={96}
+            loading="lazy"
+            decoding="async"
+            className={`w-24 h-24 mx-auto opacity-80 ${isLight ? "" : "invert"}`}
+          />
           <h2 className={`text-xl font-semibold ${isLight ? "text-neutral-800" : "text-gray-100"}`}>
             {t.dashboardVacio}
           </h2>

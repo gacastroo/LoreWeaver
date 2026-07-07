@@ -1,35 +1,36 @@
-// src/components/ui/Toolbar.js
+// src/components/ui/Toolbar.jsx
 import {
-  FaBold,
-  FaItalic,
-  FaUnderline,
-  FaStrikethrough,
-  FaHeading,
-  FaListUl,
-  FaListOl,
-  FaLink,
-  FaUnlink,
-  FaAlignLeft,
-  FaAlignCenter,
-  FaAlignRight,
-} from "react-icons/fa";
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
+  Bold,
+  Heading1,
+  Heading2,
+  Italic,
+  Link,
+  List,
+  ListOrdered,
+  Strikethrough,
+  Underline,
+  Unlink,
+} from "lucide-react";
 
 export default function Toolbar({ aplicarComando, insertarEnlace, eliminarEnlace }) {
   const botones = [
-    { icon: FaBold, cmd: "bold", title: "Negrita" },
-    { icon: FaItalic, cmd: "italic", title: "Cursiva" },
-    { icon: FaUnderline, cmd: "underline", title: "Subrayado" },
-    { icon: FaStrikethrough, cmd: "strikeThrough", title: "Tachado" },
-    { icon: FaHeading, cmd: "formatBlock", arg: "H1", title: "Encabezado 1" },
-    { icon: FaHeading, cmd: "formatBlock", arg: "H2", title: "Encabezado 2" },
-    { icon: FaListUl, cmd: "insertUnorderedList", title: "Lista viñetas" },
-    { icon: FaListOl, cmd: "insertOrderedList", title: "Lista numerada" },
+    { icon: Bold, cmd: "bold", title: "Negrita" },
+    { icon: Italic, cmd: "italic", title: "Cursiva" },
+    { icon: Underline, cmd: "underline", title: "Subrayado" },
+    { icon: Strikethrough, cmd: "strikeThrough", title: "Tachado" },
+    { icon: Heading1, cmd: "formatBlock", arg: "H1", title: "Encabezado 1" },
+    { icon: Heading2, cmd: "formatBlock", arg: "H2", title: "Encabezado 2" },
+    { icon: List, cmd: "insertUnorderedList", title: "Lista viñetas" },
+    { icon: ListOrdered, cmd: "insertOrderedList", title: "Lista numerada" },
   ];
 
   const alineaciones = [
-    { icon: FaAlignLeft, cmd: "justifyLeft", title: "Alinear izquierda" },
-    { icon: FaAlignCenter, cmd: "justifyCenter", title: "Alinear centro" },
-    { icon: FaAlignRight, cmd: "justifyRight", title: "Alinear derecha" },
+    { icon: AlignLeft, cmd: "justifyLeft", title: "Alinear izquierda" },
+    { icon: AlignCenter, cmd: "justifyCenter", title: "Alinear centro" },
+    { icon: AlignRight, cmd: "justifyRight", title: "Alinear derecha" },
   ];
 
   const buttonClassName = `
@@ -39,8 +40,6 @@ export default function Toolbar({ aplicarComando, insertarEnlace, eliminarEnlace
     hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400
     transition
   `;
-
-  const iconStyle = { fontSize: "22px" };
 
   return (
     <div
@@ -55,7 +54,7 @@ export default function Toolbar({ aplicarComando, insertarEnlace, eliminarEnlace
           title={title}
           className={buttonClassName}
         >
-          <Icon style={iconStyle} />
+          <Icon className="w-6 h-6" aria-hidden="true" />
           {cmd === "formatBlock" && (
             <span className="ml-1 font-bold select-none">{arg.slice(1)}</span>
           )}
@@ -68,7 +67,7 @@ export default function Toolbar({ aplicarComando, insertarEnlace, eliminarEnlace
         title="Insertar enlace"
         className={buttonClassName}
       >
-        <FaLink style={iconStyle} />
+        <Link className="w-6 h-6" aria-hidden="true" />
       </button>
 
       <button
@@ -77,7 +76,7 @@ export default function Toolbar({ aplicarComando, insertarEnlace, eliminarEnlace
         title="Quitar enlace"
         className={buttonClassName}
       >
-        <FaUnlink style={iconStyle} />
+        <Unlink className="w-6 h-6" aria-hidden="true" />
       </button>
 
       {alineaciones.map(({ icon: Icon, cmd, title }, i) => (
@@ -88,7 +87,7 @@ export default function Toolbar({ aplicarComando, insertarEnlace, eliminarEnlace
           title={title}
           className={buttonClassName}
         >
-          <Icon style={iconStyle} />
+          <Icon className="w-6 h-6" aria-hidden="true" />
         </button>
       ))}
     </div>

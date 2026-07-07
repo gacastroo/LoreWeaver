@@ -682,8 +682,12 @@ export default function Guia() {
         <div style={{ marginBottom: "28px", animation: "popIn 0.3s ease" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "8px" }}>
             <img
-              src="/logo.png"
+              src="/logo-512.webp"
               alt="LoreWeaver"
+              width={64}
+              height={64}
+              loading="lazy"
+              decoding="async"
               style={{ width: "64px", height: "64px", objectFit: "contain", borderRadius: "12px", filter: logoFilter }}
             />
             <div>

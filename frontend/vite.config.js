@@ -14,6 +14,9 @@ export default defineConfig(({ command }) => ({
     },
   },
   base: '/',
+  build: {
+    cssCodeSplit: true,
+  },
   server: command === 'serve'
     ? {
         proxy: {
