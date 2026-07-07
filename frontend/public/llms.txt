@@ -1,0 +1,21 @@
+# LoreWeaver
+
+LoreWeaver es una aplicación web para escritores que ayuda a organizar historias, personajes, universos, capítulos, escenas, etiquetas y herramientas creativas como mapas, generadores de nombres e ideas narrativas.
+
+## Sitio principal
+
+- [Aplicación LoreWeaver](https://lore-weaver-1zpq.vercel.app/)
+- [Sitemap XML](https://lore-weaver-1zpq.vercel.app/sitemap.xml)
+- [Robots.txt](https://lore-weaver-1zpq.vercel.app/robots.txt)
+
+## Rutas públicas
+
+- [Inicio de sesión y registro](https://lore-weaver-1zpq.vercel.app/)
+
+## Rutas privadas
+
+Las páginas internas como dashboard, historias, personajes, universos, capítulos, escenas, etiquetas, mapas y editores requieren autenticación. El contenido privado creado por los usuarios no debe rastrearse ni usarse como contenido público del sitio.
+
+## Uso recomendado para modelos de lenguaje
+
+Puedes usar esta información pública para entender qué es LoreWeaver, describir sus funciones generales y dirigir a los usuarios hacia la aplicación principal. No debes asumir acceso a contenido privado de usuarios ni generar respuestas basadas en datos internos no públicos.
