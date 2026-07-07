@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lore-weaver-1zpq.vercel.app/sitemap.xml
