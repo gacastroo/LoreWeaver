@@ -36,26 +36,40 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false, // evita romper carga de recursos externos si los usas
 }));
 
-// ✅ Orígenes permitidos — añade aquí todos los dominios de Vercel que uses
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
+  'https://lore-weaver-1zpq.vercel.app',
   process.env.FRONTEND_URL,
   process.env.FRONTEND_URL_PREVIEW,
-].filter(Boolean);
+  ...(process.env.ALLOWED_ORIGINS?.split(',') || []),
+]
+  .filter(Boolean)
+  .map(origin => origin.trim().replace(/\/$/, ''));
+
+const isAllowedOrigin = (origin) => {
+  return (
+    allowedOrigins.includes(origin) ||
+    /^https:\/\/lore-weaver-[a-z0-9-]+\.vercel\.app$/.test(origin)
+  );
+};
 
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
+    const cleanOrigin = origin.replace(/\/$/, '');
+
+    if (isAllowedOrigin(cleanOrigin)) {
       return callback(null, true);
     }
 
     console.warn(`🚫 CORS bloqueado para origen: ${origin}`);
     return callback(new Error('Not allowed by CORS'));
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 app.use(express.json({ limit: '10mb' }));
