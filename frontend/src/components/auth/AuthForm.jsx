@@ -2,8 +2,6 @@
 
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Mail, Lock, User, ArrowRight } from "lucide-react"
-
 import { Button } from "@/components/ui/button/ButtonAuth"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -15,6 +13,31 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card"
+
+
+function AuthIcon({ type, className = "" }) {
+  const paths = {
+    mail: <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></>,
+    lock: <><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></>,
+    user: <><path d="M20 21a8 8 0 0 0-16 0" /><circle cx="12" cy="7" r="4" /></>,
+    arrow: <><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></>,
+  };
+
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {paths[type]}
+    </svg>
+  );
+}
 
 function LoadingOverlay({ registro }) {
   return (
@@ -180,7 +203,7 @@ export default function AuthForm() {
                 Nombre completo
               </Label>
               <div className="relative">
-                <User className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                <AuthIcon type="user" className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                 <Input
                   id="nombre"
                   placeholder="Tu nombre completo"
@@ -197,7 +220,7 @@ export default function AuthForm() {
               Correo electrónico
             </Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+              <AuthIcon type="mail" className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
               <Input
                 id="email"
                 type="email"
@@ -214,7 +237,7 @@ export default function AuthForm() {
               Contraseña
             </Label>
             <div className="relative">
-              <Lock className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+              <AuthIcon type="lock" className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
               <Input
                 id="password"
                 type="password"
@@ -234,7 +257,7 @@ export default function AuthForm() {
             className="w-full bg-[#2381fe] hover:bg-[#0b6edf] text-white font-medium h-9 rounded-md transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <span>{registro ? "Crear cuenta" : "Iniciar sesión"}</span>
-            <ArrowRight className="ml-2 h-4 w-4" />
+            <AuthIcon type="arrow" className="ml-2 h-4 w-4" />
           </Button>
 
           {!registro && (
