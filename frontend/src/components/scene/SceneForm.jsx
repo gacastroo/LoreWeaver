@@ -38,18 +38,24 @@ export default function SceneForm({ onSceneCreated }) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <h2 className="text-xl font-bold text-center">Crear nueva escena</h2>
 
+      <label htmlFor="scene-title" className="sr-only">Título de la escena</label>
       <input
+        id="scene-title"
+        name="scene-title"
         type="text"
         placeholder="Título de la escena"
         value={titulo}
         onChange={(e) => setTitulo(e.target.value)}
-        className="w-full p-2 rounded border"
+        className="w-full p-2 rounded border focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
       />
 
+      <label htmlFor="scene-chapter" className="sr-only">Capítulo de la escena</label>
       <select
+        id="scene-chapter"
+        name="scene-chapter"
         value={capituloId}
         onChange={(e) => setCapituloId(e.target.value)}
-        className="w-full p-2 rounded border"
+        className="w-full p-2 rounded border focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
       >
         <option value="">Selecciona un capítulo</option>
         {capitulos.map((c) => (
@@ -59,7 +65,7 @@ export default function SceneForm({ onSceneCreated }) {
         ))}
       </select>
 
-      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
         Crear escena
       </button>
     </form>

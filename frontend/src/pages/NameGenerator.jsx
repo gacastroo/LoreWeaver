@@ -72,8 +72,8 @@ export default function NameGenerator() {
         <h1 className={headingCls}>{t.genNombresTitle}</h1>
 
         <div className="mb-4 text-left">
-          <label className={labelCls}>{t.tipo}</label>
-          <select value={type} onChange={(e) => setType(e.target.value)} className={inputCls}>
+          <label htmlFor="name-type" className={labelCls}>{t.tipo}</label>
+          <select id="name-type" value={type} onChange={(e) => setType(e.target.value)} className={inputCls}>
             <option value="fantasy">{t.fantastico}</option>
             <option value="sciFi">{t.sciFi}</option>
             <option value="medieval">{t.medieval}</option>
@@ -81,14 +81,14 @@ export default function NameGenerator() {
         </div>
 
         <div className="mb-4 text-left">
-          <label className={labelCls}>{t.genero}</label>
-          <select value={gender} onChange={(e) => setGender(e.target.value)} className={inputCls}>
+          <label htmlFor="name-gender" className={labelCls}>{t.genero}</label>
+          <select id="name-gender" value={gender} onChange={(e) => setGender(e.target.value)} className={inputCls}>
             <option value="masculino">{t.masculino}</option>
             <option value="femenino">{t.femenino}</option>
           </select>
         </div>
 
-        <button
+        <button type="button"
           onClick={handleGenerate}
           disabled={loading}
           className="bg-indigo-500 hover:bg-indigo-600 text-white w-full px-6 py-2 rounded font-medium mb-4 transition"
@@ -96,14 +96,16 @@ export default function NameGenerator() {
           {loading ? t.generando : t.generarNombre}
         </button>
 
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-        {success && <p className="text-green-500 text-sm mb-4">{success}</p>}
+        {error && <p className="text-red-500 text-sm mb-4" role="alert">{error}</p>}
+        {success && <p className="text-green-500 text-sm mb-4" role="status">{success}</p>}
 
         {name && (
           <div className="space-y-4 mt-6 text-left">
             <div>
-              <label className={labelCls}>{t.nombreGenerado}</label>
+              <label htmlFor="generated-name" className={labelCls}>{t.nombreGenerado}</label>
               <input
+                id="generated-name"
+                name="generated-name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -111,8 +113,10 @@ export default function NameGenerator() {
               />
             </div>
             <div>
-              <label className={labelCls}>{t.descripcionPersonajeLabel}</label>
+              <label htmlFor="generated-description" className={labelCls}>{t.descripcionPersonajeLabel}</label>
               <textarea
+                id="generated-description"
+                name="generated-description"
                 value={descripcion}
                 onChange={(e) => setDescripcion(e.target.value)}
                 rows={4}
@@ -120,14 +124,14 @@ export default function NameGenerator() {
               />
             </div>
             <div>
-              <label className={labelCls}>{t.asociarAHistoria}</label>
-              <select value={historiaId} onChange={(e) => setHistoriaId(e.target.value)} className={inputCls}>
+              <label htmlFor="generated-story" className={labelCls}>{t.asociarAHistoria}</label>
+              <select id="generated-story" value={historiaId} onChange={(e) => setHistoriaId(e.target.value)} className={inputCls}>
                 {historias.map((h) => (
                   <option key={h.id} value={h.id}>{h.titulo}</option>
                 ))}
               </select>
             </div>
-            <button
+            <button type="button"
               onClick={crearPersonaje}
               className="bg-green-600 hover:bg-green-700 text-white w-full px-6 py-2 rounded font-medium transition"
             >

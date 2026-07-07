@@ -70,8 +70,10 @@ export default function EditorCapitulo({ onUpdate }) {
     <div className={`p-8 max-w-4xl mx-auto min-h-screen ${isLight ? "bg-white" : "bg-zinc-950"}`}>
       <h1 className={`text-2xl font-bold mb-4 ${isLight ? "text-neutral-700" : "text-gray-100"}`}>{t.editarCapitulo}</h1>
 
-      <label className={`block mb-2 text-sm font-medium ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>{t.tituloLabel}</label>
+      <label htmlFor="chapter-editor-title" className={`block mb-2 text-sm font-medium ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>{t.tituloLabel}</label>
       <input
+        id="chapter-editor-title"
+        name="chapter-editor-title"
         type="text"
         className={`w-full p-3 border text-lg font-semibold rounded-md mb-4 ${isLight ? "border-neutral-400 bg-white text-neutral-800" : "border-zinc-600 bg-zinc-800 text-gray-100"}`}
         value={titulo}
@@ -79,8 +81,10 @@ export default function EditorCapitulo({ onUpdate }) {
         placeholder={t.tituloCapituloPlaceholder || "Título del capítulo"}
       />
 
-      <label className={`block mb-2 text-sm font-medium ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>{t.contenidoLabel}</label>
+      <label htmlFor="chapter-editor-content" className={`block mb-2 text-sm font-medium ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>{t.contenidoLabel}</label>
       <textarea
+        id="chapter-editor-content"
+        name="chapter-editor-content"
         ref={textareaRef}
         className={`w-full p-4 border rounded-md resize-none ${isLight ? "border-neutral-400 bg-white text-neutral-800" : "border-zinc-600 bg-zinc-800 text-zinc-200"}`}
         value={contenido}
@@ -90,10 +94,10 @@ export default function EditorCapitulo({ onUpdate }) {
       />
 
       <div className="flex justify-end mt-4">
-        <button onClick={handleGuardar} className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
+        <button type="button" onClick={handleGuardar} className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
           {t.guardarCambios}
         </button>
-        <button onClick={handleExportarPDF} className="ml-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+        <button type="button" onClick={handleExportarPDF} className="ml-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
           {t.exportarPDF}
         </button>
       </div>

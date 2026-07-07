@@ -55,16 +55,16 @@ export default function Dashboard() {
             {t.dashboardVacioDesc}
           </p>
           <div className="flex flex-wrap gap-3 justify-center mt-4">
-            <button onClick={() => navigate("/stories")} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm transition">
+            <button type="button" onClick={() => navigate("/stories")} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm transition">
               {t.nuevaHistoria}
             </button>
-            <button onClick={() => navigate("/characters")} className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-md text-sm transition">
+            <button type="button" onClick={() => navigate("/characters")} className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-md text-sm transition">
               {t.nuevoPersonaje}
             </button>
-            <button onClick={() => navigate("/universes")} className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm transition">
+            <button type="button" onClick={() => navigate("/universes")} className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm transition">
               {t.nuevoUniverso}
             </button>
-            <button onClick={() => navigate("/guia")} className="bg-neutral-600 hover:bg-neutral-700 text-white px-4 py-2 rounded-md text-sm transition">
+            <button type="button" onClick={() => navigate("/guia")} className="bg-neutral-600 hover:bg-neutral-700 text-white px-4 py-2 rounded-md text-sm transition">
               {t.guiaInicio}
             </button>
           </div>

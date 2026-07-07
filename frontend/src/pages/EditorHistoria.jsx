@@ -119,15 +119,17 @@ export default function EditorHistoria({ onUpdate }) {
     <div className={`p-8 max-w-4xl mx-auto space-y-6 min-h-screen ${isLight ? "bg-white" : "bg-zinc-950"}`}>
       <h1 className={`text-2xl font-bold ${isLight ? "text-neutral-700" : "text-gray-100"}`}>{t.editarHistoria}</h1>
 
-      <button
+      <button type="button"
         onClick={() => navigate(`/historia/${id}/relaciones`)}
         className={`text-sm px-4 py-2 rounded hover:bg-blue-200 transition ${isLight ? "bg-blue-100 text-blue-800" : "bg-blue-900 text-blue-300 hover:bg-blue-800"}`}
       >
         {t.verElementosRelacionados}
       </button>
 
-      <label className={`block text-sm font-medium ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>{t.tituloLabel}</label>
+      <label htmlFor="story-editor-title" className={`block text-sm font-medium ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>{t.tituloLabel}</label>
       <input
+        id="story-editor-title"
+        name="story-editor-title"
         type="text"
         className={`w-full p-3 border text-lg font-semibold rounded-md mb-4 ${isLight ? "border-neutral-400 bg-white text-neutral-800" : "border-zinc-600 bg-zinc-800 text-gray-100"}`}
         value={titulo}
@@ -138,7 +140,10 @@ export default function EditorHistoria({ onUpdate }) {
       {capitulos.map((cap, index) => (
         <div key={index} className={`border p-4 rounded-md shadow-sm space-y-2 ${isLight ? "bg-white border-neutral-200" : "bg-zinc-800 border-zinc-700"}`}>
           <div className="flex justify-between items-center">
+            <label htmlFor={`chapter-title-${index}`} className="sr-only">{`Título del capítulo ${index + 1}`}</label>
             <input
+              id={`chapter-title-${index}`}
+              name={`chapter-title-${index}`}
               type="text"
               value={cap.titulo_capitulo}
               onChange={(e) => handleChangeTituloCapitulo(index, e.target.value)}
@@ -146,11 +151,11 @@ export default function EditorHistoria({ onUpdate }) {
               placeholder={`Capítulo ${index + 1}`}
             />
             <div className="ml-2 flex gap-2">
-              <button onClick={() => toggleExpandido(index)} className="text-sm text-blue-400 hover:underline">
+              <button type="button" onClick={() => toggleExpandido(index)} className="text-sm text-blue-400 hover:underline">
                 {expandido[index] ? t.minimizar : t.expandir}
               </button>
               {capitulos.length > 1 && (
-                <button onClick={() => eliminarCapitulo(index)} className="text-sm text-red-400 hover:underline">
+                <button type="button" onClick={() => eliminarCapitulo(index)} className="text-sm text-red-400 hover:underline">
                   {t.eliminar}
                 </button>
               )}
@@ -158,7 +163,11 @@ export default function EditorHistoria({ onUpdate }) {
           </div>
 
           {expandido[index] && (
+            <>
+            <label htmlFor={`chapter-content-${index}`} className="sr-only">{`Contenido del capítulo ${index + 1}`}</label>
             <textarea
+              id={`chapter-content-${index}`}
+              name={`chapter-content-${index}`}
               ref={(el) => (textareaRefs.current[index] = el)}
               value={cap.contenido || ""}
               onChange={(e) => handleChangeContenido(index, e.target.value)}
@@ -166,22 +175,23 @@ export default function EditorHistoria({ onUpdate }) {
               className={`w-full p-3 border rounded-md resize-none ${isLight ? "border-neutral-300 bg-neutral-50 text-neutral-800" : "border-zinc-600 bg-zinc-700 text-zinc-200"}`}
               style={{ minHeight: "150px", overflow: "hidden" }}
             />
+            </>
           )}
         </div>
       ))}
 
       <div className="flex flex-wrap gap-4 justify-between items-center">
-        <button
+        <button type="button"
           onClick={agregarCapitulo}
           className={`flex items-center gap-2 px-4 py-2 rounded text-sm transition ${isLight ? "bg-gray-200 text-neutral-800 hover:bg-gray-300" : "bg-zinc-700 text-gray-200 hover:bg-zinc-600"}`}
         >
           {t.aniadirCapitulo}
         </button>
         <div className="flex gap-4">
-          <button onClick={handleGuardar} className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
+          <button type="button" onClick={handleGuardar} className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             {t.guardarCambios}
           </button>
-          <button onClick={handleExportarPDF} className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+          <button type="button" onClick={handleExportarPDF} className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
             {t.exportarPDF}
           </button>
         </div>

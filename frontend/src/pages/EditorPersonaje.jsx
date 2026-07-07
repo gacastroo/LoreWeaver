@@ -74,7 +74,7 @@ export default function EditorPersonaje({ onUpdate }) {
       {personaje && (
         <div className={`flex flex-wrap gap-4 mb-6 border-b pb-4 ${isLight ? "border-neutral-200" : "border-zinc-700"}`}>
           {personaje.historia && (
-            <button
+            <button type="button"
               onClick={() => navigate(`/historia/${personaje.historia?.id}`)}
               className={`hover:underline text-sm ${isLight ? "text-blue-600" : "text-blue-400"}`}
             >
@@ -86,8 +86,10 @@ export default function EditorPersonaje({ onUpdate }) {
 
       <h1 className={`text-2xl font-bold mb-4 ${isLight ? "text-neutral-700" : "text-gray-100"}`}>{t.editarPersonaje}</h1>
 
-      <label className={`block mb-2 text-sm font-medium ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>{t.nombreLabel}</label>
+      <label htmlFor="character-editor-name" className={`block mb-2 text-sm font-medium ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>{t.nombreLabel}</label>
       <input
+        id="character-editor-name"
+        name="character-editor-name"
         type="text"
         className={`w-full p-3 border text-lg font-semibold rounded-md mb-4 ${isLight ? "border-neutral-400 bg-white text-neutral-800" : "border-zinc-600 bg-zinc-800 text-gray-100"}`}
         value={nombre}
@@ -95,8 +97,10 @@ export default function EditorPersonaje({ onUpdate }) {
         placeholder={t.nombrePersonajePlaceholder || "Nombre del personaje"}
       />
 
-      <label className={`block mb-2 text-sm font-medium ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>{t.descripcionLabel}</label>
+      <label htmlFor="character-editor-description" className={`block mb-2 text-sm font-medium ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>{t.descripcionLabel}</label>
       <textarea
+        id="character-editor-description"
+        name="character-editor-description"
         ref={textareaRef}
         className={`w-full p-4 border rounded-md resize-none ${isLight ? "border-neutral-400 bg-white text-neutral-800" : "border-zinc-600 bg-zinc-800 text-zinc-200"}`}
         value={descripcion}
@@ -106,10 +110,10 @@ export default function EditorPersonaje({ onUpdate }) {
       />
 
       <div className="flex justify-end mt-4">
-        <button onClick={handleGuardar} className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
+        <button type="button" onClick={handleGuardar} className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
           {t.guardarCambios}
         </button>
-        <button onClick={handleExportarPDF} className="ml-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+        <button type="button" onClick={handleExportarPDF} className="ml-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
           {t.exportarPDF}
         </button>
       </div>

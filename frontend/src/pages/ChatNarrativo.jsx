@@ -70,10 +70,13 @@ export default function ChatNarrativo() {
         </CardHeader>
         <CardContent className="space-y-5">
           <div className="flex gap-2">
-            <select value={tipo} onChange={(e) => setTipo(e.target.value)} className={selectCls}>
+            <label htmlFor="chat-tipo" className="sr-only">Tipo de elemento</label>
+            <select id="chat-tipo" value={tipo} onChange={(e) => setTipo(e.target.value)} className={selectCls}>
               {entidades.map(ent => <option key={ent} value={ent}>{ent}</option>)}
             </select>
+            <label htmlFor="chat-elemento" className="sr-only">Elemento para el chat</label>
             <select
+              id="chat-elemento"
               value={id ?? ""}
               onChange={(e) => setId(Number(e.target.value))}
               className={`${selectCls} w-full`}
@@ -104,7 +107,10 @@ export default function ChatNarrativo() {
             <div ref={bottomRef} />
           </div>
 
+          <label htmlFor="chat-mensaje" className="sr-only">Mensaje para el chat</label>
           <Input
+            id="chat-mensaje"
+            name="chat-mensaje"
             placeholder={t.chatPlaceholder}
             value={mensaje}
             onChange={(e) => setMensaje(e.target.value)}
@@ -120,7 +126,7 @@ export default function ChatNarrativo() {
               disabled={loading || !id || !mensaje.trim()}
               className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded"
             >
-              {loading ? <Loader2 className="animate-spin mr-2" /> : t.enviar}
+              {loading ? <Loader2 className="animate-spin mr-2" aria-hidden="true" /> : t.enviar}
             </Button>
             <Button
               onClick={() => setConversacion([])}
@@ -130,7 +136,7 @@ export default function ChatNarrativo() {
             </Button>
           </div>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-red-500 text-sm" role="alert">{error}</p>}
         </CardContent>
       </Card>
     </div>

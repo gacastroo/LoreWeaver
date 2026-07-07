@@ -55,6 +55,8 @@ export default function CapituloForm({ onChapterCreated }) {
       {/* Toast message */}
       {message && (
         <div
+          role="alert"
+          aria-live="assertive"
           className={`
             fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded shadow-md text-sm
             ${message.type === "success" ? "bg-green-100 text-green-800 border border-green-300" : "bg-red-100 text-red-800 border border-red-300"}
@@ -67,18 +69,24 @@ export default function CapituloForm({ onChapterCreated }) {
       <form onSubmit={handleSubmit} className="space-y-4 p-4 max-w-md mx-auto">
         <h2 className="text-xl font-bold text-center">Crear nuevo capítulo</h2>
 
+        <label htmlFor="chapter-title" className="sr-only">Título del capítulo</label>
         <input
+          id="chapter-title"
+          name="chapter-title"
           type="text"
           placeholder="Título del capítulo"
           value={titulo}
           onChange={(e) => setTitulo(e.target.value)}
-          className="w-full p-2 rounded border"
+          className="w-full p-2 rounded border focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
         />
 
+        <label htmlFor="chapter-story" className="sr-only">Historia del capítulo</label>
         <select
+          id="chapter-story"
+          name="chapter-story"
           value={historiaId}
           onChange={(e) => setHistoriaId(e.target.value)}
-          className="w-full p-2 rounded border"
+          className="w-full p-2 rounded border focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
         >
           <option value="">Selecciona una historia</option>
           {historias.map((h) => (

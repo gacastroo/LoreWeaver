@@ -44,7 +44,7 @@ export default function VistaRelaciones() {
     <div className={`p-8 max-w-6xl mx-auto space-y-6 min-h-screen ${isLight ? "bg-white" : "bg-zinc-950"}`}>
       <div className="flex justify-between items-center mb-4">
         <h1 className={`text-2xl font-bold ${isLight ? "text-neutral-800" : "text-gray-100"}`}>{t.elementosRelacionados}</h1>
-        <button
+        <button type="button"
           onClick={() => navigate(-1)}
           className={`text-sm hover:underline ${isLight ? "text-neutral-600" : "text-zinc-400"}`}
         >

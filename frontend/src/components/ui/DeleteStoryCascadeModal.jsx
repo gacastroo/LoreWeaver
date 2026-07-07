@@ -4,7 +4,8 @@ import { Dialog } from "@headlessui/react"
 export default function DeleteStoryCascadeModal({ story, onCancel, onConfirm }) {
   return (
     <Dialog open={true} onClose={onCancel} className="fixed z-50 inset-0 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen px-4">
+      <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
+      <div className="relative flex items-center justify-center min-h-screen px-4">
         <Dialog.Panel className="bg-white p-6 rounded-xl shadow-xl max-w-md w-full">
           <Dialog.Title className="text-lg font-semibold text-red-600">
             ¿Eliminar historia “{story.titulo}”?
@@ -23,8 +24,8 @@ export default function DeleteStoryCascadeModal({ story, onCancel, onConfirm }) 
           </div>
 
           <div className="mt-6 flex justify-end gap-3">
-            <button onClick={onCancel} className="px-4 py-2 bg-gray-200 rounded-md">Cancelar</button>
-            <button onClick={onConfirm} className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+            <button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">Cancelar</button>
+            <button type="button" onClick={onConfirm} className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
               Eliminar historia
             </button>
           </div>

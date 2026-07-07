@@ -42,13 +42,13 @@ export default function StoryCard({ story, onDelete }) {
 
         <div className="flex flex-col gap-2 mt-4">
           <ViewButton onClick={() => navigate(`/historia/${story.id}`)} label={t.verMas} />
-          <button
+          <button type="button"
             onClick={() => setAbrirAsociarModal(true)}
             className="px-4 py-2 text-sm text-white bg-purple-600 hover:bg-purple-700 rounded-md transition"
           >
             {t.asociarPersonaje}
           </button>
-          <button
+          <button type="button"
             onClick={() => setAbrirAsociarUniversoModal(true)}
             className="px-4 py-2 text-sm text-white bg-sky-600 hover:bg-sky-700 rounded-md transition"
           >

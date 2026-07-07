@@ -177,3 +177,17 @@ a.nav-link.nav-link-dark .icon {
     transform: scale(1.7);
   }
 }
+
+/* ── Accesibilidad: foco visible consistente ───────────── */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+:where(button, [role="button"]):disabled {
+  cursor: not-allowed;
+}
+
+[hidden] {
+  display: none !important;
+}

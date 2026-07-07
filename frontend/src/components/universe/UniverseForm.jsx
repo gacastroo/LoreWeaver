@@ -60,31 +60,40 @@ export default function UniverseForm({ onUniverseCreated }) {
       onSubmit={handleSubmit}
       className="bg-white dark:bg-zinc-800 p-6 rounded-2xl shadow-lg space-y-4 max-w-lg mx-auto"
     >
-      <h2 className="text-2xl font-bold text-center text-zinc-900 dark:text-white">
+      <h2 className="text-2xl font-bold text-center text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">
         Crear nuevo universo
       </h2>
 
+      <label htmlFor="universe-title" className="sr-only">Nombre del universo</label>
       <input
+        id="universe-title"
+        name="universe-title"
         type="text"
         placeholder="Nombre del universo"
         value={titulo}
         onChange={(e) => setTitulo(e.target.value)}
-        className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white"
+        className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
         required
       />
 
+      <label htmlFor="universe-description" className="sr-only">Descripción del universo</label>
       <textarea
+        id="universe-description"
+        name="universe-description"
         placeholder="Descripción (opcional)"
         value={descripcion}
         onChange={(e) => setDescripcion(e.target.value)}
         rows={3}
-        className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white"
+        className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
       />
 
+      <label htmlFor="universe-story" className="sr-only">Historia del universo</label>
       <select
+        id="universe-story"
+        name="universe-story"
         value={historiaId}
         onChange={(e) => setHistoriaId(e.target.value)}
-        className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white"
+        className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
       >
         <option value="">Sin historia</option>
         {historias.map((h) => (
@@ -96,7 +105,7 @@ export default function UniverseForm({ onUniverseCreated }) {
 
       <button
         type="submit"
-        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-xl transition"
+        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-xl transition focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
       >
         Crear universo
       </button>

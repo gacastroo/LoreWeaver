@@ -247,7 +247,7 @@ function PasosStepper({ pasos, color, isLight }) {
       {/* Tabs de pasos */}
       <div style={{ display: "flex", gap: "6px", marginBottom: "12px", flexWrap: "wrap" }}>
         {pasos.map((p, i) => (
-          <button
+          <button type="button"
             key={i}
             onClick={() => setActivo(i)}
             style={{
@@ -314,6 +314,9 @@ function PasosStepper({ pasos, color, isLight }) {
         {pasos.map((_, i) => (
           <button
             key={i}
+            type="button"
+            aria-label={`Ver paso ${i + 1}`}
+            aria-current={activo === i ? "step" : undefined}
             onClick={() => setActivo(i)}
             style={{
               width: activo === i ? "18px" : "6px",
@@ -338,6 +341,8 @@ function TipsAccordion({ tips, isLight, label }) {
   return (
     <div style={{ marginTop: "14px" }}>
       <button
+        type="button"
+        aria-expanded={abierto}
         onClick={() => setAbierto(v => !v)}
         style={{
           background: "none",
@@ -445,6 +450,8 @@ function SeccionCard({ s, completada, onToggleCompleta, isLight, uiText }) {
     >
       {/* Header clickable */}
       <button
+        type="button"
+        aria-expanded={expandida}
         onClick={() => setExpandida(v => !v)}
         style={{
           width: "100%",
@@ -569,6 +576,8 @@ function SeccionCard({ s, completada, onToggleCompleta, isLight, uiText }) {
           {/* Botón marcar */}
           <div style={{ marginTop: "18px", display: "flex", justifyContent: "flex-end" }}>
             <button
+              type="button"
+              aria-pressed={completada}
               onClick={(e) => { e.stopPropagation(); onToggleCompleta() }}
               style={{
                 fontSize: "11px",
@@ -775,8 +784,11 @@ export default function Guia() {
           >
             🔍
           </span>
+          <label htmlFor="guide-search" className="sr-only">{uiText.buscar}</label>
           <input
-            type="text"
+            id="guide-search"
+            name="guide-search"
+            type="search"
             placeholder={uiText.buscar}
             value={busqueda}
             onChange={e => setBusqueda(e.target.value)}
@@ -796,6 +808,8 @@ export default function Guia() {
           />
           {busqueda && (
             <button
+              type="button"
+              aria-label="Limpiar búsqueda"
               onClick={() => setBusqueda("")}
               style={{
                 position: "absolute", right: "11px", top: "50%", transform: "translateY(-50%)",
@@ -811,6 +825,8 @@ export default function Guia() {
         {/* ── Filtros por badge ── */}
         <div style={{ display: "flex", gap: "6px", marginBottom: "20px", flexWrap: "wrap" }}>
           <button
+            type="button"
+            aria-pressed={filtroActivo === "todos"}
             onClick={() => setFiltroActivo("todos")}
             style={{
               padding: "4px 13px",
@@ -836,6 +852,8 @@ export default function Guia() {
             return (
               <button
                 key={b}
+                type="button"
+                aria-pressed={isActive}
                 onClick={() => setFiltroActivo(isActive ? "todos" : b)}
                 style={{
                   padding: "4px 13px",

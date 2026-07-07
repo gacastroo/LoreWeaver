@@ -6,6 +6,7 @@ import CharacterForm from "@/components/character/CharacterForm";
 import API from "@/services/api";
 import Select from "@/components/ui/input/Select";
 import { useApp } from "@/context/AppContext";
+import AccessibleModal from "@/components/ui/AccessibleModal";
 
 export default function Characters() {
   const [characters, setCharacters] = useState([]);
@@ -88,12 +89,13 @@ export default function Characters() {
       )}
 
       {mostrarModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className={`rounded-2xl p-6 max-w-xl w-full relative shadow-lg ${isLight ? "bg-white" : "bg-zinc-800"}`}>
-            <button onClick={() => setMostrarModal(false)} className="absolute top-3 right-4 text-xl text-zinc-400 hover:text-red-500">✖</button>
+        <AccessibleModal
+          title="Crear nuevo personaje"
+          onClose={() => setMostrarModal(false)}
+          className={`rounded-2xl p-6 max-w-xl w-full shadow-lg ${isLight ? "bg-white" : "bg-zinc-800"}`}
+        >
             <CharacterForm onCharacterCreated={handlePersonajeCreado} />
-          </div>
-        </div>
+        </AccessibleModal>
       )}
     </div>
   );

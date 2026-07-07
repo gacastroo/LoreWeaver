@@ -50,7 +50,7 @@ export default function UniverseCard({ universo, historias, onDelete }) {
               <p className={`text-sm ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>
                 <strong>{t.historiaLabel}</strong> {historia.titulo}
               </p>
-              <button
+              <button type="button"
                 onClick={quitarHistoria}
                 disabled={loadingRemoveHistoria}
                 className="w-40 text-xs px-3 py-1 mt-1 bg-red-500 text-white rounded hover:bg-red-700 transition"
@@ -61,7 +61,7 @@ export default function UniverseCard({ universo, historias, onDelete }) {
           ) : (
             <>
               <p className={`text-sm italic ${isLight ? "text-neutral-400" : "text-zinc-500"}`}>{t.sinHistoriaAsignada}</p>
-              <button
+              <button type="button"
                 onClick={() => setShowAssignHistoriaModal(true)}
                 className="w-40 text-xs px-3 py-1 mt-1 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition"
               >

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "@/services/api";
+import AccessibleModal from "@/components/ui/AccessibleModal";
 
 export default function AsociarPersonajeModal({ historiaId, onClose, onSuccess }) {
   const [personajesLibres, setPersonajesLibres] = useState([]);
@@ -44,10 +45,7 @@ export default function AsociarPersonajeModal({ historiaId, onClose, onSuccess }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-full max-w-md">
-        <h2 className="text-xl font-semibold text-neutral-800 mb-4">Asociar personaje existente</h2>
-
+    <AccessibleModal title="Asociar personaje existente" onClose={onClose}>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
         {personajesLibres.length === 0 ? (
@@ -55,27 +53,33 @@ export default function AsociarPersonajeModal({ historiaId, onClose, onSuccess }
             No hay personajes disponibles para asociar.
           </p>
         ) : (
-          <select
-            value={personajeSeleccionado}
-            onChange={(e) => setPersonajeSeleccionado(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded mb-6"
-          >
+          <>
+            <label htmlFor="personaje-asociado" className="sr-only">Personaje a asociar</label>
+            <select
+              id="personaje-asociado"
+              value={personajeSeleccionado}
+              onChange={(e) => setPersonajeSeleccionado(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded mb-6 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
             {personajesLibres.map((p) => (
               <option key={p.id_Personaje} value={p.id_Personaje}>
                 {p.nombre_personaje}
               </option>
             ))}
-          </select>
+            </select>
+          </>
         )}
 
         <div className="flex justify-end gap-2">
           <button
+            type="button"
             onClick={onClose}
             className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
           >
             Cancelar
           </button>
           <button
+            type="button"
             onClick={asociar}
             className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50"
             disabled={!personajeSeleccionado}
@@ -83,7 +87,6 @@ export default function AsociarPersonajeModal({ historiaId, onClose, onSuccess }
             Asociar
           </button>
         </div>
-      </div>
-    </div>
+    </AccessibleModal>
   );
 }

@@ -74,7 +74,7 @@ export default function EditorUniverso({ onUpdate }) {
       {universo && (
         <div className={`flex flex-wrap gap-4 mb-6 border-b pb-4 ${isLight ? "border-neutral-200" : "border-zinc-700"}`}>
           {universo.historia && (
-            <button
+            <button type="button"
               onClick={() => navigate(`/historia/${universo.historia.id}`)}
               className={`hover:underline text-sm ${isLight ? "text-blue-600" : "text-blue-400"}`}
             >
@@ -86,16 +86,20 @@ export default function EditorUniverso({ onUpdate }) {
 
       <h1 className={`text-2xl font-bold mb-4 ${isLight ? "text-neutral-700" : "text-gray-100"}`}>{t.editarUniverso}</h1>
 
-      <label className={`block mb-2 text-sm font-medium ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>{t.nombreLabel}</label>
+      <label htmlFor="universe-editor-name" className={`block mb-2 text-sm font-medium ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>{t.nombreLabel}</label>
       <input
+        id="universe-editor-name"
+        name="universe-editor-name"
         className={`w-full p-3 border text-lg font-semibold rounded-md mb-4 ${isLight ? "border-neutral-400 bg-white text-neutral-800" : "border-zinc-600 bg-zinc-800 text-gray-100"}`}
         value={titulo}
         onChange={(e) => setTitulo(e.target.value)}
         placeholder={t.nombreUniversoPlaceholder || "Nombre del universo"}
       />
 
-      <label className={`block mb-2 text-sm font-medium ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>{t.descripcionLabel}</label>
+      <label htmlFor="universe-editor-description" className={`block mb-2 text-sm font-medium ${isLight ? "text-neutral-700" : "text-zinc-300"}`}>{t.descripcionLabel}</label>
       <textarea
+        id="universe-editor-description"
+        name="universe-editor-description"
         ref={textareaRef}
         className={`w-full p-4 border rounded-md resize-none min-h-[150px] ${isLight ? "border-neutral-400 bg-white text-neutral-800" : "border-zinc-600 bg-zinc-800 text-zinc-200"}`}
         value={descripcion}
@@ -105,10 +109,10 @@ export default function EditorUniverso({ onUpdate }) {
       />
 
       <div className="flex justify-end mt-4">
-        <button onClick={handleGuardar} className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
+        <button type="button" onClick={handleGuardar} className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
           {t.guardarCambios}
         </button>
-        <button onClick={handleExportarPDF} className="ml-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+        <button type="button" onClick={handleExportarPDF} className="ml-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
           {t.exportarPDF}
         </button>
       </div>

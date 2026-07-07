@@ -1,7 +1,7 @@
 import React from "react"
 import { cn } from "@/lib/utils"
 
-const Button = React.forwardRef(({ className, variant, size, asChild = false, ...props }, ref) => {
+const Button = React.forwardRef(({ className, variant, size, asChild = false, type = "button", ...props }, ref) => {
   const Comp = asChild ? React.Fragment : "button"
 
   return (
@@ -13,6 +13,7 @@ const Button = React.forwardRef(({ className, variant, size, asChild = false, ..
         className,
       )}
       ref={ref}
+      type={Comp === "button" ? type : undefined}
       {...props}
     />
   )

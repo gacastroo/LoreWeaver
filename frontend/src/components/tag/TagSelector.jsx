@@ -23,7 +23,7 @@ export default function TagSelector({ selected, setSelected }) {
       <p className="font-semibold">Etiquetas:</p>
       <div className="flex flex-wrap gap-2">
         {tags.map(tag => (
-          <button
+          <button type="button"
             key={tag.id_Tag}
             onClick={() => toggle(tag.id_Tag)}
             className={`px-3 py-1 rounded border ${selected.includes(tag.id_Tag) ? 'bg-green-500 text-white' : 'bg-gray-100'}`}

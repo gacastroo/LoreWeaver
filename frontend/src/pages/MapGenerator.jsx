@@ -138,25 +138,25 @@ export default function MapGenerator() {
   return (
     <div className={`min-h-screen p-6 ${pageBg}`}>
       <h1 className={`text-2xl font-bold mb-6 flex items-center gap-2 ${textCls}`}>
-        <Map className="w-6 h-6 text-yellow-400" />
+        <Map className="w-6 h-6 text-yellow-400" aria-hidden="true" />
         {t.mapTitle}
       </h1>
 
       <div className="flex flex-wrap items-center gap-4 mb-6">
-        <button onClick={generarMapa} className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition">
+        <button type="button" onClick={generarMapa} className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition">
           {t.generarMapa}
         </button>
-        <button onClick={centrarMapa} className={`px-4 py-2 rounded transition ${isLight ? "bg-slate-200 text-neutral-800 hover:bg-slate-300" : "bg-slate-600 text-white hover:bg-slate-500"}`}>
+        <button type="button" onClick={centrarMapa} className={`px-4 py-2 rounded transition ${isLight ? "bg-slate-200 text-neutral-800 hover:bg-slate-300" : "bg-slate-600 text-white hover:bg-slate-500"}`}>
           {t.centrarMapa}
         </button>
-        <button onClick={exportarPNG} className="bg-rose-600 text-white px-4 py-2 rounded hover:bg-rose-500 transition">
+        <button type="button" onClick={exportarPNG} className="bg-rose-600 text-white px-4 py-2 rounded hover:bg-rose-500 transition">
           {t.exportarPNG}
         </button>
       </div>
 
       <div className="mb-6">
-        <label className={`mr-4 ${textCls}`}>{t.layoutLabel}</label>
-        <select value={layoutType} onChange={(e) => setLayoutType(e.target.value)} className={selectCls}>
+        <label htmlFor="map-layout" className={`mr-4 ${textCls}`}>{t.layoutLabel}</label>
+        <select id="map-layout" value={layoutType} onChange={(e) => setLayoutType(e.target.value)} className={selectCls}>
           <option value="breadthfirst">{t.breadthfirstLabel}</option>
           <option value="grid">{t.gridLabel}</option>
           <option value="cose">{t.coseLabel}</option>
@@ -166,13 +166,13 @@ export default function MapGenerator() {
       <div className="flex flex-wrap gap-4 mb-4">
         {Object.entries(filtros).map(([tipo, activo]) => (
           <label key={tipo} className={`flex items-center gap-2 text-sm capitalize cursor-pointer ${textCls}`}>
-            <input type="checkbox" checked={activo} onChange={() => cambiarFiltro(tipo)} className="accent-indigo-500" />
+            <input type="checkbox" name={`filtro-${tipo}`} checked={activo} onChange={() => cambiarFiltro(tipo)} className="accent-indigo-500" />
             {tipo}
           </label>
         ))}
       </div>
 
-      {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+      {error && <p className="text-red-500 text-sm mb-4" role="alert">{error}</p>}
 
       <div
         ref={containerRef}

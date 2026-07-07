@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "@/services/api";
+import AccessibleModal from "@/components/ui/AccessibleModal";
 
 export default function AssignHistoriaModal({ tipo, id, onClose, onSuccess }) {
   const [historias, setHistorias] = useState([]);
@@ -41,12 +42,7 @@ export default function AssignHistoriaModal({ tipo, id, onClose, onSuccess }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-full max-w-md">
-        <h2 className="text-xl font-semibold text-neutral-800 mb-4">
-          Asignar historia a {tipo}
-        </h2>
-
+    <AccessibleModal title={`Asignar historia a ${tipo}`} onClose={onClose}>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
         {historias.length === 0 ? (
@@ -54,27 +50,33 @@ export default function AssignHistoriaModal({ tipo, id, onClose, onSuccess }) {
             No hay historias disponibles.
           </p>
         ) : (
-          <select
-            value={historiaSeleccionada}
-            onChange={(e) => setHistoriaSeleccionada(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded mb-6"
-          >
+          <>
+            <label htmlFor="historia-asignada" className="sr-only">Historia a asignar</label>
+            <select
+              id="historia-asignada"
+              value={historiaSeleccionada}
+              onChange={(e) => setHistoriaSeleccionada(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded mb-6 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
             {historias.map((h) => (
               <option key={h.id} value={h.id}>
                 {h.titulo}
               </option>
             ))}
-          </select>
+            </select>
+          </>
         )}
 
         <div className="flex justify-end gap-2">
           <button
+            type="button"
             onClick={onClose}
             className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
           >
             Cancelar
           </button>
           <button
+            type="button"
             onClick={handleAsignar}
             className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-50"
             disabled={!historiaSeleccionada}
@@ -82,7 +84,6 @@ export default function AssignHistoriaModal({ tipo, id, onClose, onSuccess }) {
             Asignar
           </button>
         </div>
-      </div>
-    </div>
+    </AccessibleModal>
   );
 }

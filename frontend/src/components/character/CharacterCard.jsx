@@ -53,7 +53,7 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
             <p className={`text-xs mt-2 ${isLight ? "text-neutral-500" : "text-zinc-400"}`}>
               {t.historiaLabel} {character.historia.titulo}
             </p>
-            <button
+            <button type="button"
               onClick={quitarHistoria}
               disabled={loadingRemoveHistoria}
               className="w-40 text-xs px-3 py-1 mt-1 bg-red-500 text-white rounded hover:bg-red-700 transition"
@@ -64,7 +64,7 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
         ) : (
           <div className="mt-2">
             <p className={`text-xs italic mb-2 ${isLight ? "text-neutral-400" : "text-zinc-500"}`}>{t.sinHistoriaAsignada}</p>
-            <button
+            <button type="button"
               onClick={() => setShowAssignHistoriaModal(true)}
               className="w-40 text-xs px-3 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition"
             >
@@ -76,7 +76,7 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
         <div className="mt-2 min-h-[2.5rem] flex flex-wrap gap-2 items-start">
           {character.tags?.length > 0 ? (
             character.tags.map((pt, index) => (
-              <button
+              <button type="button"
                 key={index}
                 onClick={() => onTagClick?.(pt.tag?.nombre_tag)}
                 className={`text-xs font-medium px-2 py-1 rounded-full transition ${isLight ? "bg-neutral-100 text-neutral-700 hover:bg-neutral-200" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"}`}
@@ -92,13 +92,13 @@ export default function CharacterCard({ character, onDelete, onTagClick }) {
         <div className="mt-4 flex flex-col gap-2">
           <ViewButton onClick={() => navigate(`/personaje/${character.id_Personaje}`)} label={t.verMas} />
           <DeleteButton onClick={() => setShowModal(true)} label={t.eliminar} />
-          <button
+          <button type="button"
             onClick={() => setShowAssignModal(true)}
             className={`text-sm px-4 py-2 rounded transition ${isLight ? "bg-indigo-100 text-indigo-700 hover:bg-indigo-200" : "bg-indigo-900 text-indigo-300 hover:bg-indigo-800"}`}
           >
             {t.agregarTag}
           </button>
-          <button
+          <button type="button"
             onClick={() => setShowRemoveTagModal(true)}
             className={`text-sm px-4 py-2 rounded transition ${isLight ? "bg-red-100 text-red-700 hover:bg-red-200" : "bg-red-900 text-red-300 hover:bg-red-800"}`}
           >

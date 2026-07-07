@@ -73,31 +73,40 @@ export default function CharacterForm({ onCharacterCreated }) {
       onSubmit={handleSubmit}
       className="bg-white dark:bg-zinc-800 p-6 rounded-2xl shadow-lg space-y-4 max-w-lg mx-auto"
     >
-      <h2 className="text-2xl font-bold text-center text-zinc-900 dark:text-white">
+      <h2 className="text-2xl font-bold text-center text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2">
         Crear nuevo personaje
       </h2>
 
+      <label htmlFor="character-name" className="sr-only">Nombre del personaje</label>
       <input
+        id="character-name"
+        name="character-name"
         type="text"
         placeholder="Nombre del personaje"
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
-        className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white"
+        className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
         required
       />
 
+      <label htmlFor="character-description" className="sr-only">Descripción del personaje</label>
       <textarea
+        id="character-description"
+        name="character-description"
         placeholder="Descripción del personaje (opcional)"
         value={descripcion}
         onChange={(e) => setDescripcion(e.target.value)}
         rows={4}
-        className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white"
+        className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
       />
 
+      <label htmlFor="character-story" className="sr-only">Historia del personaje</label>
       <select
+        id="character-story"
+        name="character-story"
         value={historiaId}
         onChange={(e) => setHistoriaId(e.target.value)}
-        className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white"
+        className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
       >
         <option value="">Sin historia</option>
         {Array.isArray(historias) &&
@@ -108,10 +117,13 @@ export default function CharacterForm({ onCharacterCreated }) {
           ))}
       </select>
 
+      <label htmlFor="character-tag" className="sr-only">Tag del personaje</label>
       <select
+        id="character-tag"
+        name="character-tag"
         value={tagId}
         onChange={(e) => setTagId(e.target.value)}
-        className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white"
+        className="w-full p-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
       >
         <option value="">Sin tag</option>
         {Array.isArray(tags) &&

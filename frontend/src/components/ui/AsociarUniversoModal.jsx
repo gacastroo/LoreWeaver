@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "@/services/api";
+import AccessibleModal from "@/components/ui/AccessibleModal";
 
 export default function AsociarUniversoModal({ historiaId, onClose, onSuccess }) {
   const [universosLibres, setUniversosLibres] = useState([]);
@@ -44,10 +45,7 @@ export default function AsociarUniversoModal({ historiaId, onClose, onSuccess })
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-full max-w-md">
-        <h2 className="text-xl font-semibold text-neutral-800 mb-4">Asociar universo existente</h2>
-
+    <AccessibleModal title="Asociar universo existente" onClose={onClose}>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
         {universosLibres.length === 0 ? (
@@ -55,27 +53,33 @@ export default function AsociarUniversoModal({ historiaId, onClose, onSuccess })
             No hay universos disponibles para asociar.
           </p>
         ) : (
-          <select
-            value={universoSeleccionado}
-            onChange={(e) => setUniversoSeleccionado(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded mb-6"
-          >
+          <>
+            <label htmlFor="universo-asociado" className="sr-only">Universo a asociar</label>
+            <select
+              id="universo-asociado"
+              value={universoSeleccionado}
+              onChange={(e) => setUniversoSeleccionado(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
             {universosLibres.map((u) => (
               <option key={u.id_Universo} value={u.id_Universo}>
                 {u.titulo_universo}
               </option>
             ))}
-          </select>
+            </select>
+          </>
         )}
 
         <div className="flex justify-end gap-2">
           <button
+            type="button"
             onClick={onClose}
             className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
           >
             Cancelar
           </button>
           <button
+            type="button"
             onClick={asociar}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
             disabled={!universoSeleccionado}
@@ -83,7 +87,6 @@ export default function AsociarUniversoModal({ historiaId, onClose, onSuccess })
             Asociar
           </button>
         </div>
-      </div>
-    </div>
+    </AccessibleModal>
   );
 }

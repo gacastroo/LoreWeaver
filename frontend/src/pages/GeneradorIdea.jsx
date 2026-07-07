@@ -38,7 +38,10 @@ export default function GeneradorIdea() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-5">
+          <label htmlFor="idea-title" className="sr-only">Título de la historia</label>
           <Input
+            id="idea-title"
+            name="idea-title"
             placeholder={t.tituloHistoriaIdeasPlaceholder}
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
@@ -52,10 +55,10 @@ export default function GeneradorIdea() {
             disabled={loading}
             className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded"
           >
-            {loading ? <Loader2 className="animate-spin mr-2" /> : t.generarIdea}
+            {loading ? <Loader2 className="animate-spin mr-2" aria-hidden="true" /> : t.generarIdea}
           </Button>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-red-500 text-sm" role="alert">{error}</p>}
 
           {idea && (
             <div

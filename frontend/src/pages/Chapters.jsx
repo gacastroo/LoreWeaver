@@ -4,6 +4,7 @@ import AddButton from "@/components/ui/button/AddButton";
 import ChapterCard from "@/components/chapter/ChapterCard";
 import ChapterForm from "@/components/chapter/ChapterForm";
 import { useApp } from "@/context/AppContext";
+import AccessibleModal from "@/components/ui/AccessibleModal";
 
 export default function Chapters() {
   const [capitulos, setCapitulos] = useState([]);
@@ -57,12 +58,13 @@ export default function Chapters() {
       )}
 
       {mostrarModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className={`rounded-2xl p-6 max-w-xl w-full relative shadow-lg ${isLight ? "bg-white" : "bg-zinc-800"}`}>
-            <button onClick={() => setMostrarModal(false)} className="absolute top-3 right-4 text-xl text-zinc-400 hover:text-red-500">✖</button>
+        <AccessibleModal
+          title="Crear nuevo capítulo"
+          onClose={() => setMostrarModal(false)}
+          className={`rounded-2xl p-6 max-w-xl w-full shadow-lg ${isLight ? "bg-white" : "bg-zinc-800"}`}
+        >
             <ChapterForm onChapterCreated={async () => { await fetchData(); setMostrarModal(false); }} />
-          </div>
-        </div>
+        </AccessibleModal>
       )}
     </div>
   );

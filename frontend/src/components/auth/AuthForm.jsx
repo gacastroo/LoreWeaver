@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button/ButtonAuth"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import AccessibleModal from "@/components/ui/AccessibleModal"
 import {
   Card,
   CardContent,
@@ -40,10 +41,10 @@ function AuthIcon({ type, className = "" }) {
 
 function LoadingOverlay({ registro }) {
   return (
-    <div className="auth-loading-overlay">
+    <div className="auth-loading-overlay" role="status" aria-live="polite" aria-busy="true">
       <div className="auth-loading-card">
         <div className="auth-quill-wrap">
-          <svg className="auth-quill" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg className="auth-quill" aria-hidden="true" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M52 4C52 4 36 10 28 26C22 38 20 52 20 52C20 52 26 46 32 44C32 44 24 50 22 60C22 60 34 52 40 40C46 28 60 16 60 8L52 4Z"
               fill="#2381fe" opacity="0.15"
@@ -59,7 +60,7 @@ function LoadingOverlay({ registro }) {
         <p className="auth-loading-text">
           {registro ? "Creando tu cuenta…" : "Iniciando sesión…"}
         </p>
-        <div className="auth-dots">
+        <div className="auth-dots" aria-hidden="true">
           <span /><span /><span />
         </div>
       </div>
@@ -161,6 +162,8 @@ export default function AuthForm() {
       {/* Toast message */}
       {message && (
         <div
+          role="alert"
+          aria-live="assertive"
           className={`
             fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded shadow-md text-sm
             ${message.type === "success"
@@ -204,6 +207,9 @@ export default function AuthForm() {
                 <AuthIcon type="user" className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
                 <Input
                   id="nombre"
+                  name="nombre"
+                  type="text"
+                  autoComplete="name"
                   placeholder="Tu nombre completo"
                   className="pl-10 bg-white text-gray-800 border border-gray-200 placeholder-gray-500 h-9 rounded-md focus-visible:ring-gray-300 focus-visible:ring-offset-0"
                   value={nombre}
@@ -221,7 +227,9 @@ export default function AuthForm() {
               <AuthIcon type="mail" className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
               <Input
                 id="email"
+                name="email"
                 type="email"
+                autoComplete="email"
                 placeholder="tu@ejemplo.com"
                 className="pl-10 bg-white text-gray-800 border border-gray-200 placeholder-gray-500 h-9 rounded-md focus-visible:ring-gray-300 focus-visible:ring-offset-0"
                 value={email}
@@ -238,7 +246,9 @@ export default function AuthForm() {
               <AuthIcon type="lock" className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
               <Input
                 id="password"
+                name="password"
                 type="password"
+                autoComplete={registro ? "new-password" : "current-password"}
                 placeholder="••••••••"
                 className="pl-10 bg-white text-gray-800 border border-gray-200 placeholder-gray-500 h-9 rounded-md focus-visible:ring-gray-300 focus-visible:ring-offset-0"
                 value={password}
@@ -260,9 +270,9 @@ export default function AuthForm() {
 
           {!registro && (
             <button
+              type="button"
               onClick={() => setShowResetModal(true)}
               className="text-sm text-blue-700 hover:text-blue-900 underline underline-offset-2 transition-colors"
-              type="button"
             >
               ¿Olvidaste tu contraseña?
             </button>
@@ -279,44 +289,44 @@ export default function AuthForm() {
       </Card>
 
       {showResetModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-md w-96 max-w-full relative">
+        <AccessibleModal
+          title="Recuperar contraseña"
+          onClose={() => setShowResetModal(false)}
+          className="bg-white p-6 rounded-md w-96 max-w-full shadow-lg"
+        >
+          <p className="mb-4 text-sm text-gray-700">
+            Introduce tu correo electrónico para recibir un enlace de restablecimiento.
+          </p>
+          <label htmlFor="reset-email" className="sr-only">Correo electrónico para recuperar contraseña</label>
+          <input
+            id="reset-email"
+            name="reset-email"
+            type="email"
+            autoComplete="email"
+            className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            placeholder="tu@ejemplo.com"
+            value={resetEmail}
+            onChange={(e) => setResetEmail(e.target.value)}
+          />
+          {resetMsg && <p className="text-green-600 mb-2" role="status">{resetMsg}</p>}
+          {resetError && <p className="text-red-600 mb-2" role="alert">{resetError}</p>}
+          <div className="flex justify-end gap-2">
             <button
+              type="button"
               onClick={() => setShowResetModal(false)}
-              className="absolute top-2 right-2 text-gray-600 hover:text-red-900"
-              aria-label="Cerrar"
+              className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
             >
-              ✕
+              Cancelar
             </button>
-            <h2 className="text-lg font-semibold mb-4">Recuperar contraseña</h2>
-            <p className="mb-4 text-sm text-gray-700">
-              Introduce tu correo electrónico para recibir un enlace de restablecimiento.
-            </p>
-            <input
-              type="email"
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-              placeholder="tu@ejemplo.com"
-              value={resetEmail}
-              onChange={(e) => setResetEmail(e.target.value)}
-            />
-            {resetMsg && <p className="text-green-600 mb-2">{resetMsg}</p>}
-            {resetError && <p className="text-red-600 mb-2">{resetError}</p>}
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setShowResetModal(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleResetPassword}
-                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-              >
-                Enviar enlace
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={handleResetPassword}
+              className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              Enviar enlace
+            </button>
           </div>
-        </div>
+        </AccessibleModal>
       )}
 
       <p className="text-center text-xs text-gray-600 mt-6">

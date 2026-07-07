@@ -4,6 +4,7 @@ import AddButton from "@/components/ui/button/AddButton";
 import SceneCard from "@/components/scene/SceneCard";
 import SceneForm from "@/components/scene/SceneForm";
 import { useApp } from "@/context/AppContext";
+import AccessibleModal from "@/components/ui/AccessibleModal";
 
 export default function Scenes() {
   const [escenas, setEscenas] = useState([]);
@@ -51,12 +52,13 @@ export default function Scenes() {
       </div>
 
       {mostrarModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className={`rounded-2xl p-6 max-w-xl w-full relative shadow-lg ${isLight ? "bg-white" : "bg-zinc-800"}`}>
-            <button onClick={() => setMostrarModal(false)} className="absolute top-3 right-4 text-xl text-zinc-400 hover:text-red-500">✖</button>
+        <AccessibleModal
+          title="Crear nueva escena"
+          onClose={() => setMostrarModal(false)}
+          className={`rounded-2xl p-6 max-w-xl w-full shadow-lg ${isLight ? "bg-white" : "bg-zinc-800"}`}
+        >
             <SceneForm onSceneCreated={async () => { await fetchEscenas(); setMostrarModal(false); }} />
-          </div>
-        </div>
+        </AccessibleModal>
       )}
     </div>
   );
