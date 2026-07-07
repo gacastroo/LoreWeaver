@@ -109,7 +109,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
           {/* Herramientas */}
           <div className={`border-t my-4 pt-4 ${isLight ? "border-gray-200" : "border-zinc-700"}`}>
-            <h2 className={`text-xs uppercase px-2 mb-2 ${isLight ? "text-gray-400" : "text-zinc-500"}`}>
+            <h2 className={`text-xs uppercase px-2 mb-2 ${isLight ? "text-gray-600" : "text-zinc-400"}`}>
               {t.herramientas}
             </h2>
             <nav className="flex flex-col gap-1 text-sm">

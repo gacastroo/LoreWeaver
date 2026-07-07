@@ -201,11 +201,11 @@ export default function AuthForm() {
                 Nombre completo
               </Label>
               <div className="relative">
-                <AuthIcon type="user" className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                <AuthIcon type="user" className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
                 <Input
                   id="nombre"
                   placeholder="Tu nombre completo"
-                  className="pl-10 bg-white text-gray-800 border border-gray-200 placeholder-gray-400 h-9 rounded-md focus-visible:ring-gray-300 focus-visible:ring-offset-0"
+                  className="pl-10 bg-white text-gray-800 border border-gray-200 placeholder-gray-500 h-9 rounded-md focus-visible:ring-gray-300 focus-visible:ring-offset-0"
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
                 />
@@ -218,12 +218,12 @@ export default function AuthForm() {
               Correo electrónico
             </Label>
             <div className="relative">
-              <AuthIcon type="mail" className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+              <AuthIcon type="mail" className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
               <Input
                 id="email"
                 type="email"
                 placeholder="tu@ejemplo.com"
-                className="pl-10 bg-white text-gray-800 border border-gray-200 placeholder-gray-400 h-9 rounded-md focus-visible:ring-gray-300 focus-visible:ring-offset-0"
+                className="pl-10 bg-white text-gray-800 border border-gray-200 placeholder-gray-500 h-9 rounded-md focus-visible:ring-gray-300 focus-visible:ring-offset-0"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -235,12 +235,12 @@ export default function AuthForm() {
               Contraseña
             </Label>
             <div className="relative">
-              <AuthIcon type="lock" className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+              <AuthIcon type="lock" className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
               <Input
                 id="password"
                 type="password"
                 placeholder="••••••••"
-                className="pl-10 bg-white text-gray-800 border border-gray-200 placeholder-gray-400 h-9 rounded-md focus-visible:ring-gray-300 focus-visible:ring-offset-0"
+                className="pl-10 bg-white text-gray-800 border border-gray-200 placeholder-gray-500 h-9 rounded-md focus-visible:ring-gray-300 focus-visible:ring-offset-0"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -261,7 +261,7 @@ export default function AuthForm() {
           {!registro && (
             <button
               onClick={() => setShowResetModal(true)}
-              className="text-sm text-white-500 transition-colors"
+              className="text-sm text-blue-700 hover:text-blue-900 underline underline-offset-2 transition-colors"
               type="button"
             >
               ¿Olvidaste tu contraseña?
@@ -269,7 +269,7 @@ export default function AuthForm() {
           )}
 
           <button
-            className="text-sm text-white-500 transition-colors"
+            className="text-sm text-blue-700 hover:text-blue-900 underline underline-offset-2 transition-colors"
             type="button"
             onClick={() => setRegistro(!registro)}
           >
@@ -304,7 +304,7 @@ export default function AuthForm() {
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setShowResetModal(false)}
-                className="px-4 py-2 bg-gray-500 rounded hover:bg-gray-700"
+                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
               >
                 Cancelar
               </button>
@@ -319,7 +319,7 @@ export default function AuthForm() {
         </div>
       )}
 
-      <p className="text-center text-xs text-gray-400 mt-6">
+      <p className="text-center text-xs text-gray-600 mt-6">
         © {new Date().getFullYear()} Lore Weaver. Todos los derechos reservados.
       </p>
     </div>

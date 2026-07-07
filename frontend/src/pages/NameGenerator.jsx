@@ -24,7 +24,7 @@ export default function NameGenerator() {
     : "w-full p-2 rounded border border-zinc-600 bg-zinc-700 text-white";
   const labelCls = isLight ? "block text-sm mb-1 text-neutral-600" : "block text-sm mb-1 text-zinc-300";
   const headingCls = isLight ? "text-2xl font-bold mb-6 text-neutral-800" : "text-2xl font-bold mb-6 text-white";
-  const footerCls = isLight ? "mt-10 text-sm text-neutral-400 text-center" : "mt-10 text-sm text-gray-400 text-center";
+  const footerCls = isLight ? "mt-10 text-sm text-neutral-600 text-center" : "mt-10 text-sm text-gray-300 text-center";
 
   useEffect(() => {
     const fetchHistorias = async () => {
